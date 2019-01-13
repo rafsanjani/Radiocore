@@ -9,4 +9,8 @@
 
     <string name="tt">I\'ll never abolish free education because it\'s good - Mahama</string>
 
+    <string name="lorem_ipsum">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ac tincidunt leo. Duis magna metus, fringilla eu vulputate in, cursus vel mauris. Suspendisse nibh purus, mollis ut hendrerit mollis, consequat nec magna. \n\nCurabitur quis mattis mauris, ut posuere ex. Integer congue tellus nec dapibus finibus. In fermentum faucibus leo. Duis vel porta diam, quis tempus lorem. Quisque placerat erat sed arcu auctor iaculis. Pellentesque in tristique nisl, a malesuada felis. Sed fermentum porttitor nisi eu commodo. Fusce nec luctus urna.\n\n Nulla facilisi. Maecenas pharetra, massa in aliquet ultrices, massa ipsum commodo risus, in mollis lectus massa ut sapien. Proin fringilla aliquam ullamcorper.
+    </string>
+
 </resources>

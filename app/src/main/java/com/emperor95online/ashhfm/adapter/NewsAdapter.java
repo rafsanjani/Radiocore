@@ -3,6 +3,7 @@ package com.emperor95online.ashhfm.adapter;
 // Created by Emperor95 on 1/13/2019.
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.emperor95online.ashhfm.NewsDetail;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.pojo.NewsObject;
 
@@ -36,7 +38,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     @Override
     public NewsHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_news, viewGroup, false);
+                .inflate(R.layout.item_news__, viewGroup, false);
 
         return new NewsHolder(view);
     }
@@ -55,6 +57,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
                         .into(newsHolder.imageView);
 //            }
 //        }, 2000);
+
+        newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, NewsDetail.class));
+            }
+        });
     }
 
     ////
