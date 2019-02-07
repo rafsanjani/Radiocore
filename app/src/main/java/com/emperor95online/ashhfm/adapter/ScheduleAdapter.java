@@ -16,15 +16,16 @@ import com.bumptech.glide.Glide;
 import com.emperor95online.ashhfm.NewsDetail;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.pojo.NewsObject;
+import com.emperor95online.ashhfm.pojo.ScheduleObject;
 
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
+public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder> {
 
     private Context context;
-    private List<NewsObject> list;
+    private List<ScheduleObject> list;
 
-    public NewsAdapter(Context context, List<NewsObject> list){
+    public ScheduleAdapter(Context context, List<ScheduleObject> list){
         this.context = context;
         this.list = list;
     }
@@ -36,29 +37,30 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     @NonNull
     @Override
-    public NewsHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public ScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_news__, viewGroup, false);
+                .inflate(R.layout.item_schedule__, viewGroup, false);
 
-        return new NewsHolder(view);
+        return new ScheduleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final NewsHolder newsHolder, int i) {
-        NewsObject newsObject = list.get(i);
+    public void onBindViewHolder(@NonNull final ScheduleViewHolder scheduleHolder, int i) {
+        ScheduleObject scheduleObject = list.get(i);
 
-        newsHolder.headline.setText(newsObject.getHeadline());
-        newsHolder.date.setText(newsObject.getDate());
+        scheduleHolder.headline.setText(scheduleObject.getHeadline());
+        scheduleHolder.date.setText(scheduleObject.getDate());
+        scheduleHolder.remainingTime.setText(scheduleObject.getRemainingTime());
 //        newsHolder.imageView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-                Glide.with(context)
-                        .load(R.drawable.asht)
-                        .into(newsHolder.imageView);
+  //              Glide.with(context)
+    //                    .load(R.drawable.asht)
+      //                  .into(ScheduleViewHolder.imageView);
 //            }
 //        }, 2000);
 
-        newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        scheduleHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, NewsDetail.class));
@@ -67,17 +69,17 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     ////
-    class NewsHolder extends RecyclerView.ViewHolder{
+    class ScheduleViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView date, headline;
-        private ImageView imageView;
+        private TextView headline, date, remainingTime;
 
-        NewsHolder(View view){
+
+        ScheduleViewHolder(View view){
             super(view);
 
             headline = itemView.findViewById(R.id.headline);
             date = itemView.findViewById(R.id.date);
-            imageView = itemView.findViewById(R.id.image);
+            remainingTime = itemView.findViewById(R.id.remaining_time);
         }
 
     }

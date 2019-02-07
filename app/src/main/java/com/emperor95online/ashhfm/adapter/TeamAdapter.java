@@ -61,12 +61,12 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
     }
 
     ////
-    public class TeamHolder extends RecyclerView.ViewHolder{
+    class TeamHolder extends RecyclerView.ViewHolder{
 
         private TextView name, portfolio;
         private ImageView imageView;
 
-        public TeamHolder(View view){
+        TeamHolder(View view){
             super(view);
 
             name = itemView.findViewById(R.id.name);

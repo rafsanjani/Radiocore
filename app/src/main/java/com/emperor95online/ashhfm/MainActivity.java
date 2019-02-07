@@ -1,9 +1,6 @@
 package com.emperor95online.ashhfm;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +12,7 @@ import android.view.MenuItem;
 
 import com.emperor95online.ashhfm.fragment.Home;
 import com.emperor95online.ashhfm.fragment.News;
+import com.emperor95online.ashhfm.fragment.Schedule;
 import com.emperor95online.ashhfm.fragment.Team;
 
 public class MainActivity extends AppCompatActivity
@@ -82,26 +80,32 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
 
             getSupportFragmentManager().beginTransaction()
-//                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.frame_layout, new Home())
                     .commit();
+            this.setTitle("ASHH FM ONLINE");
 
         } else if (id == R.id.nav_news) {
 
             getSupportFragmentManager().beginTransaction()
-//                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.frame_layout, new News())
                     .commit();
+            this.setTitle("ASHH FM NEWS");
 
         } else if (id == R.id.nav_program_schedule) {
-
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.frame_layout, new Schedule())
+                    .commit();
+            this.setTitle("ASHH FM SCHEDULE");
         } else if (id == R.id.nav_about_us) {
 
             getSupportFragmentManager().beginTransaction()
-//                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.frame_layout, new Team())
                     .commit();
-
+            this.setTitle("TEAM MEMBERS");
         } else if (id == R.id.nav_contact_us) {
 
         }
