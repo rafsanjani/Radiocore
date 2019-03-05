@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.emperor95online.ashhfm.GlideApp;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.pojo.NewsObject;
 import com.emperor95online.ashhfm.pojo.TeamObject;
@@ -51,8 +52,9 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
 //        newsHolder.imageView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-                Glide.with(context)
+                GlideApp.with(context)
                         .load(teamObject.getImage())
+                        .placeholder(R.drawable.one)
                         .into(newsHolder.imageView);
 //            }
 //        }, 2000);

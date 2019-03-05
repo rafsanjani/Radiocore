@@ -1,21 +1,29 @@
 package com.emperor95online.ashhfm;
 
 import android.animation.Animator;
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -23,8 +31,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.emperor95online.ashhfm.fragment.Home;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import static com.emperor95online.ashhfm.Constants.LOADING;
+import static com.emperor95online.ashhfm.Constants.MESSAGE;
+import static com.emperor95online.ashhfm.Constants.PAUSED;
+import static com.emperor95online.ashhfm.Constants.PLAYING;
+import static com.emperor95online.ashhfm.Constants.RESULT;
+import static com.emperor95online.ashhfm.Constants.STATUS_PAUSED;
+import static com.emperor95online.ashhfm.Constants.STATUS_PLAYING;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,11 +52,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageButton smallPlay, smallPause;
     private ImageButton play, pause;
-    private ImageButton collapseSheet, more_main;
+    private ImageButton collapseSheet;
     private ProgressBar smallProgressBar, progressBar;
 
     private TextView streamProgress, streamDuration;
     private AppCompatSeekBar seekBar;
+    private ImageView smallLogo;
+
+    private Toast toast;
+    private PrefManager prefManager;
 
     //
     private MediaPlayer mediaPlayer;
@@ -46,6 +68,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private int duration = 0;
     private int currentProgress = 0;
+    private String status = "";
+
+    //////////////////////////////////////////
+    BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +86,85 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(HomeActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
 
+        initViews();
+        prefManager = new PrefManager(HomeActivity.this);
+        if((isMyServiceRunning(NewService.class))){
+            // service is running ..
+            resolveStates();
+        }
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String s = intent.getStringExtra(MESSAGE);
+                // do something here.
+                status = s;
+                setupReceiver(s);
+            }
+        };
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, new Home())
+                .commit();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(RESULT)
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == smallPlay || v == play) {
+//            playStream(smallProgressBar, smallPlay, smallPause);
+            Intent intent = new Intent(HomeActivity.this, NewService.class);
+            intent.setAction("com.emperor95Online.ashhfm.PLAY");
+            startService(intent);
+        }
+//        if (v == play) {
+//            playStream(progressBar, play, pause);
+//        }
+        if (v == smallPause || v == pause) {
+//            pauseStream(smallPlay, smallPause);
+            Intent intent = new Intent(HomeActivity.this, NewService.class);
+            intent.setAction("com.emperor95Online.ashhfm.PAUSE");
+            startService(intent);
+        }
+//        if (v == pause) {
+//            pauseStream(play, pause);
+//        }
+        if (v == collapseSheet || v == smallLogo){
+            toggleBottomSheet();
+        }
+//        if (v == smallLogo) {
+//            toggleBottomSheet();
+//        }
+    }
+
+    private void initViews(){
         layoutBottomSheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
         bottomSheetCallback();
+
+        smallLogo = findViewById(R.id.smallLogo);
+        smallLogo.setOnClickListener(this);
 
         menuItems = findViewById(R.id.menuItems);
         items = findViewById(R.id.items);
@@ -71,7 +173,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         seekBar = findViewById(R.id.seekBar);
         streamProgress = findViewById(R.id.streamProgress);
         streamDuration = findViewById(R.id.streamDuration);
-        more_main = findViewById(R.id.more_main);
 
         smallPlay = findViewById(R.id.smallPlay);
         smallPause = findViewById(R.id.smallPause);
@@ -84,38 +185,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         pause.setOnClickListener(this);
         play.setOnClickListener(this);
         collapseSheet.setOnClickListener(this);
-        more_main.setOnClickListener(this);
 
         seekBar.setEnabled(false);
-
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mediaPlayer.release();
-        mediaPlayer = null;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == smallPlay) {
-            playStream(smallProgressBar, smallPlay, smallPause);
-        }
-        if (v == play) {
-            playStream(progressBar, play, pause);
-        }
-        if (v == smallPause) {
-            pauseStream(smallPlay, smallPause);
-        }
-        if (v == pause) {
-            pauseStream(play, pause);
-        }
-        if (v == collapseSheet){
-            toggleBottomSheet();
-        }
-        if (v == more_main) {
-            showPopupMenu(more_main);
+    private void resolveStates(){
+        if (TextUtils.equals(STATUS_PLAYING, prefManager.getStatus())) {
+            findViewById(R.id.smallPause).setVisibility(View.VISIBLE);
+            findViewById(R.id.smallPlay).setVisibility(View.GONE);
+            findViewById(R.id.pause).setVisibility(View.VISIBLE);
+            findViewById(R.id.play).setVisibility(View.GONE);
+        } else if (TextUtils.equals(STATUS_PAUSED, prefManager.getStatus())) {
+            findViewById(R.id.smallPause).setVisibility(View.GONE);
+            findViewById(R.id.smallPlay).setVisibility(View.VISIBLE);
+            findViewById(R.id.pause).setVisibility(View.GONE);
+            findViewById(R.id.play).setVisibility(View.VISIBLE);
         }
     }
 
@@ -162,6 +246,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+
     public void bottomSheetCallback(){
         /**
          * bottom sheet state change listener
@@ -201,17 +287,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                                     }
                                 });
-                        if (mediaPlayer.isPlaying()) {
-                            play.setVisibility(View.GONE);
-                            pause.setVisibility(View.VISIBLE);
-                        } else if (!mediaPlayer.isPlaying()) {
-                            play.setVisibility(View.VISIBLE);
-                            pause.setVisibility(View.GONE);
-                        }
-
 //                        if (mediaPlayer.isPlaying()) {
-//
+//                            play.setVisibility(View.GONE);
+//                            pause.setVisibility(View.VISIBLE);
+//                        } else if (!mediaPlayer.isPlaying()) {
+//                            play.setVisibility(View.VISIBLE);
+//                            pause.setVisibility(View.GONE);
 //                        }
+                        setupReceiver(status);
 
                     }
                     break;
@@ -242,14 +325,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                                     }
                                 });
-                        if (mediaPlayer.isPlaying()) {
-                            smallPlay.setVisibility(View.GONE);
-                            smallPause.setVisibility(View.VISIBLE);
-                        } else if (!mediaPlayer.isPlaying()) {
-                            smallPlay.setVisibility(View.VISIBLE);
-                            smallPause.setVisibility(View.GONE);
-                        }
-//                        Toast.makeText(HomeActivity.this, "Closed", Toast.LENGTH_SHORT).show();
+//                        if (mediaPlayer.isPlaying()) {
+//                            smallPlay.setVisibility(View.GONE);
+//                            smallPause.setVisibility(View.VISIBLE);
+//                        } else if (!mediaPlayer.isPlaying()) {
+//                            smallPlay.setVisibility(View.VISIBLE);
+//                            smallPause.setVisibility(View.GONE);
+//                        }
+                        setupReceiver(status);
                     }
                     break;
                     case BottomSheetBehavior.STATE_DRAGGING:
@@ -265,10 +348,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
-    /**
-     * manually opening / closing bottom sheet on button click
-     */
     public void toggleBottomSheet() {
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -276,27 +355,41 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
-    private void showPopupMenu(final View view){
-        // inflate menu
-        PopupMenu popupMenu = new PopupMenu(getApplicationContext(), view);
-        MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.main_popup, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                switch (item.getItemId()){
-                    case R.id.staff:
-                        return true;
-                    case R.id.about_station:
-                        return true;
-                    case R.id.privacy_policy:
-                        return true;
-                }
-
-                return false;
+    private boolean isMyServiceRunning(Class<?> serviceClass){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
+            if(serviceClass.getName().equals(service.service.getClassName())){
+                return true;
             }
-        });
-        popupMenu.show();
+        }
+        return false;
+    }
+    private void setupReceiver(String s){
+        if (TextUtils.equals(s, PLAYING)){
+            findViewById(R.id.smallPause).setVisibility(View.VISIBLE);
+            findViewById(R.id.smallPlay).setVisibility(View.GONE);
+
+            findViewById(R.id.pause).setVisibility(View.VISIBLE);
+            findViewById(R.id.play).setVisibility(View.GONE);
+
+            findViewById(R.id.smallProgressBar).setVisibility(View.GONE);
+            findViewById(R.id.progressBar).setVisibility(View.GONE);
+            toast.cancel();
+        }
+        else if (TextUtils.equals(s, PAUSED)){
+            findViewById(R.id.smallPause).setVisibility(View.GONE);
+            findViewById(R.id.smallPlay).setVisibility(View.VISIBLE);
+
+            findViewById(R.id.pause).setVisibility(View.GONE);
+            findViewById(R.id.play).setVisibility(View.VISIBLE);
+        }
+        else if (TextUtils.equals(s, LOADING)) {
+            findViewById(R.id.smallProgressBar).setVisibility(View.VISIBLE);
+
+            findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+            toast = Toast.makeText(HomeActivity.this, "Loading ...", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 }

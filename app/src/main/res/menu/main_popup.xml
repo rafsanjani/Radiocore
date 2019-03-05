@@ -8,6 +8,7 @@
         />
 
     <item
+        android:visible="false"
         android:id="@+id/privacy_policy"
         android:title="Privacy Policy"
         android:orderInCategory="102"
@@ -17,6 +18,7 @@
         android:id="@+id/about_station"
         android:title="About App"
         android:orderInCategory="101"
+        android:visible="false"
         />
 
 </menu>

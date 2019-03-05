@@ -45,7 +45,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final NewsHolder newsHolder, int i) {
-        NewsObject newsObject = list.get(i);
+        final NewsObject newsObject = list.get(i);
 
         newsHolder.headline.setText(newsObject.getHeadline());
         newsHolder.date.setText(newsObject.getDate());
@@ -53,7 +53,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 //            @Override
 //            public void run() {
                 Glide.with(context)
-                        .load(R.drawable.asht)
+                        .load(newsObject.getImage())
                         .into(newsHolder.imageView);
 //            }
 //        }, 2000);
@@ -61,7 +61,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, NewsDetail.class));
+                Intent intent = new Intent(context, NewsDetail.class);
+                intent.putExtra("title", newsObject.getHeadline());
+                intent.putExtra("content", newsObject.getContent());
+                intent.putExtra("image", newsObject.getImage());
+                intent.putExtra("date", newsObject.getDate());
+
+                context.startActivity(intent);
             }
         });
     }

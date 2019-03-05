@@ -6,6 +6,7 @@ public class NewsObject {
     private String headline;
     private String date;
     private String image;
+    private String content;
 
     public NewsObject() {
     }
@@ -14,6 +15,13 @@ public class NewsObject {
         this.headline = headline;
         this.date = date;
         this.image = image;
+    }
+
+    public NewsObject(String headline, String date, String image, String content) {
+        this.headline = headline;
+        this.date = date;
+        this.image = image;
+        this.content = content;
     }
 
     public String getHeadline() {
@@ -38,5 +46,13 @@ public class NewsObject {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
