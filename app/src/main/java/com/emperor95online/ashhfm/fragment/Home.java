@@ -74,8 +74,8 @@ public class Home extends Fragment implements View.OnClickListener {
 
         news = new ArrayList<>();
         images = new ArrayList<>();
-//        getData();
-        getImage();
+        getData();
+//        getImage();
 
         newsAdapter = new NewsAdapter(getActivity(), news);
         recyclerView.setAdapter(newsAdapter);
@@ -93,41 +93,40 @@ public class Home extends Fragment implements View.OnClickListener {
     }
 
     private void getData(){
-        // Instantiate the RequestQueue.
         if (getActivity() == null) {
             return;
         }
+
+        // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-//        final String url = "https://newsapi.org/v2/everything?" +
-//                "q=Ghana&" +
-//                "from=2019-03-04&" +
-//                "sortBy=popularity&" +
-//                "apiKey=3146247b8179456995f1499b15587f69";
+//        String url = "http://www.ghananewsonline.com.gh/wp-json/wp/v2/posts?_embed&categories=13";
+//        String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=29";
+        String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
 
-//        String url = "http://www.ghananewsonline.com.gh/wp-json/wp/v2/posts";
-        String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts";
-
-// Request a string response from the provided URL.
+        // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try{
                             JSONArray jaa = new JSONArray(response);
-                            for (int i = 0; i < images.size(); i++){
+                            for (int i = 0; i < jaa.length(); i++){
                                 JSONObject jsonObject = jaa.getJSONObject(i);
-//                                String title = jsonObject.getString("title");
-//                                String image = jsonObject.getString("urlToImage");
-//                                String date = jsonObject.getString("publishedAt");
                                 String title = jsonObject.getJSONObject("title").getString("rendered");
                                 String content = jsonObject.getJSONObject("content").getString("rendered");
-//                                String image = jsonObject.getJSONObject("embedded")
-//                                        .getJSONObject("wp:featuredmedia")
-//                                        .getJSONObject("0").getString("source_url");
+
+//                                String image = "https://pbs.twimg.com/profile_images/425274582581264384/X3QXBN8C.jpeg";
+                                String image = "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
+
+                                if (!jsonObject.getJSONObject("_embedded").isNull("wp:featuredmedia")) {
+                                    image = jsonObject.getJSONObject("_embedded")
+                                            .getJSONArray("wp:featuredmedia").getJSONObject(0)
+                                            .getString("source_url");
+                                }
                                 String date = jsonObject.getString("date");
 
-                                news.add(new NewsObject(title, date.substring(0, date.indexOf("T")), images.get(i), content));
+                                news.add(new NewsObject(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
                                 newsAdapter.notifyDataSetChanged();
 
 //                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -140,7 +139,7 @@ public class Home extends Fragment implements View.OnClickListener {
 //                            Toast.makeText(getActivity(), "Posts: " + Integer.toString(jaa.length()) , Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                         }catch (JSONException e){
-                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "JSON Exception" , Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -150,53 +149,7 @@ public class Home extends Fragment implements View.OnClickListener {
             }
         });
 
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-    }
-    private void getImage(){
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-
-//        final String url = "https://newsapi.org/v2/everything?" +
-//                "q=Ghana&" +
-//                "from=2019-03-04&" +
-//                "sortBy=popularity&" +
-//                "apiKey=3146247b8179456995f1499b15587f69";
-
-//        String url = "http://www.ghananewsonline.com.gh/wp-json/wp/v2/media";
-        String url = "https://www.newsghana.com.gh/wp-json/wp/v2/media";
-
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try{
-                            JSONArray ja = new JSONArray(response);
-                            for (int i = 0; i < ja.length(); i++){
-                                JSONObject jsonObject = ja.getJSONObject(i);
-                                String image = jsonObject.getJSONObject("guid").getString("rendered");
-
-//                                news.add(new NewsObject("", "", image));
-//                                newsAdapter.notifyDataSetChanged();
-
-                                images.add(image);
-                            }
-                            getData();
-//                            Toast.makeText(getActivity(), "Media: " + Integer.toString(ja.length()) , Toast.LENGTH_SHORT).show();
-                        }catch (JSONException e){
-                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "image Network error ...", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
     }
