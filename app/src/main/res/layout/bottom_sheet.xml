@@ -1,242 +1,266 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/bottom_sheet"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#008577"
-    app:behavior_hideable="true"
+    android:background="@color/colorPrimary"
     android:clickable="true"
     android:focusable="true"
-    app:behavior_peekHeight="50dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:minHeight="65dp"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="65dp"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    tools:context=".HomeActivity">
 
     <FrameLayout
         android:id="@+id/frame"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:visibility="gone"
-            android:id="@+id/menuItems"
+        <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/bottomsheet_menu_items"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:visibility="visible">
 
             <ImageButton
-                android:padding="10dp"
-                android:id="@+id/collapseSheet"
+                android:id="@+id/bottomsheet_menu_collapse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_down"
-                android:background="?selectableItemBackgroundBorderless"/>
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:cropToPadding="true"
+                android:focusable="true"
+                android:onClick="onClickMenuCollapse"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_arrow_up" />
 
             <ImageButton
-                android:padding="10dp"
                 android:id="@+id/more"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_more"
-                android:background="?selectableItemBackgroundBorderless"/>
+                android:layout_alignParentRight="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:onClick="onClickBottomSheetMore"
+                android:padding="10dp"
+                android:src="@drawable/ic_more" />
 
             <ImageButton
-                android:padding="10dp"
                 android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_share"
-                android:background="?selectableItemBackgroundBorderless"/>
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_share" />
 
             <ImageButton
-                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_download"
-                android:background="?selectableItemBackgroundBorderless"/>
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_download" />
 
         </RelativeLayout>
-        <LinearLayout
-            android:visibility="visible"
-            android:id="@+id/items"
-            android:padding="5dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
+        <!--give it a background color as the same color of the sheet
+        so that it will opaquely overlay the menuItems which will
+        be displayed through an alpha transition-->
+        <LinearLayout
+            android:id="@+id/bottomsheet_playback_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="visible"
+            tools:visibility="visible">
+            <!--Stack small logo and loading progress in this frame-->
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp">
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:onClick="onLogoFrameClicked">
 
                 <ImageView
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?selectableItemBackgroundBorderless"
                     android:id="@+id/smallLogo"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ash"/>
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:onClick="onLogoFrameClicked"
+                    android:src="@drawable/ash" />
 
                 <ProgressBar
-                    android:visibility="gone"
                     android:id="@+id/smallProgressBar"
                     style="?android:attr/progressBarStyle"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"/>
-
-            </FrameLayout>
-
-            <ImageButton
-                android:layout_gravity="center_vertical"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_back_two"
-                android:background="?selectableItemBackgroundBorderless"/>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical">
-
-                <ImageButton
-                    android:id="@+id/smallPlay"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@drawable/ic_play_two"
-                    android:background="?selectableItemBackgroundBorderless"/>
-
-                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:visibility="gone"
-                    android:id="@+id/smallPause"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@drawable/ic_pause_two"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    tools:visibility="visible" />
 
             </FrameLayout>
 
             <ImageButton
-                android:layout_gravity="center_vertical"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/ic_next_two"
-                android:background="?selectableItemBackgroundBorderless"/>
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back_two" />
+
+            <!--<FrameLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical">-->
+
+            <ImageButton
+                android:id="@+id/smallPlay"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:cropToPadding="true"
+                android:maxWidth="30dp"
+                android:maxHeight="30dp"
+                android:scaleType="center"
+                android:src="@drawable/avd_play_pause_small" />
+
+            <!--<ImageButton-->
+            <!--android:id="@+id/smallPause"-->
+            <!--android:layout_width="35dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_marginLeft="20dp"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:background="?selectableItemBackgroundBorderless"-->
+            <!--android:src="@drawable/ic_pause_two"-->
+            <!--android:visibility="gone" />-->
+
+            <!--</FrameLayout>-->
+
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_next_two" />
 
             <TextView
-                android:paddingRight="10dp"
-                android:layout_gravity="center_vertical"
-                android:textSize="17sp"
-                android:layout_marginLeft="10dp"
-                android:gravity="end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:ellipsize="marquee"
-                android:text="LIVE"
+                android:gravity="end"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:text="Live"
                 android:textColor="@color/white"
-                android:singleLine="true"/>
-
+                android:textSize="17sp" />
         </LinearLayout>
 
     </FrameLayout>
+
     <LinearLayout
         android:id="@+id/line"
-        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
 
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/CustomViews"/>
+            android:theme="@style/CustomViews" />
 
         <RelativeLayout
-            android:paddingLeft="10dp"
-            android:paddingRight="15dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="15dp">
 
             <TextView
                 android:id="@+id/streamProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/streamDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/white"/>
+                android:text="00:00"
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp">
 
             <LinearLayout
-                android:layout_centerHorizontal="true"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_back"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    android:layout_gravity="center_vertical"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_back" />
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageButton
-                        android:id="@+id/play"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_play"
-                        android:background="?selectableItemBackgroundBorderless"/>
-
-                    <ImageButton
-                        android:visibility="gone"
-                        android:id="@+id/pause"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_pause"
-                        android:background="?selectableItemBackgroundBorderless"/>
-
-                </FrameLayout>
+                <!--<FrameLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content">-->
 
                 <ImageButton
-                    android:layout_gravity="center_vertical"
+                    android:id="@+id/mediacontrol_play"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_next"
-                    android:background="?selectableItemBackgroundBorderless"/>
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="3dp"
+                    android:adjustViewBounds="true"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/avd_play_pause" />
+
+                <!--<ImageButton-->
+                <!--android:id="@+id/pause"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:background="?selectableItemBackgroundBorderless"-->
+                <!--android:src="@drawable/ic_pause"-->
+                <!--android:visibility="gone" />-->
+
+                <!--</FrameLayout>-->
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_next" />
 
             </LinearLayout>
 
@@ -246,35 +270,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
             android:text="LIVE"
             android:textColor="@color/white"
-            android:gravity="center_horizontal"
-            android:textSize="25sp"
-            android:singleLine="true"/>
+            android:textSize="25sp" />
 
     </LinearLayout>
 
-    <FrameLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/line"
         android:layout_below="@id/frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ash"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:src="@drawable/ash" />
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            tools:visibility="visible" />
 
-    </FrameLayout>
+    </LinearLayout>
 
 </RelativeLayout>

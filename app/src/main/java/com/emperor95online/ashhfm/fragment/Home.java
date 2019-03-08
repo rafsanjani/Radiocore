@@ -1,18 +1,9 @@
 package com.emperor95online.ashhfm.fragment;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,16 +20,24 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.emperor95online.ashhfm.NewsDetail;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.adapter.NewsAdapter;
-import com.emperor95online.ashhfm.pojo.NewsObject;
+import com.emperor95online.ashhfm.pojo.News;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 
 // Created by Emperor95 on 1/13/2019.
@@ -50,7 +49,7 @@ public class Home extends Fragment implements View.OnClickListener {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
 
-    private ArrayList<NewsObject> news;
+    private ArrayList<News> newsList;
     private ArrayList<String> images;
     private NewsAdapter newsAdapter;
 
@@ -58,6 +57,9 @@ public class Home extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        newsList = new ArrayList<>();
+        images = new ArrayList<>();
 
         imBtn = view.findViewById(R.id.imBtn);
         more_main = view.findViewById(R.id.more_main);
@@ -67,18 +69,49 @@ public class Home extends Fragment implements View.OnClickListener {
         layoutManager.setOrientation(RecyclerView.VERTICAL);
 //
         recyclerView = view.findViewById(R.id.recyclerView);
+
+
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         progressBar = view.findViewById(R.id.progressBar2);
+        newsAdapter = new NewsAdapter(getActivity(), newsList);
+        ScaleInAnimationAdapter adapter = new ScaleInAnimationAdapter(newsAdapter);
+        adapter.setDuration(500);
+        recyclerView.setAdapter(adapter);
 
-        news = new ArrayList<>();
-        images = new ArrayList<>();
+
         getData();
-//        getImage();
 
-        newsAdapter = new NewsAdapter(getActivity(), news);
-        recyclerView.setAdapter(newsAdapter);
+        //todo: make activity the activity implement this interface to keep oncreate clean enough
+        newsAdapter.setOnNewsItemClickListener(new NewsAdapter.NewsItemClickListener() {
+            @Override
+            public void onNewItemClicked(News newsObject, Pair[] pairs, int position) {
+                NewsAdapter.NewsHolder newsHolder = (NewsAdapter.NewsHolder) recyclerView.findViewHolderForAdapterPosition(position);
+
+                String[] transitionNames = new String[]{
+                        ViewCompat.getTransitionName(newsHolder.getImageImageView()),// newsHolder.getHeadlineTextView().getTransitionName(),
+                        ViewCompat.getTransitionName(newsHolder.getHeadlineTextView())
+                };
+
+                Intent intent = new Intent(getContext(), NewsDetail.class);
+                intent.putExtra("title", newsObject.getHeadline());
+                intent.putExtra("content", newsObject.getContent());
+                intent.putExtra("image", newsObject.getImage());
+                intent.putExtra("date", newsObject.getDate());
+
+                //also pass this for shared element transition
+                intent.putExtra("transitions", transitionNames);
+
+                ActivityOptions activityOptions = null;
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                            pairs);
+                }
+
+                startActivity(intent, activityOptions.toBundle());
+            }
+        });
 
         return view;
     }
@@ -86,13 +119,15 @@ public class Home extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.more_main :
+            case R.id.more_main:
                 showPopupMenu(imBtn);
                 break;
         }
     }
 
-    private void getData(){
+    //todo: Rename this method and push it into a new file
+    private void getData() {
+        //final List<News> newsList = new ArrayList<>();
         if (getActivity() == null) {
             return;
         }
@@ -109,9 +144,9 @@ public class Home extends Fragment implements View.OnClickListener {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try{
+                        try {
                             JSONArray jaa = new JSONArray(response);
-                            for (int i = 0; i < jaa.length(); i++){
+                            for (int i = 0; i < jaa.length(); i++) {
                                 JSONObject jsonObject = jaa.getJSONObject(i);
                                 String title = jsonObject.getJSONObject("title").getString("rendered");
                                 String content = jsonObject.getJSONObject("content").getString("rendered");
@@ -126,8 +161,9 @@ public class Home extends Fragment implements View.OnClickListener {
                                 }
                                 String date = jsonObject.getString("date");
 
-                                news.add(new NewsObject(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
-                                newsAdapter.notifyDataSetChanged();
+                                newsList.add(new News(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
+                                //newsAdapter.notifyDataSetChanged();
+                                // newsAdapter.notifyItemInserted(newsAdapter.getItemCount() + 1);
 
 //                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 //                                ClipData clip = ClipData.newPlainText("SBC", response);
@@ -136,16 +172,18 @@ public class Home extends Fragment implements View.OnClickListener {
 
 //                                break;
                             }
+                            newsAdapter.notifyItemRangeChanged(0, newsList.size());
+
 //                            Toast.makeText(getActivity(), "Posts: " + Integer.toString(jaa.length()) , Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
-                        }catch (JSONException e){
-                            Toast.makeText(getActivity(), "JSON Exception" , Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "JSON Exception", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), ""+error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "" + error, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -153,7 +191,8 @@ public class Home extends Fragment implements View.OnClickListener {
         queue.add(stringRequest);
 
     }
-    private void showPopupMenu(final View view){
+
+    private void showPopupMenu(final View view) {
         // inflate menu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
@@ -162,7 +201,7 @@ public class Home extends Fragment implements View.OnClickListener {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.staff:
                         if (getActivity() != null) {
                             getActivity()

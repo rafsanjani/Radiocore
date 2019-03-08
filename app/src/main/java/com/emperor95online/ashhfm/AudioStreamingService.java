@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import java.io.IOException;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.emperor95online.ashhfm.Constants.ACTION_PAUSE;
 import static com.emperor95online.ashhfm.Constants.ACTION_PLAY;
@@ -18,11 +18,12 @@ import static com.emperor95online.ashhfm.Constants.PAUSED;
 import static com.emperor95online.ashhfm.Constants.PLAYING;
 import static com.emperor95online.ashhfm.Constants.RESULT;
 import static com.emperor95online.ashhfm.Constants.STATUS_DESTROYED;
-import static com.emperor95online.ashhfm.Constants.STATUS_LOADING;
 import static com.emperor95online.ashhfm.Constants.STATUS_PAUSED;
-import static com.emperor95online.ashhfm.Constants.STATUS_PLAYING;
 
-public class NewService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+/***
+ * Handle Audio playback
+ */
+public class AudioStreamingService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
     LocalBroadcastManager broadcastManager;
 
@@ -31,7 +32,7 @@ public class NewService extends Service implements MediaPlayer.OnPreparedListene
 
     private PrefManager prefManager;
 
-    public NewService() {
+    public AudioStreamingService() {
     }
 
     @Override
@@ -44,14 +45,14 @@ public class NewService extends Service implements MediaPlayer.OnPreparedListene
     public void onCreate() {
         super.onCreate();
 
-        prefManager = new PrefManager(NewService.this);
+        prefManager = new PrefManager(AudioStreamingService.this);
         broadcastManager = LocalBroadcastManager.getInstance(this);
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try{
+        try {
             mediaPlayer.setDataSource(audioStreamUrl);
-        }catch (IOException e){
+        } catch (IOException e) {
 
         }
         mediaPlayer.setOnPreparedListener(this);
@@ -62,12 +63,13 @@ public class NewService extends Service implements MediaPlayer.OnPreparedListene
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(ACTION_PLAY)) {
             mediaPlayer.prepareAsync(); // prepare async to not block main thread
-            prefManager.setStatus(STATUS_LOADING);
-            sendResult(LOADING);
+            prefManager.setStatus(LOADING);
+            sendResult(AudioStreamingState.STATUS_LOADING);
         } else if (intent.getAction().equals(ACTION_PAUSE)) {
             mediaPlayer.stop();
+            prefManager.setStatus(PAUSED);
             prefManager.setStatus(STATUS_PAUSED);
-            sendResult(PAUSED);
+            sendResult(AudioStreamingState.STATUS_PAUSED);
         }
 
         return START_STICKY;
@@ -76,21 +78,22 @@ public class NewService extends Service implements MediaPlayer.OnPreparedListene
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null){
+        if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-
             prefManager.setStatus(STATUS_DESTROYED);
         }
     }
 
 
-    /** Called when MediaPlayer is ready */
+    /**
+     * Called when MediaPlayer is ready
+     */
     public void onPrepared(MediaPlayer player) {
         player.start();
         if (player.isPlaying()) {
-            sendResult(PLAYING);
-            prefManager.setStatus(STATUS_PLAYING);
+            sendResult(AudioStreamingState.STATUS_PLAYING);
+            prefManager.setStatus(PLAYING);
         }
     }
 
@@ -101,11 +104,19 @@ public class NewService extends Service implements MediaPlayer.OnPreparedListene
         return true;
     }
 
-    public void sendResult(String message) {
+    public void sendResult(AudioStreamingState message) {
         Intent intent = new Intent(RESULT);
-        if(message != null)
-            intent.putExtra(MESSAGE, message);
+        if (message != null)
+            //Perform backwards convertion to AudioStreamingState in it's receivers
+            intent.putExtra(MESSAGE, message.toString());
 
         broadcastManager.sendBroadcast(intent);
+    }
+
+    public enum AudioStreamingState {
+        STATUS_PLAYING,
+        STATUS_PAUSED,
+        STATUS_LOADING,
+        STATUS_DESTROYED
     }
 }

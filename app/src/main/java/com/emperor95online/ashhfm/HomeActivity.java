@@ -1,112 +1,107 @@
 package com.emperor95online.ashhfm;
 
-import android.animation.Animator;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioManager;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatSeekBar;
-import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.emperor95online.ashhfm.AudioStreamingService.AudioStreamingState;
 import com.emperor95online.ashhfm.fragment.Home;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.emperor95online.ashhfm.Constants.LOADING;
+import static com.emperor95online.ashhfm.Constants.ACTION_PAUSE;
+import static com.emperor95online.ashhfm.Constants.ACTION_PLAY;
+import static com.emperor95online.ashhfm.Constants.DEBUG_TAG;
 import static com.emperor95online.ashhfm.Constants.MESSAGE;
-import static com.emperor95online.ashhfm.Constants.PAUSED;
-import static com.emperor95online.ashhfm.Constants.PLAYING;
 import static com.emperor95online.ashhfm.Constants.RESULT;
-import static com.emperor95online.ashhfm.Constants.STATUS_PAUSED;
-import static com.emperor95online.ashhfm.Constants.STATUS_PLAYING;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private RelativeLayout layoutBottomSheet, menuItems;
-    private LinearLayout items;
+    private final String audioStreamUrl = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    BroadcastReceiver receiver;
+    //let's assume nothing is playing when application starts
+    AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_PAUSED;
+
+    private RelativeLayout layoutBottomSheet, bottomSheetMenuItems;
+    private LinearLayout bottomSheetPlaybackItems;
     private BottomSheetBehavior sheetBehavior;
-
-    private ImageButton smallPlay, smallPause;
+    private ImageButton smallPlay;// smallPause;
     private ImageButton play, pause;
-    private ImageButton collapseSheet;
+    private ImageButton bottomSheetMenuCollapse;
     private ProgressBar smallProgressBar, progressBar;
-
     private TextView streamProgress, streamDuration;
     private AppCompatSeekBar seekBar;
     private ImageView smallLogo;
-
     private Toast toast;
     private PrefManager prefManager;
-
     //
     private MediaPlayer mediaPlayer;
-    private final String audioStreamUrl = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
-
     private int duration = 0;
     private int currentProgress = 0;
     private String status = "";
-
-    //////////////////////////////////////////
-    BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try{
-            mediaPlayer.setDataSource(audioStreamUrl);
-        }catch (IOException e){
-            Toast.makeText(HomeActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
-
         initViews();
-        prefManager = new PrefManager(HomeActivity.this);
-        if((isMyServiceRunning(NewService.class))){
-            // service is running ..
-            resolveStates();
-        }
+        initializeBottomSheetCallback();
+        setUpInitPlayerState();
+        setUpAudioStreamingServiceReceiver();
 
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String s = intent.getStringExtra(MESSAGE);
-                // do something here.
-                status = s;
-                setupReceiver(s);
-            }
-        };
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, new Home())
                 .commit();
+    }
 
+    /**
+     * Listen for broadcast events from the Audio Streaming Service and use the information to
+     * resolve the player state accordingly
+     */
+    private void setUpAudioStreamingServiceReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String receivedState = intent.getStringExtra(MESSAGE);
+                audioStreamingState = AudioStreamingService.AudioStreamingState.valueOf(receivedState);
+                onAudioStreamingStateReceived(audioStreamingState);
+            }
+        };
+    }
+
+    private void setUpInitPlayerState() {
+        //Check if AudioStreamingService is running and change the AudioStreamingState accordingly
+        //Note: We Initially set it to Pause, assuming that noting is playing when we first run
+        prefManager = new PrefManager(HomeActivity.this);
+        if ((isMyServiceRunning(AudioStreamingService.class))) {
+            audioStreamingState = AudioStreamingState.valueOf(prefManager.getStatus());
+            //we only care about this if it's playing, yeah no one cares if you are dumb :) :) :)
+            //TODO: Fix an ugly IllegalArgumentException thrown when the statement is unwrapped int the condition
+            if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
+                onAudioStreamingStateReceived(audioStreamingState);
+        }
     }
 
     @Override
@@ -126,48 +121,48 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mediaPlayer.release();
-        mediaPlayer = null;
     }
 
     @Override
     public void onClick(View v) {
-        if (v == smallPlay || v == play) {
-//            playStream(smallProgressBar, smallPlay, smallPause);
-            Intent intent = new Intent(HomeActivity.this, NewService.class);
-            intent.setAction("com.emperor95Online.ashhfm.PLAY");
-            startService(intent);
+        if (v == smallPlay || v == play) { //one button to handle both states
+            if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
+                Intent intent = new Intent(HomeActivity.this, AudioStreamingService.class);
+                intent.setAction(ACTION_PAUSE);
+                startService(intent);
+            } else if (audioStreamingState == AudioStreamingState.STATUS_PAUSED) {
+                Intent intent = new Intent(HomeActivity.this, AudioStreamingService.class);
+                intent.setAction(ACTION_PLAY);
+                startService(intent);
+            }
         }
-//        if (v == play) {
-//            playStream(progressBar, play, pause);
-//        }
-        if (v == smallPause || v == pause) {
-//            pauseStream(smallPlay, smallPause);
-            Intent intent = new Intent(HomeActivity.this, NewService.class);
-            intent.setAction("com.emperor95Online.ashhfm.PAUSE");
-            startService(intent);
-        }
-//        if (v == pause) {
-//            pauseStream(play, pause);
-//        }
-        if (v == collapseSheet || v == smallLogo){
-            toggleBottomSheet();
-        }
-//        if (v == smallLogo) {
-//            toggleBottomSheet();
-//        }
     }
 
-    private void initViews(){
+    /**
+     * Morph a target Button's image property from it's present one to the drawable specified by toDrawable
+     *
+     * @param target
+     * @param toDrawable
+     */
+    private void animateButtonDrawable(ImageButton target, Drawable toDrawable) {
+        target.setImageDrawable(toDrawable);
+        final Animatable animatable = (Animatable) target.getDrawable();
+        animatable.start();
+    }
+
+    /**
+     * Initialize all views by before findViewById or @Bind when using ButterKnife
+     * Note: All view Initializing must be performed in this module
+     */
+    private void initViews() {
         layoutBottomSheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-        bottomSheetCallback();
 
         smallLogo = findViewById(R.id.smallLogo);
         smallLogo.setOnClickListener(this);
 
-        menuItems = findViewById(R.id.menuItems);
-        items = findViewById(R.id.items);
+        bottomSheetMenuItems = findViewById(R.id.bottomsheet_menu_items);
+        bottomSheetPlaybackItems = findViewById(R.id.bottomsheet_playback_items);
         smallProgressBar = findViewById(R.id.smallProgressBar);
         progressBar = findViewById(R.id.progressBar);
         seekBar = findViewById(R.id.seekBar);
@@ -175,179 +170,66 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         streamDuration = findViewById(R.id.streamDuration);
 
         smallPlay = findViewById(R.id.smallPlay);
-        smallPause = findViewById(R.id.smallPause);
-        pause = findViewById(R.id.pause);
-        play = findViewById(R.id.play);
-        collapseSheet = findViewById(R.id.collapseSheet);
+
+        play = findViewById(R.id.mediacontrol_play);
+
+        bottomSheetMenuCollapse = findViewById(R.id.bottomsheet_menu_collapse);
+
 
         smallPlay.setOnClickListener(this);
-        smallPause.setOnClickListener(this);
-        pause.setOnClickListener(this);
+
         play.setOnClickListener(this);
-        collapseSheet.setOnClickListener(this);
 
         seekBar.setEnabled(false);
     }
 
-    private void resolveStates(){
-        if (TextUtils.equals(STATUS_PLAYING, prefManager.getStatus())) {
-            findViewById(R.id.smallPause).setVisibility(View.VISIBLE);
-            findViewById(R.id.smallPlay).setVisibility(View.GONE);
-            findViewById(R.id.pause).setVisibility(View.VISIBLE);
-            findViewById(R.id.play).setVisibility(View.GONE);
-        } else if (TextUtils.equals(STATUS_PAUSED, prefManager.getStatus())) {
-            findViewById(R.id.smallPause).setVisibility(View.GONE);
-            findViewById(R.id.smallPlay).setVisibility(View.VISIBLE);
-            findViewById(R.id.pause).setVisibility(View.GONE);
-            findViewById(R.id.play).setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void pauseStream(ImageButton play, ImageButton pause){
-        mediaPlayer.stop();
-        play.setVisibility(View.VISIBLE);
-        pause.setVisibility(View.GONE);
-    }
-    public void playStream(final ProgressBar progressBar, final ImageButton play, final ImageButton pause){
-        final Toast toast = Toast.makeText(HomeActivity.this, "Loading ...", Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-
-        progressBar.setVisibility(View.VISIBLE);
-        mediaPlayer.prepareAsync();
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                toast.cancel();
-                progressBar.setVisibility(View.GONE);
-                pause.setVisibility(View.VISIBLE);
-                play.setVisibility(View.GONE);
-                mediaPlayer.start();
-
-                duration = mediaPlayer.getDuration();
-                currentProgress = mediaPlayer.getCurrentPosition();
-
-                streamProgress.setText(String.format("%d:%d",
-                        TimeUnit.MILLISECONDS.toMinutes((long) currentProgress),
-                        TimeUnit.MILLISECONDS.toSeconds((long) currentProgress) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)
-                                        currentProgress))));
-
-                streamDuration.setText(String.format("%d:%d",
-                        TimeUnit.MILLISECONDS.toMinutes((long) duration),
-                        TimeUnit.MILLISECONDS.toSeconds((long) duration) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long)
-                                        duration))));
-
-                seekBar.setMax(duration);
-                seekBar.setProgress(currentProgress);
-            }
-        });
-
-    }
-
-
-
-    public void bottomSheetCallback(){
-        /**
-         * bottom sheet state change listener
-         * we are changing button text when sheet changed state
-         * */
+    /**
+     * bottom sheet state change listener
+     * We are transitioning between collapsed and settled states, well that is what we are interested in, isn't it?
+     */
+    public void initializeBottomSheetCallback() {
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-//                        Toast.makeText(HomeActivity.this, "Hidden", Toast.LENGTH_SHORT).show();
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        items.animate()
-                                .translationY(items.getHeight())
-//                                .alpha(0.0f)
-                                .setDuration(300)
-                                .setListener(new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        menuItems.setVisibility(View.VISIBLE);
-                                        items.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animator animation) {
-
-                                    }
-                                });
-//                        if (mediaPlayer.isPlaying()) {
-//                            play.setVisibility(View.GONE);
-//                            pause.setVisibility(View.VISIBLE);
-//                        } else if (!mediaPlayer.isPlaying()) {
-//                            play.setVisibility(View.VISIBLE);
-//                            pause.setVisibility(View.GONE);
-//                        }
-                        setupReceiver(status);
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        items.animate()
-                                .translationY(0)
-//                                .alpha(1.0f)
-                                .setDuration(300)
-                                .setListener(new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        menuItems.setVisibility(View.GONE);
-                                        items.setVisibility(View.VISIBLE);
-                                    }
-
-                                    @Override
-                                    public void onAnimationCancel(Animator animation) {
-
-                                    }
-
-                                    @Override
-                                    public void onAnimationRepeat(Animator animation) {
-
-                                    }
-                                });
-//                        if (mediaPlayer.isPlaying()) {
-//                            smallPlay.setVisibility(View.GONE);
-//                            smallPause.setVisibility(View.VISIBLE);
-//                        } else if (!mediaPlayer.isPlaying()) {
-//                            smallPlay.setVisibility(View.VISIBLE);
-//                            smallPause.setVisibility(View.GONE);
-//                        }
-                        setupReceiver(status);
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
+//                switch (newState) {
+//
+//                }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                performAlphaTransition(slideOffset);
+                rotateCollapseButton(slideOffset);
 
             }
         });
     }
+
+    /**
+     * rotate the collapse button clockwise when collapsing and counter-clockwise when expanding
+     *
+     * @param slideOffset
+     */
+    private void rotateCollapseButton(float slideOffset) {
+        float rotationAngle = slideOffset * -180;
+        bottomSheetMenuCollapse.setRotation(rotationAngle);
+        System.out.println("Angle: " + rotationAngle);
+    }
+
+    /**
+     * Alpha 0 is transparent whilst 1 is visible so let's reverse the offset value obtained
+     * with some basic math for the peek items while maintaining the original value for the sheet menu items
+     * so that they crossfade
+     **/
+    private void performAlphaTransition(float slideOffset) {
+        float alpha = 1 - slideOffset;
+        bottomSheetPlaybackItems.setAlpha(alpha);
+        bottomSheetMenuItems.setAlpha(slideOffset);
+    }
+
+    /**
+     * Expand or collapse the bottom sheet based on it's current state
+     */
     public void toggleBottomSheet() {
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -355,41 +237,64 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
-    private boolean isMyServiceRunning(Class<?> serviceClass){
+
+    /**
+     * Check if MediaPlayerService is running in the background, usually performed at first run
+     * If it's running, we resolve the media player states accordingly
+     *
+     * @param serviceClass
+     * @return
+     */
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-            if(serviceClass.getName().equals(service.service.getClassName())){
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
         return false;
     }
-    private void setupReceiver(String s){
-        if (TextUtils.equals(s, PLAYING)){
-            findViewById(R.id.smallPause).setVisibility(View.VISIBLE);
-            findViewById(R.id.smallPlay).setVisibility(View.GONE);
 
-            findViewById(R.id.pause).setVisibility(View.VISIBLE);
-            findViewById(R.id.play).setVisibility(View.GONE);
-
-            findViewById(R.id.smallProgressBar).setVisibility(View.GONE);
-            findViewById(R.id.progressBar).setVisibility(View.GONE);
-            toast.cancel();
+    /**
+     * Called when a broadcast is received from the AudioStreamingService so that the
+     * UI can be resolved accordingly to corresponding with the states
+     *
+     * @param streamingState The state of the Streaming Service (STATUS_PAUSED, STATUS_PLAYING ETC)
+     */
+    private void onAudioStreamingStateReceived(AudioStreamingState streamingState) {
+        switch (streamingState) {
+            //we are only interested in PLAYING and PAUSED/STOPPED states
+            case STATUS_PLAYING:
+                Log.i(DEBUG_TAG, "Media is Playing");
+                findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+                smallProgressBar.setVisibility(View.INVISIBLE);
+                animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
+                animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
+                break;
+            case STATUS_PAUSED:
+                Log.i(DEBUG_TAG, "Media is Paused");
+                animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
+                animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
+                break;
+            case STATUS_LOADING:
+                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                smallProgressBar.setVisibility(View.VISIBLE);
+                break;
         }
-        else if (TextUtils.equals(s, PAUSED)){
-            findViewById(R.id.smallPause).setVisibility(View.GONE);
-            findViewById(R.id.smallPlay).setVisibility(View.VISIBLE);
+    }
 
-            findViewById(R.id.pause).setVisibility(View.GONE);
-            findViewById(R.id.play).setVisibility(View.VISIBLE);
-        }
-        else if (TextUtils.equals(s, LOADING)) {
-            findViewById(R.id.smallProgressBar).setVisibility(View.VISIBLE);
+    public void onClickBottomSheetMore(View view) {
+        toggleBottomSheet();
+    }
 
-            findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-            toast = Toast.makeText(HomeActivity.this, "Loading ...", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        }
+    //TODO: These two methods below do not work. Clicking the arrow button does nothing in this current implementation
+    //TODO: Trying to handle this in the general OnclickEventHandler doesn't seem to work. Fix it later.
+    public void onClickMenuCollapse(View view) {
+        toggleBottomSheet();
+    }
+
+    //TODO: Remove this ugly logic and replace it with a call to onMenuCollapse
+    public void onLogoFrameClicked(View view) {
+        toggleBottomSheet();
     }
 }

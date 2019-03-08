@@ -3,28 +3,30 @@ package com.emperor95online.ashhfm.adapter;
 // Created by Emperor95 on 1/13/2019.
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.emperor95online.ashhfm.GlideApp;
 import com.emperor95online.ashhfm.R;
-import com.emperor95online.ashhfm.pojo.NewsObject;
 import com.emperor95online.ashhfm.pojo.TeamObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+//import com.emperor95online.ashhfm.GlideApp;
+//import com.bumptech.glide.Glide;
 
 public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
 
     private Context context;
     private List<TeamObject> list;
 
-    public TeamAdapter(Context context, List<TeamObject> list){
+    public TeamAdapter(Context context, List<TeamObject> list) {
         this.context = context;
         this.list = list;
     }
@@ -52,10 +54,10 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
 //        newsHolder.imageView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-                GlideApp.with(context)
-                        .load(teamObject.getImage())
-                        .placeholder(R.drawable.one)
-                        .into(newsHolder.imageView);
+        Picasso.with(context)
+                .load(teamObject.getImage())
+                .placeholder(R.drawable.one)
+                .into(newsHolder.imageView);
 //            }
 //        }, 2000);
 
@@ -63,14 +65,13 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
     }
 
     ////
-    class TeamHolder extends RecyclerView.ViewHolder{
+    class TeamHolder extends RecyclerView.ViewHolder {
 
         private TextView name, portfolio;
         private ImageView imageView;
 
-        TeamHolder(View view){
+        TeamHolder(View view) {
             super(view);
-
             name = itemView.findViewById(R.id.name);
             portfolio = itemView.findViewById(R.id.portfolio);
             imageView = itemView.findViewById(R.id.image);

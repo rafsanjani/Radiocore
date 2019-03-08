@@ -3,35 +3,39 @@ package com.emperor95online.ashhfm.adapter;
 // Created by Emperor95 on 1/13/2019.
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.emperor95online.ashhfm.NewsDetail;
+//import com.bumptech.glide.Glide;
+//import com.bumptech.glide.Glide;
 import com.emperor95online.ashhfm.R;
-import com.emperor95online.ashhfm.pojo.NewsObject;
+import com.emperor95online.ashhfm.pojo.News;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     private Context context;
-    private List<NewsObject> list;
+    private List<News> newsList;
+    private NewsItemClickListener listener;
 
-    public NewsAdapter(Context context, List<NewsObject> list){
+    public NewsAdapter(Context context, List<News> list) {
         this.context = context;
-        this.list = list;
+        this.newsList = list;
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return newsList.size();
     }
 
     @NonNull
@@ -44,48 +48,97 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final NewsHolder newsHolder, int i) {
-        final NewsObject newsObject = list.get(i);
+    public void onBindViewHolder(@NonNull final NewsHolder newsHolder, final int position) {
+        final News newsObject = newsList.get(position);
 
         newsHolder.headline.setText(newsObject.getHeadline());
         newsHolder.date.setText(newsObject.getDate());
 //        newsHolder.imageView.postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-                Glide.with(context)
-                        .load(newsObject.getImage())
-                        .into(newsHolder.imageView);
+        Picasso.with(context)
+                .load(newsObject.getImage())
+                .into(newsHolder.imageView);
 //            }
 //        }, 2000);
 
-        newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, NewsDetail.class);
-                intent.putExtra("title", newsObject.getHeadline());
-                intent.putExtra("content", newsObject.getContent());
-                intent.putExtra("image", newsObject.getImage());
-                intent.putExtra("date", newsObject.getDate());
+        //todo: replace with an MD5 hash
+        Long tsLong = System.currentTimeMillis() / 1000;
+        final String imageTransitionName = tsLong.toString();
 
-                context.startActivity(intent);
-            }
-        });
+        ViewCompat.setTransitionName(newsHolder.imageView, imageTransitionName + "_image");
+
+        tsLong = System.currentTimeMillis() / 1000;
+        final String headlineTransitionName = tsLong.toString();
+
+        ViewCompat.setTransitionName(newsHolder.headline, headlineTransitionName + "_headline");
+
+//        //Handle this click in calling activity
+//        newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Intent intent = new Intent(context, NewsDetail.class);
+////                intent.putExtra("title", newsObject.getHeadline());
+////                intent.putExtra("content", newsObject.getContent());
+////                intent.putExtra("image", newsObject.getImage());
+////                intent.putExtra("date", newsObject.getDate());
+////
+////                //add extra information for shared transition animation
+////                intent.putExtra("sharedimageanimationname", imageTransitionName)
+////                        .putExtra("sharedheadlineanimation", headlineTransitionName);
+////
+////                context.startActivity(intent);
+//
+//                //it is assumed that these elements will have the same IDs and the same
+//                //transition name property in their destination activity, else I don't want to guess
+//                //what may happen
+//
+//            }
+//        });
+
     }
 
-    ////
-    class NewsHolder extends RecyclerView.ViewHolder{
+    public class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView date, headline;
         private ImageView imageView;
 
-        NewsHolder(View view){
+        NewsHolder(View view) {
             super(view);
-
+            view.setOnClickListener(this);
             headline = itemView.findViewById(R.id.headline);
             date = itemView.findViewById(R.id.date);
             imageView = itemView.findViewById(R.id.image);
         }
 
+        public TextView getHeadlineTextView() {
+            return headline;
+        }
+
+        public ImageView getImageImageView() {
+            return imageView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            Pair[] pair = new Pair[]{
+                    new Pair(imageView, ViewCompat.getTransitionName(imageView)),
+                    new Pair(headline, ViewCompat.getTransitionName(headline))
+            };
+            listener.onNewItemClicked(newsList.get(position), pair, position);
+        }
+    }
+
+    ////
+
+
+    public void setOnNewsItemClickListener(NewsItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface NewsItemClickListener {
+        void onNewItemClicked(News newsObject, Pair[] pairs, int position);
     }
 
 }
