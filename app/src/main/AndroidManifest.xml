@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".NewService"
+            android:name=".AudioStreamingService"
             android:enabled="true"
             android:exported="true"></service>
         <service

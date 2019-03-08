@@ -4,29 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".HomeActivity">
     <!--android:animateLayoutChanges="true"-->
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fitsSystemWindows="true"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fitsSystemWindows="true">
 
         <!--<include layout="@layout/toolbar"/>-->
 
-        <FrameLayout
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="?attr/actionBarSize"/>
+            android:layout_marginBottom="?attr/actionBarSize"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <View
+            android:id="@+id/bottom_sheet_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:background="@drawable/bottom_sheet_shadow"
+            app:layout_anchor="@+id/bottom_sheet" />
 
         <!-- Adding bottom sheet after main content -->
         <include layout="@layout/bottom_sheet" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>

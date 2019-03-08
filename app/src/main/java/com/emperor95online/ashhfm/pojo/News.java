@@ -2,22 +2,22 @@ package com.emperor95online.ashhfm.pojo;
 
 // Created by Emperor95 on 1/13/2019.
 
-public class NewsObject {
+public class News {
     private String headline;
     private String date;
     private String image;
     private String content;
 
-    public NewsObject() {
+    public News() {
     }
 
-    public NewsObject(String headline, String date, String image) {
+    public News(String headline, String date, String image) {
         this.headline = headline;
         this.date = date;
         this.image = image;
     }
 
-    public NewsObject(String headline, String date, String image, String content) {
+    public News(String headline, String date, String image, String content) {
         this.headline = headline;
         this.date = date;
         this.image = image;

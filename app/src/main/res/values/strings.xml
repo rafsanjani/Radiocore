@@ -9,5 +9,12 @@
 
     <string name="org_website">www.myashhfmonline.com</string>
     <string name="org_name">ASHH FM ONLINE</string>
+    <string name="news_custom_content">
+       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta lor
+        em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
+        ac habitasse platea dictumst. Suspendisse volutpat blandit ultrices. Sed eget velit id sa
+        pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
+        dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
+    </string>
 
 </resources>
