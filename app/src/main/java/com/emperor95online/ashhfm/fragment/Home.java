@@ -80,8 +80,6 @@ public class Home extends Fragment implements View.OnClickListener {
         recyclerView.setAdapter(adapter);
 
 
-        news = new ArrayList<>();
-        images = new ArrayList<>();
         getData();
 
         //todo: make activity the activity implement this interface to keep oncreate clean enough
@@ -126,6 +124,7 @@ public class Home extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
     //todo: Rename this method and push it into a new file
     private void getData() {
         //final List<News> newsList = new ArrayList<>();
@@ -147,9 +146,7 @@ public class Home extends Fragment implements View.OnClickListener {
                     public void onResponse(String response) {
                         try {
                             JSONArray jaa = new JSONArray(response);
-
                             for (int i = 0; i < jaa.length(); i++) {
-
                                 JSONObject jsonObject = jaa.getJSONObject(i);
                                 String title = jsonObject.getJSONObject("title").getString("rendered");
                                 String content = jsonObject.getJSONObject("content").getString("rendered");
@@ -164,11 +161,9 @@ public class Home extends Fragment implements View.OnClickListener {
                                 }
                                 String date = jsonObject.getString("date");
 
-
                                 newsList.add(new News(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
                                 //newsAdapter.notifyDataSetChanged();
                                 // newsAdapter.notifyItemInserted(newsAdapter.getItemCount() + 1);
-
 
 //                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 //                                ClipData clip = ClipData.newPlainText("SBC", response);
@@ -181,8 +176,8 @@ public class Home extends Fragment implements View.OnClickListener {
 
 //                            Toast.makeText(getActivity(), "Posts: " + Integer.toString(jaa.length()) , Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
-                        }catch (JSONException e){
-                            Toast.makeText(getActivity(), "JSON Exception" , Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "JSON Exception", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -196,9 +191,8 @@ public class Home extends Fragment implements View.OnClickListener {
         queue.add(stringRequest);
 
     }
+
     private void showPopupMenu(final View view) {
-=======
-    private void showPopupMenu(final View view){
         // inflate menu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
