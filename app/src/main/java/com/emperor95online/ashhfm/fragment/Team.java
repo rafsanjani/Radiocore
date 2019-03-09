@@ -62,7 +62,7 @@ public class Team extends Fragment {
                 if (getActivity() != null) {
                     getActivity()
                             .getSupportFragmentManager().beginTransaction()
-//                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                             .replace(R.id.content, new Home())
                             .commit();
                 }
