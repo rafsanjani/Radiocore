@@ -42,7 +42,7 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 // Created by Emperor95 on 1/13/2019.
 
-public class Home extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private ImageButton more_main, imBtn;
 
@@ -127,7 +127,7 @@ public class Home extends Fragment implements View.OnClickListener {
 
     //todo: Rename this method and push it into a new file
     private void getData() {
-        //final List<News> newsList = new ArrayList<>();
+        //final List<NewsFragment> newsList = new ArrayList<>();
         if (getActivity() == null) {
             return;
         }
@@ -135,8 +135,7 @@ public class Home extends Fragment implements View.OnClickListener {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
-//        String url = "http://www.ghananewsonline.com.gh/wp-json/wp/v2/posts?_embed&categories=13";
-//        String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=29";
+
         String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
 
         // Request a string response from the provided URL.
@@ -162,19 +161,9 @@ public class Home extends Fragment implements View.OnClickListener {
                                 String date = jsonObject.getString("date");
 
                                 newsList.add(new News(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
-                                //newsAdapter.notifyDataSetChanged();
-                                // newsAdapter.notifyItemInserted(newsAdapter.getItemCount() + 1);
-
-//                                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-//                                ClipData clip = ClipData.newPlainText("SBC", response);
-//                                clipboard.setPrimaryClip(clip);
-//                                Toast.makeText(getActivity(), "Bet Code copied ...", Toast.LENGTH_SHORT).show();
-
-//                                break;
                             }
                             newsAdapter.notifyItemRangeChanged(0, newsList.size());
 
-//                            Toast.makeText(getActivity(), "Posts: " + Integer.toString(jaa.length()) , Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), "JSON Exception", Toast.LENGTH_SHORT).show();
@@ -189,11 +178,14 @@ public class Home extends Fragment implements View.OnClickListener {
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
     }
 
+    /**
+     * Inflate popup menu on the banner at the homescreen
+     *
+     * @param view
+     */
     private void showPopupMenu(final View view) {
-        // inflate menu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.main_popup, popupMenu.getMenu());
@@ -207,7 +199,7 @@ public class Home extends Fragment implements View.OnClickListener {
                             getActivity()
                                     .getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                    .replace(R.id.content, new Team())
+                                    .replace(R.id.content, new TeamFragment())
                                     .commit();
                         }
                         return true;
