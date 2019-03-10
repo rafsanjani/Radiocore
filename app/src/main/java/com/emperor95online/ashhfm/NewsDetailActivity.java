@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-public class NewsDetail extends AppCompatActivity {
+public class NewsDetailActivity extends AppCompatActivity {
 
     private TextView textContent, textDate, textTitle;
     private ImageView imageView;

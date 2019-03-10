@@ -13,7 +13,7 @@ import android.widget.TextView;
 //import com.bumptech.glide.Glide;
 //import com.bumptech.glide.Glide;
 import com.emperor95online.ashhfm.R;
-import com.emperor95online.ashhfm.pojo.News;
+import com.emperor95online.ashhfm.model.News;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -77,7 +77,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 //        newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-////                Intent intent = new Intent(context, NewsDetail.class);
+////                Intent intent = new Intent(context, NewsDetailActivity.class);
 ////                intent.putExtra("title", newsObject.getHeadline());
 ////                intent.putExtra("content", newsObject.getContent());
 ////                intent.putExtra("image", newsObject.getImage());

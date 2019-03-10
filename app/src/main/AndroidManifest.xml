@@ -13,13 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".AudioStreamingService"
+            android:name=".service.AudioStreamingService"
             android:enabled="true"
             android:exported="true"></service>
-        <service
-            android:name=".MyService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity
             android:name=".HomeActivity"
@@ -41,7 +37,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".NewsDetail"
+            android:name=".NewsDetailActivity"
             android:theme="@style/NoActionBar" />
     </application>
 

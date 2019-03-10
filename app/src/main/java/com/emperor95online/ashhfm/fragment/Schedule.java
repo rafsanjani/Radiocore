@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.adapter.ScheduleAdapter;
-import com.emperor95online.ashhfm.pojo.ScheduleObject;
 
 import java.util.ArrayList;
 
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 
 public class Schedule extends Fragment {
 
-    private ArrayList<ScheduleObject> schedules;
+    private ArrayList<com.emperor95online.ashhfm.model.Schedule> schedules;
 
     @Nullable
     @Override
@@ -46,7 +45,7 @@ public class Schedule extends Fragment {
     }
 
     void addData() {
-        schedules.add(new ScheduleObject("We shall Have peace", "13th January, 2019", "4hrs 3mins"));
-        schedules.add(new ScheduleObject("We shal make the world a better place", "13th January, 2019", "3hrs 2mins"));
+        schedules.add(new com.emperor95online.ashhfm.model.Schedule("We shall Have peace", "13th January, 2019", "4hrs 3mins"));
+        schedules.add(new com.emperor95online.ashhfm.model.Schedule("We shal make the world a better place", "13th January, 2019", "3hrs 2mins"));
     }
 }

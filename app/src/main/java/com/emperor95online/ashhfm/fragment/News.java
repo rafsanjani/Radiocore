@@ -35,7 +35,7 @@ public class News extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private ArrayList<com.emperor95online.ashhfm.pojo.News> news;
+    private ArrayList<com.emperor95online.ashhfm.model.News> news;
     private NewsAdapter newsAdapter;
 
     @Nullable
@@ -61,12 +61,12 @@ public class News extends Fragment {
     }
 
     void addData() {
-        news.add(new com.emperor95online.ashhfm.pojo.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
-        news.add(new com.emperor95online.ashhfm.pojo.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
-        news.add(new com.emperor95online.ashhfm.pojo.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
-        news.add(new com.emperor95online.ashhfm.pojo.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
-        news.add(new com.emperor95online.ashhfm.pojo.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
-        news.add(new com.emperor95online.ashhfm.pojo.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
+        news.add(new com.emperor95online.ashhfm.model.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
+        news.add(new com.emperor95online.ashhfm.model.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
+        news.add(new com.emperor95online.ashhfm.model.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
+        news.add(new com.emperor95online.ashhfm.model.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
+        news.add(new com.emperor95online.ashhfm.model.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
+        news.add(new com.emperor95online.ashhfm.model.News(getActivity().getString(R.string.tt), "13th January, 2019", "image_url"));
     }
 
     private void getData() {
@@ -96,7 +96,7 @@ public class News extends Fragment {
                                 String image = jsonObject.getString("urlToImage");
                                 String date = jsonObject.getString("publishedAt");
 
-                                news.add(new com.emperor95online.ashhfm.pojo.News(title, date, image));
+                                news.add(new com.emperor95online.ashhfm.model.News(title, date, image));
                                 newsAdapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {

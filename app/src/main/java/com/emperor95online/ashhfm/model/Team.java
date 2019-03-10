@@ -1,16 +1,16 @@
-package com.emperor95online.ashhfm.pojo;
+package com.emperor95online.ashhfm.model;
 
 // Created by Emperor95 on 1/13/2019.
 
-public class TeamObject {
+public class Team {
     private String name;
     private String porfolio;
     private int image;
 
-    public TeamObject() {
+    public Team() {
     }
 
-    public TeamObject(String name, String porfolio, int image) {
+    public Team(String name, String porfolio, int image) {
         this.name = name;
         this.porfolio = porfolio;
         this.image = image;

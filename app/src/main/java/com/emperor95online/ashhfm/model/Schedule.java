@@ -1,16 +1,16 @@
-package com.emperor95online.ashhfm.pojo;
+package com.emperor95online.ashhfm.model;
 
 // Created by Emperor95 on 1/13/2019.
 
-public class ScheduleObject {
+public class Schedule {
     private String headline;
     private String date;
     private String remainingTime;
 
-    public ScheduleObject() {
+    public Schedule() {
     }
 
-    public ScheduleObject(String headline, String date, String remainingTime) {
+    public Schedule(String headline, String date, String remainingTime) {
         this.headline = headline;
         this.date = date;
         this.remainingTime = remainingTime;

@@ -1,4 +1,4 @@
-package com.emperor95online.ashhfm.pojo;
+package com.emperor95online.ashhfm.model;
 
 // Created by Emperor95 on 1/13/2019.
 

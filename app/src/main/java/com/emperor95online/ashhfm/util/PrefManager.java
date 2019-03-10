@@ -1,4 +1,4 @@
-package com.emperor95online.ashhfm;
+package com.emperor95online.ashhfm.util;
 
 // Created by Emperor95 on 11/19/2018.
 

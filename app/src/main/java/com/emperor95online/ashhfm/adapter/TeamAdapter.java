@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.emperor95online.ashhfm.R;
-import com.emperor95online.ashhfm.pojo.TeamObject;
+import com.emperor95online.ashhfm.model.Team;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -24,9 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
 
     private Context context;
-    private List<TeamObject> list;
+    private List<Team> list;
 
-    public TeamAdapter(Context context, List<TeamObject> list) {
+    public TeamAdapter(Context context, List<Team> list) {
         this.context = context;
         this.list = list;
     }
@@ -47,7 +47,7 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final TeamHolder newsHolder, int i) {
-        final TeamObject teamObject = list.get(i);
+        final Team teamObject = list.get(i);
 
         newsHolder.name.setText(teamObject.getName());
         newsHolder.portfolio.setText(teamObject.getPorfolio());

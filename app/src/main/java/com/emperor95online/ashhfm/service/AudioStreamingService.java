@@ -1,4 +1,4 @@
-package com.emperor95online.ashhfm;
+package com.emperor95online.ashhfm.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,19 +6,21 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 
+import com.emperor95online.ashhfm.util.PrefManager;
+
 import java.io.IOException;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.emperor95online.ashhfm.Constants.ACTION_PAUSE;
-import static com.emperor95online.ashhfm.Constants.ACTION_PLAY;
-import static com.emperor95online.ashhfm.Constants.LOADING;
-import static com.emperor95online.ashhfm.Constants.MESSAGE;
-import static com.emperor95online.ashhfm.Constants.PAUSED;
-import static com.emperor95online.ashhfm.Constants.PLAYING;
-import static com.emperor95online.ashhfm.Constants.RESULT;
-import static com.emperor95online.ashhfm.Constants.STATUS_DESTROYED;
-import static com.emperor95online.ashhfm.Constants.STATUS_PAUSED;
+import static com.emperor95online.ashhfm.util.Constants.ACTION_PAUSE;
+import static com.emperor95online.ashhfm.util.Constants.ACTION_PLAY;
+import static com.emperor95online.ashhfm.util.Constants.LOADING;
+import static com.emperor95online.ashhfm.util.Constants.MESSAGE;
+import static com.emperor95online.ashhfm.util.Constants.PAUSED;
+import static com.emperor95online.ashhfm.util.Constants.PLAYING;
+import static com.emperor95online.ashhfm.util.Constants.RESULT;
+import static com.emperor95online.ashhfm.util.Constants.STATUS_DESTROYED;
+import static com.emperor95online.ashhfm.util.Constants.STATUS_PAUSED;
 
 /***
  * Handle Audio playback

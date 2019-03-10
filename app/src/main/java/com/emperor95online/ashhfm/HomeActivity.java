@@ -19,8 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.emperor95online.ashhfm.AudioStreamingService.AudioStreamingState;
+import com.emperor95online.ashhfm.service.AudioStreamingService;
+import com.emperor95online.ashhfm.service.AudioStreamingService.AudioStreamingState;
 import com.emperor95online.ashhfm.fragment.Home;
+import com.emperor95online.ashhfm.util.PrefManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import androidx.annotation.NonNull;
@@ -28,11 +30,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.emperor95online.ashhfm.Constants.ACTION_PAUSE;
-import static com.emperor95online.ashhfm.Constants.ACTION_PLAY;
-import static com.emperor95online.ashhfm.Constants.DEBUG_TAG;
-import static com.emperor95online.ashhfm.Constants.MESSAGE;
-import static com.emperor95online.ashhfm.Constants.RESULT;
+import static com.emperor95online.ashhfm.util.Constants.ACTION_PAUSE;
+import static com.emperor95online.ashhfm.util.Constants.ACTION_PLAY;
+import static com.emperor95online.ashhfm.util.Constants.DEBUG_TAG;
+import static com.emperor95online.ashhfm.util.Constants.MESSAGE;
+import static com.emperor95online.ashhfm.util.Constants.RESULT;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
