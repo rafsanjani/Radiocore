@@ -16,7 +16,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="230dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/banner_home" />
+                android:src="@drawable/banner_home"
+                android:transitionName="bannerTransition" />
 
             <ImageButton
                 android:id="@+id/more_main"
