@@ -32,7 +32,7 @@
             android:label="News" />
         <activity
             android:name=".SplashProgress"
-            android:theme="@style/AppTheme.SplashTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".service.AudioStreamingService" />
     </application>
