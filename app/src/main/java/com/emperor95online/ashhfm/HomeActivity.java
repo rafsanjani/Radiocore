@@ -38,7 +38,6 @@ import static com.emperor95online.ashhfm.util.Constants.RESULT;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final String audioStreamUrl = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
     ///////////////////////////////////////////////////////////////////////////////////////////////
     BroadcastReceiver receiver;
     //let's assume nothing is playing when application starts
@@ -56,11 +55,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView smallLogo;
     private Toast toast;
     private PrefManager prefManager;
-    //
-    private MediaPlayer mediaPlayer;
-    private int duration = 0;
-    private int currentProgress = 0;
-    private String status = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
