@@ -1,19 +1,20 @@
 package com.emperor95online.ashhfm;
 
 import android.os.Bundle;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.emperor95online.ashhfm.fragment.Home;
-import com.emperor95online.ashhfm.fragment.News;
-import com.emperor95online.ashhfm.fragment.Schedule;
-import com.emperor95online.ashhfm.fragment.Team;
+import com.emperor95online.ashhfm.fragment.HomeFragment;
+import com.emperor95online.ashhfm.fragment.NewsFragment;
+import com.emperor95online.ashhfm.fragment.ScheduleFragment;
+import com.emperor95online.ashhfm.fragment.TeamFragment;
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, new Home())
+                .replace(R.id.frame_layout, new HomeFragment())
                 .commit();
     }
 
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeFragment/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.frame_layout, new Home())
+                    .replace(R.id.frame_layout, new HomeFragment())
                     .commit();
             this.setTitle("ASHH FM ONLINE");
 
@@ -89,21 +90,21 @@ public class MainActivity extends AppCompatActivity
 
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.frame_layout, new News())
+                    .replace(R.id.frame_layout, new NewsFragment())
                     .commit();
             this.setTitle("ASHH FM NEWS");
 
         } else if (id == R.id.nav_program_schedule) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.frame_layout, new Schedule())
+                    .replace(R.id.frame_layout, new ScheduleFragment())
                     .commit();
             this.setTitle("ASHH FM SCHEDULE");
         } else if (id == R.id.nav_about_us) {
 
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.frame_layout, new Team())
+                    .replace(R.id.frame_layout, new TeamFragment())
                     .commit();
             this.setTitle("TEAM MEMBERS");
         } else if (id == R.id.nav_contact_us) {

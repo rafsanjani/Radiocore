@@ -1,27 +1,28 @@
 package com.emperor95online.ashhfm.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.adapter.TeamAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 // Created by Emperor95 on 1/13/2019.
 
-public class Team extends Fragment {
+public class TeamFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
@@ -62,7 +63,7 @@ public class Team extends Fragment {
                     getActivity()
                             .getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                            .replace(R.id.content, new Home())
+                            .replace(R.id.content, new HomeFragment())
                             .commit();
                 }
             }
@@ -70,13 +71,13 @@ public class Team extends Fragment {
     }
 
     void addData(){
-        members.add(new com.emperor95online.ashhfm.model.Team("Afia Tiwaa", "News Caster", R.drawable.afia_tiwaa_news_caster));
+        members.add(new com.emperor95online.ashhfm.model.Team("Afia Tiwaa", "NewsFragment Caster", R.drawable.afia_tiwaa_news_caster));
         members.add(new com.emperor95online.ashhfm.model.Team("Akakpo Agogi", "Sports Producer", R.drawable.akakpo_agogi_sports_producer));
         members.add(new com.emperor95online.ashhfm.model.Team("Alex Owusu", "Producer", R.drawable.alex));
         members.add(new com.emperor95online.ashhfm.model.Team("Armstrong Esaah", "General Manager", R.drawable.armstrong));
         members.add(new com.emperor95online.ashhfm.model.Team("Charles Welbeck", "Accountant", R.drawable.charlse_welbeck_accountant));
-        members.add(new com.emperor95online.ashhfm.model.Team("Daakye Hene Adusi Poku", "News Caster", R.drawable.daakye_hene));
-        members.add(new com.emperor95online.ashhfm.model.Team("Daasebre Adjei Dwamena", "News Editor", R.drawable.daasebre));
+        members.add(new com.emperor95online.ashhfm.model.Team("Daakye Hene Adusi Poku", "NewsFragment Caster", R.drawable.daakye_hene));
+        members.add(new com.emperor95online.ashhfm.model.Team("Daasebre Adjei Dwamena", "NewsFragment Editor", R.drawable.daasebre));
         members.add(new com.emperor95online.ashhfm.model.Team("Dannis Osei Hayes", "Marketing Manager", R.drawable.dannis));
         members.add(new com.emperor95online.ashhfm.model.Team("David Aban", "DJ BAM", R.drawable.david_aban));
         members.add(new com.emperor95online.ashhfm.model.Team("Dwomoh Thomas", "Head of Technical", R.drawable.thomas));
@@ -91,7 +92,7 @@ public class Team extends Fragment {
         members.add(new com.emperor95online.ashhfm.model.Team("Joe Osei Bonsu", "Foreign Sports Presenter", R.drawable.joe));
         members.add(new com.emperor95online.ashhfm.model.Team("John Quaye", "Engineer and Chief Security", R.drawable.john_quaye));
         members.add(new com.emperor95online.ashhfm.model.Team("Kamil Umar", "Hr-Head of Production", R.drawable.kamil));
-        members.add(new com.emperor95online.ashhfm.model.Team("Kofi Addae Munumkum", "News Caster", R.drawable.kofi_addae));
+        members.add(new com.emperor95online.ashhfm.model.Team("Kofi Addae Munumkum", "NewsFragment Caster", R.drawable.kofi_addae));
         members.add(new com.emperor95online.ashhfm.model.Team("Kofi Agyei", "Events Manager", R.drawable.kofi_agyei));
         members.add(new com.emperor95online.ashhfm.model.Team("Lord Inusah", "Programmes Manager", R.drawable.inusah));
         members.add(new com.emperor95online.ashhfm.model.Team("Mama Thess", "Aware mu Nsem", R.drawable.mama));
@@ -105,7 +106,7 @@ public class Team extends Fragment {
         members.add(new com.emperor95online.ashhfm.model.Team("Richard Antwi Boasiako", "Presenter - Marketer", R.drawable.richard));
         members.add(new com.emperor95online.ashhfm.model.Team("Solomon Ofosu Ware", "Head of Operations", R.drawable.solomon));
         members.add(new com.emperor95online.ashhfm.model.Team("Sylvester Anane", "Sly-Sports Presenter", R.drawable.sylvester));
-        members.add(new com.emperor95online.ashhfm.model.Team("Yaa Asantewaa", "News Caster", R.drawable.yaa));
+        members.add(new com.emperor95online.ashhfm.model.Team("Yaa Asantewaa", "NewsFragment Caster", R.drawable.yaa));
     }
 
 }

@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-//import com.bumptech.glide.Glide;
-//import com.bumptech.glide.Glide;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.model.News;
 import com.squareup.picasso.Picasso;
@@ -21,6 +19,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+//import com.bumptech.glide.Glide;
+//import com.bumptech.glide.Glide;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
@@ -72,29 +73,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         final String headlineTransitionName = tsLong.toString();
 
         ViewCompat.setTransitionName(newsHolder.headline, headlineTransitionName + "_headline");
-
-//        //Handle this click in calling activity
-//        newsHolder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                Intent intent = new Intent(context, NewsDetailActivity.class);
-////                intent.putExtra("title", newsObject.getHeadline());
-////                intent.putExtra("content", newsObject.getContent());
-////                intent.putExtra("image", newsObject.getImage());
-////                intent.putExtra("date", newsObject.getDate());
-////
-////                //add extra information for shared transition animation
-////                intent.putExtra("sharedimageanimationname", imageTransitionName)
-////                        .putExtra("sharedheadlineanimation", headlineTransitionName);
-////
-////                context.startActivity(intent);
-//
-//                //it is assumed that these elements will have the same IDs and the same
-//                //transition name property in their destination activity, else I don't want to guess
-//                //what may happen
-//
-//            }
-//        });
 
     }
 
