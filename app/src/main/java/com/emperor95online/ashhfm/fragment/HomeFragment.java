@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.emperor95online.ashhfm.HeadlineActivity;
 import com.emperor95online.ashhfm.NewsDetailActivity;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.adapter.NewsAdapter;
@@ -93,7 +94,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         ViewCompat.getTransitionName(newsHolder.getHeadlineTextView())
                 };
 
-                Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+                Intent intent = new Intent(getContext(), HeadlineActivity.class);
                 intent.putExtra("title", newsObject.getHeadline());
                 intent.putExtra("content", newsObject.getContent());
                 intent.putExtra("image", newsObject.getImage());
