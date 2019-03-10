@@ -17,58 +17,7 @@
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/bottomsheet_menu_items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            tools:visibility="visible">
-
-            <ImageButton
-                android:id="@+id/bottomsheet_menu_collapse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:cropToPadding="true"
-                android:focusable="true"
-                android:onClick="onClickMenuCollapse"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_up" />
-
-            <ImageButton
-                android:id="@+id/more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="?selectableItemBackgroundBorderless"
-                android:onClick="onClickBottomSheetMore"
-                android:padding="10dp"
-                android:src="@drawable/ic_more" />
-
-            <ImageButton
-                android:id="@+id/share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/more"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="10dp"
-                android:src="@drawable/ic_share" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/share"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="10dp"
-                android:src="@drawable/ic_download" />
-
-        </RelativeLayout>
+        android:layout_height="wrap_content">
 
         <!--give it a background color as the same color of the sheet
         so that it will opaquely overlay the menuItems which will
@@ -81,7 +30,7 @@
             android:orientation="horizontal"
             android:padding="5dp"
             android:visibility="visible"
-            tools:visibility="visible">
+            tools:visibility="gone">
             <!--Stack small logo and loading progress in this frame-->
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -96,7 +45,8 @@
                     android:layout_height="50dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="onLogoFrameClicked"
-                    android:src="@drawable/ash" />
+                    android:src="@drawable/ash"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                 <ProgressBar
                     android:id="@+id/smallProgressBar"
@@ -166,6 +116,57 @@
                 android:textColor="@color/white"
                 android:textSize="17sp" />
         </LinearLayout>
+
+        <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/bottomsheet_menu_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/bottomsheet_menu_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:cropToPadding="true"
+                android:focusable="true"
+                android:onClick="onClickMenuCollapse"
+                android:layout_alignParentLeft="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_arrow_up" />
+
+            <ImageButton
+                android:id="@+id/more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:onClick="onClickBottomSheetMore"
+                android:padding="10dp"
+                android:src="@drawable/ic_more" />
+
+            <ImageButton
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/more"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_share" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/share"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_download" />
+
+        </RelativeLayout>
 
     </FrameLayout>
 
