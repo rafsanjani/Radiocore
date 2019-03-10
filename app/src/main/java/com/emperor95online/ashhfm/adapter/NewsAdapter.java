@@ -16,7 +16,12 @@ import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.model.News;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
@@ -51,16 +56,22 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     public void onBindViewHolder(@NonNull final NewsHolder newsHolder, final int position) {
         final News newsObject = newsList.get(position);
 
+        String string = newsObject.getDate();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH);
+        Date date = null;
+
+
+        try{
+            date = format.parse(string);
+        }catch (ParseException e){
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
+        newsHolder.date.setText(simpleDateFormat.format(date));
         newsHolder.headline.setText(newsObject.getHeadline());
-        newsHolder.date.setText(newsObject.getDate());
-//        newsHolder.imageView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
         Picasso.with(context)
                 .load(newsObject.getImage())
                 .into(newsHolder.imageView);
-//            }
-//        }, 2000);
 
         //todo: replace with an MD5 hash
         Long tsLong = System.currentTimeMillis() / 1000;
