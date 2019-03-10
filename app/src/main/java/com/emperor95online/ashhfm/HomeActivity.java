@@ -19,9 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.emperor95online.ashhfm.fragment.HomeFragment;
 import com.emperor95online.ashhfm.service.AudioStreamingService;
 import com.emperor95online.ashhfm.service.AudioStreamingService.AudioStreamingState;
-import com.emperor95online.ashhfm.fragment.Home;
 import com.emperor95online.ashhfm.util.PrefManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content, new Home())
+                .replace(R.id.content, new HomeFragment())
                 .commit();
     }
 

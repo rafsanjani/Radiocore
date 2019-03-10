@@ -26,15 +26,6 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_main" />
-
-            <ImageButton
-                android:id="@+id/imBtn"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_gravity="end|top"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="10dp" />
-
         </FrameLayout>
 
         <FrameLayout
@@ -44,7 +35,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"
@@ -55,7 +46,8 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="-1dp"
                 android:layout_marginRight="5dp"
-                android:indeterminate="true" />
+                android:indeterminate="true"
+                android:visibility="visible" />
 
         </FrameLayout>
 
