@@ -14,10 +14,10 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="230dp"
               android:scaleType="centerCrop"
-                android:src="@drawable/ash_back" />
+                android:src="@drawable/banner_home" />
 
             <ImageButton
                 android:padding="10dp"
