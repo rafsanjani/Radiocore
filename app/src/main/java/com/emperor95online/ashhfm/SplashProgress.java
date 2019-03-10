@@ -19,7 +19,7 @@ public class SplashProgress extends AppCompatActivity {
         final ImageView backgroundImage = findViewById(R.id.backgroundImage);
 
         Handler handler = new Handler();
-        //just show a progress bar for a few seconds and transition to the HaomeActivity
+        //just show a progress bar for a few seconds and transition to the HomeActivity
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
