@@ -24,10 +24,15 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".HomeActivity" />
+        <activity
+            android:name=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NewsDetailActivity"
             android:label="News" />
+        <activity
+            android:name=".SplashProgress"
+            android:theme="@style/AppTheme.SplashTheme" />
 
         <service android:name=".service.AudioStreamingService" />
     </application>
