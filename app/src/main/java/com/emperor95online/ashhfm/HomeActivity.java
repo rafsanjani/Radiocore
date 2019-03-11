@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,11 +50,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private AppCompatSeekBar seekBar;
     private ImageView smallLogo;
     private PrefManager prefManager;
-    //
-    private MediaPlayer mediaPlayer;
-    private int duration = 0;
-    private int currentProgress = 0;
-    private String status = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

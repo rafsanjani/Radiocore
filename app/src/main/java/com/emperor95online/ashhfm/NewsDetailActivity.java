@@ -1,15 +1,15 @@
 package com.emperor95online.ashhfm;
 
-import androidx.core.view.ViewCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-//import com.bumptech.glide.Glide;
-
 import com.squareup.picasso.Picasso;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 
 public class NewsDetailActivity extends AppCompatActivity {
 
@@ -22,6 +22,9 @@ public class NewsDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         textContent = findViewById(R.id.content);
         textTitle = findViewById(R.id.headline);
@@ -48,6 +51,5 @@ public class NewsDetailActivity extends AppCompatActivity {
         Picasso.with(getApplicationContext())
                 .load(image)
                 .into(imageView);
-
     }
 }
