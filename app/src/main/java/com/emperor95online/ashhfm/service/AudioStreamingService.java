@@ -30,6 +30,7 @@ import static com.emperor95online.ashhfm.util.Constants.PLAYING;
 import static com.emperor95online.ashhfm.util.Constants.RESULT;
 import static com.emperor95online.ashhfm.util.Constants.STATUS_DESTROYED;
 import static com.emperor95online.ashhfm.util.Constants.STATUS_PAUSED;
+import static com.emperor95online.ashhfm.util.Constants.STREAM_URL;
 
 /***
  * Handle Audio playback
@@ -38,11 +39,12 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     LocalBroadcastManager broadcastManager;
 
-    //Todo: replace this url
-    private final String audioStreamUrl = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
     MediaPlayer mediaPlayer = null;
 
     private PrefManager prefManager;
+    private final String notificationText = "Live Radio - 101.1FM";
+    private NotificationCompat.Builder builder;
+    private Notification streamNotification;
 
     public AudioStreamingService() {
     }
@@ -57,13 +59,15 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public void onCreate() {
         super.onCreate();
 
+        streamNotification = createNotification();
         prefManager = new PrefManager(AudioStreamingService.this);
         broadcastManager = LocalBroadcastManager.getInstance(this);
 
         mediaPlayer = new MediaPlayer();
+
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            mediaPlayer.setDataSource(audioStreamUrl);
+            mediaPlayer.setDataSource(STREAM_URL);
         } catch (IOException e) {
 
         }
@@ -89,33 +93,33 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         }
     }
 
-
     private Notification createNotification() {
         Intent contentIntent = new Intent(this, HomeActivity.class);
         Intent pauseIntent = new Intent(this, AudioStreamingService.class);
         pauseIntent.setAction(Constants.ACTION_PAUSE);
 
-
         PendingIntent p_contentIntent = PendingIntent.getActivity(this, 0,
                 contentIntent, 0);
         PendingIntent p_pauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 
-        final Notification notification = new NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+
+        builder = new NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Online Radio")
                 .addAction(R.drawable.ic_pause_notification, "Pause", p_pauseIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0))
-                .setContentText("Playing for: 3:10")
+                .setContentText(notificationText)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentIntent(p_contentIntent)
-                .build();
-        return notification;
+                .setContentIntent(p_contentIntent);
+
+        return builder.build();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
-        if (intent.getAction().equals(ACTION_PLAY)) {
+        if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()
+                && AudioStreamingState.valueOf(prefManager.getStatus()) != AudioStreamingState.STATUS_PLAYING) {
             // prepare async to not block main thread
             mediaPlayer.prepareAsync();
             prefManager.setStatus(LOADING);
@@ -125,7 +129,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             prefManager.setStatus(PAUSED);
             prefManager.setStatus(STATUS_PAUSED);
             sendResult(AudioStreamingState.STATUS_PAUSED);
-
             //stop the foreground audio service and take away the notification from the user's screen
             stopForeground(true);
         }
@@ -149,7 +152,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public void onPrepared(MediaPlayer player) {
         player.start();
         if (player.isPlaying()) {
-            startForeground(1, createNotification());
+            startForeground(1, streamNotification);
 
             sendResult(AudioStreamingState.STATUS_PLAYING);
             prefManager.setStatus(PLAYING);
