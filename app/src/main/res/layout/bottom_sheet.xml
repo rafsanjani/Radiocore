@@ -63,7 +63,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_back_two" />
+                android:src="@drawable/ic_back_small" />
 
             <!--<FrameLayout-->
             <!--android:layout_width="wrap_content"-->
@@ -101,7 +101,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_next_two" />
+                android:src="@drawable/ic_next_small" />
 
             <TextView
                 android:layout_width="match_parent"
