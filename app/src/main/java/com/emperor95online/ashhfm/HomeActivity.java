@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.emperor95online.ashhfm.util.Constants.ACTION_PAUSE;
@@ -131,11 +132,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
                 Intent intent = new Intent(HomeActivity.this, AudioStreamingService.class);
                 intent.setAction(ACTION_PAUSE);
-                startService(intent);
+                ContextCompat.startForegroundService(this, intent);
             } else if (audioStreamingState == AudioStreamingState.STATUS_PAUSED) {
                 Intent intent = new Intent(HomeActivity.this, AudioStreamingService.class);
                 intent.setAction(ACTION_PLAY);
-                startService(intent);
+                ContextCompat.startForegroundService(this, intent);
             }
         }
     }

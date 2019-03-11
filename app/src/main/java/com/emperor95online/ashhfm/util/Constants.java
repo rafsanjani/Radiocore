@@ -21,4 +21,7 @@ public class Constants {
     public static final String STATUS_PAUSED = "STATUS_PAUSED";
     public static final String STATUS_LOADING = "STATUS_LOADING";
     public static final String STATUS_DESTROYED = "STATUS_DESTROYED";
+
+    //Notification channel for Android 0
+    public static final String NOTIFICATION_CHANNEL_ID = "com.emperor95Online.ashhfm.";
 }

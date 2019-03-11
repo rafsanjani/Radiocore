@@ -1,15 +1,24 @@
 package com.emperor95online.ashhfm.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.IBinder;
 
+import com.emperor95online.ashhfm.HomeActivity;
+import com.emperor95online.ashhfm.R;
+import com.emperor95online.ashhfm.util.Constants;
 import com.emperor95online.ashhfm.util.PrefManager;
 
 import java.io.IOException;
 
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.emperor95online.ashhfm.util.Constants.ACTION_PAUSE;
@@ -61,10 +70,53 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         mediaPlayer.setOnErrorListener(this);
     }
 
+    /**
+     * Create notification channel on Android O+
+     *
+     * @return
+     */
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    Constants.NOTIFICATION_CHANNEL_ID,
+                    "Music Streaming Channel",
+                    NotificationManager.IMPORTANCE_LOW
+            );
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(notificationChannel);
+        }
+    }
+
+
+    private Notification createNotification() {
+        Intent contentIntent = new Intent(this, HomeActivity.class);
+        Intent pauseIntent = new Intent(this, AudioStreamingService.class);
+        pauseIntent.setAction(Constants.ACTION_PAUSE);
+
+
+        PendingIntent p_contentIntent = PendingIntent.getActivity(this, 0,
+                contentIntent, 0);
+        PendingIntent p_pauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+
+        final Notification notification = new NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("Online Radio")
+                .addAction(R.drawable.ic_pause_notification, "Pause", p_pauseIntent)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0))
+                .setContentText("Playing for: 3:10")
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentIntent(p_contentIntent)
+                .build();
+        return notification;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        createNotificationChannel();
         if (intent.getAction().equals(ACTION_PLAY)) {
-            mediaPlayer.prepareAsync(); // prepare async to not block main thread
+            // prepare async to not block main thread
+            mediaPlayer.prepareAsync();
             prefManager.setStatus(LOADING);
             sendResult(AudioStreamingState.STATUS_LOADING);
         } else if (intent.getAction().equals(ACTION_PAUSE)) {
@@ -72,9 +124,11 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             prefManager.setStatus(PAUSED);
             prefManager.setStatus(STATUS_PAUSED);
             sendResult(AudioStreamingState.STATUS_PAUSED);
-        }
 
-        return START_STICKY;
+            //stop the foreground audio service and take away the notification from the user's screen
+            stopForeground(true);
+        }
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -94,6 +148,8 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public void onPrepared(MediaPlayer player) {
         player.start();
         if (player.isPlaying()) {
+            startForeground(1, createNotification());
+
             sendResult(AudioStreamingState.STATUS_PLAYING);
             prefManager.setStatus(PLAYING);
         }

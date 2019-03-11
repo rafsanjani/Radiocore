@@ -3,6 +3,7 @@ package com.emperor95online.ashhfm.fragment;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -14,22 +15,17 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
+import com.android.volley.NetworkError;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.emperor95online.ashhfm.NewsDetailActivity;
 import com.emperor95online.ashhfm.R;
 import com.emperor95online.ashhfm.adapter.NewsAdapter;
+import com.emperor95online.ashhfm.data.NewsData;
 import com.emperor95online.ashhfm.model.News;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.emperor95online.ashhfm.util.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -80,7 +76,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         recyclerView.setAdapter(adapter);
 
 
-        getData();
+        getNewsData();
 
         //todo: make activity the activity implement this interface to keep oncreate clean enough
         newsAdapter.setOnNewsItemClickListener(new NewsAdapter.NewsItemClickListener() {
@@ -126,58 +122,34 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     //todo: Rename this method and push it into a new file
-    private void getData() {
+    private void getNewsData() {
         //final List<NewsFragment> newsList = new ArrayList<>();
         if (getActivity() == null) {
             return;
         }
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        NewsData newsData = new NewsData(getContext());
 
-
-        String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONArray jaa = new JSONArray(response);
-                            for (int i = 0; i < jaa.length(); i++) {
-                                JSONObject jsonObject = jaa.getJSONObject(i);
-                                String title = jsonObject.getJSONObject("title").getString("rendered");
-                                String content = jsonObject.getJSONObject("content").getString("rendered");
-
-//                                String image = "https://pbs.twimg.com/profile_images/425274582581264384/X3QXBN8C.jpeg";
-                                String image = "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
-
-                                if (!jsonObject.getJSONObject("_embedded").isNull("wp:featuredmedia")) {
-                                    image = jsonObject.getJSONObject("_embedded")
-                                            .getJSONArray("wp:featuredmedia").getJSONObject(0)
-                                            .getString("source_url");
-                                }
-                                String date = jsonObject.getString("date");
-
-                                newsList.add(new News(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
-                            }
-                            newsAdapter.notifyItemRangeChanged(0, newsList.size());
-
-                            progressBar.setVisibility(View.GONE);
-                        } catch (JSONException e) {
-                            Toast.makeText(getActivity(), "JSON Exception", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        newsData.setNewsFetchEventListener(new NewsData.NewsFetchEventListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "" + error, Toast.LENGTH_SHORT).show();
+            public void onNewsFetched(List<News> fetchedNewsItems) {
+                newsList.addAll(fetchedNewsItems);
+                newsAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                if (error instanceof NetworkError) {
+                    final String message = "Network Error::Are you online?";
+                    Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                    Log.i(Constants.DEBUG_TAG, message);
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         });
 
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        newsData.fetchNewsFromOnlineAsync();
     }
 
     /**
