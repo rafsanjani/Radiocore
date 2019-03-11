@@ -45,7 +45,7 @@
                     android:layout_height="50dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="onLogoFrameClicked"
-                    android:src="@drawable/ash"
+                    android:src="@drawable/logo_small"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
                 <ProgressBar
@@ -121,20 +121,20 @@
             android:id="@+id/bottomsheet_menu_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:alpha="0"
+            android:visibility="visible"
             tools:visibility="visible">
 
             <ImageButton
                 android:id="@+id/bottomsheet_menu_collapse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:background="?selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:cropToPadding="true"
                 android:focusable="true"
                 android:onClick="onClickMenuCollapse"
-                android:layout_alignParentLeft="true"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_arrow_up" />
 
@@ -293,7 +293,8 @@
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:src="@drawable/ash" />
+            android:scaleType="fitXY"
+            android:src="@drawable/logo" />
 
         <ProgressBar
             android:id="@+id/progressBar"
