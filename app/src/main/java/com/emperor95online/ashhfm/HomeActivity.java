@@ -37,7 +37,7 @@ import static com.emperor95online.ashhfm.util.Constants.RESULT;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    BroadcastReceiver receiver;
+    BroadcastReceiver audioServiceBroadcastReceiver;
     //let's assume nothing is playing when application starts
     AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_STOPPED;
 
@@ -72,7 +72,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * resolve the player state accordingly
      */
     private void setUpAudioStreamingServiceReceiver() {
-        receiver = new BroadcastReceiver() {
+        audioServiceBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String receivedState = intent.getStringExtra(MESSAGE);
@@ -82,9 +82,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         };
     }
 
+    /**
+     * Check if AudioStreamingService is running and change the AudioStreamingState accordingly
+     * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
+     */
     private void setUpInitPlayerState() {
-        //Check if AudioStreamingService is running and change the AudioStreamingState accordingly
-        //Note: We Initially set it to Pause, assuming that noting is playing when we first run
         prefManager = new PrefManager(HomeActivity.this);
         if ((isMyServiceRunning(AudioStreamingService.class))) {
             audioStreamingState = AudioStreamingState.valueOf(prefManager.getStatus());
@@ -98,14 +100,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+        LocalBroadcastManager.getInstance(this).registerReceiver((audioServiceBroadcastReceiver),
                 new IntentFilter(RESULT)
         );
     }
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(audioServiceBroadcastReceiver);
         super.onStop();
     }
 
@@ -117,16 +119,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
-
-        if (v == smallPlay || v == play) { //one button to handle both states
+        //one button to handle both states
+        if (v == smallPlay || v == play) {
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
                 audioServiceIntent.setAction(ACTION_STOP);
                 ContextCompat.startForegroundService(this, audioServiceIntent);
             } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
                 audioServiceIntent.setAction(ACTION_PLAY);
                 ContextCompat.startForegroundService(this, audioServiceIntent);
-            } else {
-                System.out.println("No Initial Param supplied");
             }
         }
     }
