@@ -34,17 +34,17 @@ public class PrefManager {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
 
-    public void setStatus(String status){
-        editor.putString(STATUS, status);
-        editor.commit();
-    }
-
-    public boolean isStatusSet(){
+    public boolean isStatusSet() {
         return pref.contains(STATUS);
     }
 
-    public String getStatus(){
+    public String getStatus() {
         return pref.getString(STATUS, "");
+    }
+
+    public void setStatus(String status) {
+        editor.putString(STATUS, status);
+        editor.commit();
     }
 
 }
