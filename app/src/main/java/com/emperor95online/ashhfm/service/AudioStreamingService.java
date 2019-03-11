@@ -21,15 +21,14 @@ import java.io.IOException;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.emperor95online.ashhfm.util.Constants.ACTION_PAUSE;
 import static com.emperor95online.ashhfm.util.Constants.ACTION_PLAY;
+import static com.emperor95online.ashhfm.util.Constants.ACTION_STOP;
 import static com.emperor95online.ashhfm.util.Constants.LOADING;
 import static com.emperor95online.ashhfm.util.Constants.MESSAGE;
-import static com.emperor95online.ashhfm.util.Constants.PAUSED;
 import static com.emperor95online.ashhfm.util.Constants.PLAYING;
 import static com.emperor95online.ashhfm.util.Constants.RESULT;
-import static com.emperor95online.ashhfm.util.Constants.STATUS_DESTROYED;
-import static com.emperor95online.ashhfm.util.Constants.STATUS_PAUSED;
+import static com.emperor95online.ashhfm.util.Constants.STATUS_STOPPED;
+import static com.emperor95online.ashhfm.util.Constants.STOPPED;
 import static com.emperor95online.ashhfm.util.Constants.STREAM_URL;
 
 /***
@@ -96,7 +95,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     private Notification createNotification() {
         Intent contentIntent = new Intent(this, HomeActivity.class);
         Intent pauseIntent = new Intent(this, AudioStreamingService.class);
-        pauseIntent.setAction(Constants.ACTION_PAUSE);
+        pauseIntent.setAction(Constants.ACTION_STOP);
 
         PendingIntent p_contentIntent = PendingIntent.getActivity(this, 0,
                 contentIntent, 0);
@@ -117,18 +116,30 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        System.out.println("Trying to start service again");
         createNotificationChannel();
-        if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()
-                && AudioStreamingState.valueOf(prefManager.getStatus()) != AudioStreamingState.STATUS_PLAYING) {
+        startForeground(1, streamNotification);
+
+        //calling this command a second time when player is loading will throw an exception so lets
+        //check for that condition as such
+        System.out.println("Starting Command with :" + intent.getAction());
+        System.out.println("Original State is :" + prefManager.getStatus());
+
+
+        if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
+            System.out.println("Current State:" + prefManager.getStatus());
+
             // prepare async to not block main thread
-            mediaPlayer.prepareAsync();
             prefManager.setStatus(LOADING);
             sendResult(AudioStreamingState.STATUS_LOADING);
-        } else if (intent.getAction().equals(ACTION_PAUSE)) {
+
+            mediaPlayer.prepareAsync();
+        } else if (intent.getAction().equals(ACTION_STOP)) {
+            System.out.println("Original State with :" + prefManager.getStatus());
             mediaPlayer.stop();
-            prefManager.setStatus(PAUSED);
-            prefManager.setStatus(STATUS_PAUSED);
-            sendResult(AudioStreamingState.STATUS_PAUSED);
+            prefManager.setStatus(STOPPED);
+            prefManager.setStatus(STATUS_STOPPED);
+            sendResult(AudioStreamingState.STATUS_STOPPED);
             //stop the foreground audio service and take away the notification from the user's screen
             stopForeground(true);
         }
@@ -141,7 +152,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-            prefManager.setStatus(STATUS_DESTROYED);
+            prefManager.setStatus(STATUS_STOPPED);
         }
     }
 
@@ -152,7 +163,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public void onPrepared(MediaPlayer player) {
         player.start();
         if (player.isPlaying()) {
-            startForeground(1, streamNotification);
 
             sendResult(AudioStreamingState.STATUS_PLAYING);
             prefManager.setStatus(PLAYING);
@@ -177,8 +187,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     public enum AudioStreamingState {
         STATUS_PLAYING,
-        STATUS_PAUSED,
-        STATUS_LOADING,
-        STATUS_DESTROYED
+        STATUS_STOPPED,
+        STATUS_LOADING
     }
 }
