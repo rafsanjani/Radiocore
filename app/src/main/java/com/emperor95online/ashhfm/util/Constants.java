@@ -6,7 +6,8 @@ public class Constants {
     public static final String DEBUG_TAG = "com.emperor95online";
     public static final String RESULT = "com.emperor95online.ashhfm.service.AudioStreamingService.REQUEST_PROCESSED";
     public static final String MESSAGE = "com.emperor95online.ashhfm.service.AudioStreamingService.AUDIO_STREAMING_STATUS";
-    public static final String STREAM_URL = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
+    //public static final String STREAM_URL = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
+    public static final String STREAM_URL = "http://ashhfm.atunwadigital.streamguys1.com/ashhfm";
 
     public static final String ACTION_PLAY = "com.emperor95Online.ashhfm.PLAY";
     public static final String ACTION_STOP = "com.emperor95Online.ashhfm.PAUSE";
