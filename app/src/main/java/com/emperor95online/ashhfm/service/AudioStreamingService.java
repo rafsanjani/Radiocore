@@ -5,11 +5,13 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.emperor95online.ashhfm.HomeActivity;
@@ -24,6 +26,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.emperor95online.ashhfm.util.Constants.ACTION_PLAY;
 import static com.emperor95online.ashhfm.util.Constants.ACTION_STOP;
+import static com.emperor95online.ashhfm.util.Constants.DEBUG_TAG;
 import static com.emperor95online.ashhfm.util.Constants.LOADING;
 import static com.emperor95online.ashhfm.util.Constants.MESSAGE;
 import static com.emperor95online.ashhfm.util.Constants.PLAYING;
@@ -35,7 +38,8 @@ import static com.emperor95online.ashhfm.util.Constants.STREAM_URL;
 /***
  * Handle Audio playback
  */
-public class AudioStreamingService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class AudioStreamingService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
+        AudioManager.OnAudioFocusChangeListener {
 
     LocalBroadcastManager broadcastManager;
 
@@ -45,6 +49,10 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     private final String notificationText = "Live Radio - 101.1FM";
     private NotificationCompat.Builder builder;
     private Notification streamNotification;
+
+    private final Object mFocusLock = new Object();
+    private AudioManager audioManager;
+    private boolean mResumeOnFocusGain;
 
     public AudioStreamingService() {
     }
@@ -58,19 +66,26 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     @Override
     public void onCreate() {
         super.onCreate();
-
         streamNotification = createNotification();
         prefManager = new PrefManager(AudioStreamingService.this);
         broadcastManager = LocalBroadcastManager.getInstance(this);
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        synchronized (mFocusLock) {
+            int audioFocusReqCode = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            if (audioFocusReqCode == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                Log.i(DEBUG_TAG, "Couldn't gain audio focus:::::Exiting");
+                return;
+            }
+        }
 
         mediaPlayer = new MediaPlayer();
-
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(STREAM_URL);
         } catch (IOException e) {
-
+            Log.e(DEBUG_TAG, e.getMessage());
         }
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnErrorListener(this);
@@ -94,6 +109,12 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         }
     }
 
+    /**
+     * Create notification using the channel created by createNotificationChannel
+     * and also instantiate the field variable (builder)
+     *
+     * @return a Notification object which c
+     */
     private Notification createNotification() {
         Intent contentIntent = new Intent(this, HomeActivity.class);
         Intent pauseIntent = new Intent(this, AudioStreamingService.class);
@@ -116,27 +137,38 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         return builder.build();
     }
 
+    /**
+     * Start playback and set playback status in SharedPreferences.
+     */
+    private void startPlayback() {
+        prefManager.setStatus(LOADING);
+        sendResult(AudioStreamingState.STATUS_LOADING);
+        mediaPlayer.prepareAsync();
+    }
+
+    /**
+     * Stop playback and set playback status in SharedPreferences
+     */
+    private void stopPlayback() {
+        mediaPlayer.stop();
+        prefManager.setStatus(STOPPED);
+        sendResult(AudioStreamingState.STATUS_STOPPED);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //System.out.println("Trying to start service again");
         createNotificationChannel();
-        startForeground(1, streamNotification);
 
 
         if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
-            //  System.out.println("Current State:" + prefManager.getStatus());
+            startPlayback();
 
-            // prepare async to not block main thread
-            prefManager.setStatus(LOADING);
-            sendResult(AudioStreamingState.STATUS_LOADING);
-
-            mediaPlayer.prepareAsync();
+            //start foreground audio service right away instead of waiting for onPrepared to complete
+            // to beat android 0 5sec limit
+            startForeground(1, streamNotification);
         } else if (intent.getAction().equals(ACTION_STOP)) {
-            // System.out.println("Original State with :" + prefManager.getStatus());
-            mediaPlayer.stop();
-            prefManager.setStatus(STOPPED);
-            prefManager.setStatus(STATUS_STOPPED);
-            sendResult(AudioStreamingState.STATUS_STOPPED);
+            stopPlayback();
+
             //stop the foreground audio service and take away the notification from the user's screen
             stopForeground(true);
         }
@@ -150,6 +182,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             mediaPlayer.release();
             mediaPlayer = null;
             prefManager.setStatus(STATUS_STOPPED);
+            audioManager.abandonAudioFocus(this);
         }
     }
 
@@ -175,6 +208,10 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         return true;
     }
 
+    /**
+     * Send a result back to the Broadcast receiver of the calling activity, in this case (HomeActivity.java)
+     * @param message
+     */
     public void sendResult(AudioStreamingState message) {
         Intent intent = new Intent(RESULT);
         if (message != null)
@@ -184,6 +221,36 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         broadcastManager.sendBroadcast(intent);
     }
 
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                if (mResumeOnFocusGain) {
+                    synchronized (mFocusLock) {
+                        mResumeOnFocusGain = false;
+                        startPlayback();
+                    }
+                }
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS:
+                synchronized (mFocusLock) {
+                    mResumeOnFocusGain = false;
+                    stopPlayback();
+                }
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                synchronized (mFocusLock) {
+                    mResumeOnFocusGain = mediaPlayer.isPlaying();
+                }
+                stopPlayback();
+                break;
+        }
+    }
+
+    /**
+     * Discrete states of the Audio Streaming Service
+     */
     public enum AudioStreamingState {
         STATUS_PLAYING,
         STATUS_STOPPED,
