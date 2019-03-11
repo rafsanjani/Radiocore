@@ -38,6 +38,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     LocalBroadcastManager broadcastManager;
 
+    //Todo: replace this url
     private final String audioStreamUrl = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
     MediaPlayer mediaPlayer = null;
 
