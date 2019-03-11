@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.emperor95online.ashhfm.HomeActivity;
 import com.emperor95online.ashhfm.R;
@@ -64,6 +65,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
         mediaPlayer = new MediaPlayer();
 
+
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(STREAM_URL);
@@ -116,18 +118,13 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("Trying to start service again");
+        //System.out.println("Trying to start service again");
         createNotificationChannel();
         startForeground(1, streamNotification);
 
-        //calling this command a second time when player is loading will throw an exception so lets
-        //check for that condition as such
-        System.out.println("Starting Command with :" + intent.getAction());
-        System.out.println("Original State is :" + prefManager.getStatus());
-
 
         if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
-            System.out.println("Current State:" + prefManager.getStatus());
+            //  System.out.println("Current State:" + prefManager.getStatus());
 
             // prepare async to not block main thread
             prefManager.setStatus(LOADING);
@@ -135,7 +132,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
             mediaPlayer.prepareAsync();
         } else if (intent.getAction().equals(ACTION_STOP)) {
-            System.out.println("Original State with :" + prefManager.getStatus());
+            // System.out.println("Original State with :" + prefManager.getStatus());
             mediaPlayer.stop();
             prefManager.setStatus(STOPPED);
             prefManager.setStatus(STATUS_STOPPED);
@@ -173,6 +170,8 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public boolean onError(MediaPlayer mp, int what, int extra) {
         // ... react appropriately ...
         // The MediaPlayer has moved to the Error state, must be reset!
+        Toast.makeText(this, "Error Loading Stream::::Are you Online?", Toast.LENGTH_LONG).show();
+        sendResult(AudioStreamingState.STATUS_STOPPED);
         return true;
     }
 
