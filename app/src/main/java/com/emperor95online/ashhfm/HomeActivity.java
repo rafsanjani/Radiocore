@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.emperor95online.ashhfm.fragment.HomeFragment;
 import com.emperor95online.ashhfm.service.AudioStreamingService;
@@ -31,31 +30,26 @@ import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.emperor95online.ashhfm.util.Constants.ACTION_PAUSE;
 import static com.emperor95online.ashhfm.util.Constants.ACTION_PLAY;
+import static com.emperor95online.ashhfm.util.Constants.ACTION_STOP;
 import static com.emperor95online.ashhfm.util.Constants.DEBUG_TAG;
 import static com.emperor95online.ashhfm.util.Constants.MESSAGE;
 import static com.emperor95online.ashhfm.util.Constants.RESULT;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private final String audioStreamUrl = "http://stream.zenolive.com/urp3bkvway5tv.aac?15474";
     ///////////////////////////////////////////////////////////////////////////////////////////////
     BroadcastReceiver receiver;
     //let's assume nothing is playing when application starts
-    AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_PAUSED;
+    AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_STOPPED;
 
     private RelativeLayout layoutBottomSheet, bottomSheetMenuItems;
     private LinearLayout bottomSheetPlaybackItems;
     private BottomSheetBehavior sheetBehavior;
-    private ImageButton smallPlay;// smallPause;
-    private ImageButton play, pause;
-    private ImageButton bottomSheetMenuCollapse;
+    private ImageButton smallPlay, play, bottomSheetMenuCollapse;
     private ProgressBar smallProgressBar, progressBar;
     private TextView streamProgress, streamDuration;
     private AppCompatSeekBar seekBar;
     private ImageView smallLogo;
-    private Toast toast;
     private PrefManager prefManager;
     //
     private MediaPlayer mediaPlayer;
@@ -128,15 +122,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+
         if (v == smallPlay || v == play) { //one button to handle both states
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-                Intent intent = new Intent(HomeActivity.this, AudioStreamingService.class);
-                intent.setAction(ACTION_PAUSE);
-                ContextCompat.startForegroundService(this, intent);
-            } else if (audioStreamingState == AudioStreamingState.STATUS_PAUSED) {
-                Intent intent = new Intent(HomeActivity.this, AudioStreamingService.class);
-                intent.setAction(ACTION_PLAY);
-                ContextCompat.startForegroundService(this, intent);
+                audioServiceIntent.setAction(ACTION_STOP);
+                ContextCompat.startForegroundService(this, audioServiceIntent);
+            } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
+                audioServiceIntent.setAction(ACTION_PLAY);
+                ContextCompat.startForegroundService(this, audioServiceIntent);
+            } else {
+                System.out.println("No Initial Param supplied");
             }
         }
     }
@@ -216,7 +212,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void rotateCollapseButton(float slideOffset) {
         float rotationAngle = slideOffset * -180;
         bottomSheetMenuCollapse.setRotation(rotationAngle);
-        System.out.println("Angle: " + rotationAngle);
+        //System.out.println("Angle: " + rotationAngle);
     }
 
     /**
@@ -274,8 +270,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
                 break;
-            case STATUS_PAUSED:
-                Log.i(DEBUG_TAG, "Media is Paused");
+            case STATUS_STOPPED:
+                Log.i(DEBUG_TAG, "Media is Stopped");
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
                 break;
