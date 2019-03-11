@@ -25,7 +25,7 @@ public class NewsData {
     private List<News> newsList;
     private NewsFetchEventListener newsFetchEventListener;
 
-    NewsData(Context context) {
+    public NewsData(Context context) {
         this.context = context;
         newsList = new ArrayList<>();
     }
@@ -86,12 +86,12 @@ public class NewsData {
         if (newsFetchEventListener == null) {
             throw new IllegalArgumentException("NewsFetchEventListener must be supplied and cannot be null");
         }
-        newsList.add(new com.emperor95online.ashhfm.model.News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
-        newsList.add(new com.emperor95online.ashhfm.model.News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
-        newsList.add(new com.emperor95online.ashhfm.model.News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
-        newsList.add(new com.emperor95online.ashhfm.model.News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
-        newsList.add(new com.emperor95online.ashhfm.model.News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
-        newsList.add(new com.emperor95online.ashhfm.model.News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
+        newsList.add(new News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
+        newsList.add(new News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
+        newsList.add(new News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
+        newsList.add(new News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
+        newsList.add(new News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
+        newsList.add(new News(context.getString(R.string.tt), "13th January, 2019", "image_url"));
 
         //Lets assume that no error can occur at this point
         newsFetchEventListener.onNewsFetched(newsList);
@@ -110,7 +110,7 @@ public class NewsData {
     /**
      * Implement to register News Fetch events and propagate them accordingly
      */
-    interface NewsFetchEventListener {
+    public interface NewsFetchEventListener {
         void onNewsFetched(List<News> newsList);
 
         void onError(VolleyError error);
