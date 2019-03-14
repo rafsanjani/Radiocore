@@ -170,7 +170,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         if (getActivity() != null) {
                             getActivity()
                                     .getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+//                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                                     .replace(R.id.content, new TeamFragment())
                                     .commit();
                         }
