@@ -94,7 +94,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     /**
      * Create notification channel on Android O+
      *
-     * @return
+     *
      */
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -113,7 +113,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      * Create notification using the channel created by createNotificationChannel
      * and also instantiate the field variable (builder)
      *
-     * @return a Notification object which c
+     * @return a Notification object
      */
     private Notification createNotification() {
         Intent contentIntent = new Intent(this, HomeActivity.class);
@@ -205,6 +205,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         // The MediaPlayer has moved to the Error state, must be reset!
         Toast.makeText(this, "Error Loading Stream::::Are you Online?", Toast.LENGTH_LONG).show();
         sendResult(AudioStreamingState.STATUS_STOPPED);
+        stopSelf();
         return true;
     }
 
