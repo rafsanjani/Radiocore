@@ -34,6 +34,6 @@ public class SplashProgress extends AppCompatActivity {
 
                 finish();
             }
-        }, 3000);
+        }, 2000);
     }
 }
