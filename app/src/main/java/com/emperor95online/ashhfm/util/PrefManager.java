@@ -47,4 +47,17 @@ public class PrefManager {
         editor.commit();
     }
 
+    /**
+     * User can decide to start the audio stream immediately the app is launched or not
+     * @param value
+     */
+    public void setAutoPlayOnStart(boolean value) {
+        editor.putBoolean(Constants.AUTOPLAY_ON_START, value);
+        editor.commit();
+    }
+
+
+    public boolean getAutoPlayOnStart() {
+        return pref.getBoolean(Constants.AUTOPLAY_ON_START, true);
+    }
 }

@@ -94,7 +94,28 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             //TODO: Fix an ugly IllegalArgumentException thrown when the statement is unwrapped int the condition
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
                 onAudioStreamingStateReceived(audioStreamingState);
+            else if (prefManager.getAutoPlayOnStart()) {
+                //service is running but nothing is playing so if this flag is set, then start playback right away
+                startPlayback();
+
+            }
+        } else if (prefManager.getAutoPlayOnStart()) {
+            //service is not running, apparently nothing is playing so if this flag is set, then start playback right away
+            startPlayback();
+
         }
+    }
+
+    private void startPlayback() {
+        Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+        audioServiceIntent.setAction(ACTION_PLAY);
+        ContextCompat.startForegroundService(this, audioServiceIntent);
+    }
+
+    private void stopPlayback() {
+        Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+        audioServiceIntent.setAction(ACTION_STOP);
+        ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
     @Override
@@ -118,15 +139,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
-        //one button to handle both states
+        //Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+        //one button to handle both states, stop when playing, play when stopped. Pretty cool huh :) :)
         if (v == smallPlay || v == play) {
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-                audioServiceIntent.setAction(ACTION_STOP);
-                ContextCompat.startForegroundService(this, audioServiceIntent);
+//                audioServiceIntent.setAction(ACTION_STOP);
+//                ContextCompat.startForegroundService(this, audioServiceIntent);
+                stopPlayback();
             } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
-                audioServiceIntent.setAction(ACTION_PLAY);
-                ContextCompat.startForegroundService(this, audioServiceIntent);
+//                audioServiceIntent.setAction(ACTION_PLAY);
+//                ContextCompat.startForegroundService(this, audioServiceIntent);
+                startPlayback();
             }
         }
     }

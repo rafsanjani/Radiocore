@@ -205,7 +205,9 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         // The MediaPlayer has moved to the Error state, must be reset!
         Toast.makeText(this, "Error Loading Stream::::Are you Online?", Toast.LENGTH_LONG).show();
         sendResult(AudioStreamingState.STATUS_STOPPED);
+        stopForeground(true);
         stopSelf();
+        stopPlayback();
         return true;
     }
 
