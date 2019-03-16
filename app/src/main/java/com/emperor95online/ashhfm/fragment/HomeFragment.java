@@ -33,15 +33,17 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 
 // Created by Emperor95 on 1/13/2019.
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ImageButton more_main, imBtn;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
 
@@ -64,8 +66,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
 //
-        recyclerView = view.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
+        recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setLayoutManager(layoutManager);
 
@@ -121,6 +126,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onRefresh() {
+        // Clear the news items before adding new set of data
+        newsList.clear();
+        newsAdapter.notifyDataSetChanged();
+
+        getNewsData();
+    }
+
     //todo: Rename this method and push it into a new file
     private void getNewsData() {
         //final List<NewsFragment> newsList = new ArrayList<>();
@@ -136,6 +150,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 newsList.addAll(fetchedNewsItems);
                 newsAdapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
