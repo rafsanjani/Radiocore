@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ashh Fm</string>
+    <string name="app_name">Star FM</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -7,8 +7,10 @@
 
     <string name="tt">I\'ll never abolish free education because it\'s good - Mahama</string>
 
-    <string name="org_website">www.myashhfmonline.com</string>
-    <string name="org_name">ASHH FM ONLINE</string>
+    <string name="org_website">https://www.starfmatbonline.com/</string>
+    <string name="org_name">STAR FM ONLINE</string>
+    <string name="star_news">STAR FM NEWS</string>
+    <string name="star_online">Star Online</string>
     <string name="news_custom_content">
        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta lor
         em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
@@ -16,5 +18,6 @@
         pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
         dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
     </string>
+    <string name="live_radio_freq">Live Radio - 89.7</string>
 
 </resources>

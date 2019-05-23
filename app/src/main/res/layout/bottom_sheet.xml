@@ -38,7 +38,6 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:onClick="onLogoFrameClicked">
-
                 <ImageView
                     android:id="@+id/smallLogo"
                     android:layout_width="50dp"
@@ -304,6 +303,28 @@
             android:layout_gravity="center"
             android:visibility="invisible"
             tools:visibility="visible" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:onClick="onWebsiteClicked"
+            android:text="Website: http://starfmatbonline.com/"
+            android:textAlignment="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email: starfmatebubu89.7@gmail.com"
+            android:textAlignment="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="onPhoneClicked"
+            android:text="Phone: +2330205573828"
+            android:textAlignment="center" />
 
     </LinearLayout>
 
