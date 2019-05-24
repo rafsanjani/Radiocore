@@ -19,5 +19,8 @@
         dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
     </string>
     <string name="live_radio_freq">Live Radio - 89.7</string>
+    <string name="news_image">News Image</string>
+    <string name="news_item_default_text">Avengers: Age of Ultron</string>
+    <string name="news_item_def_date">March 1, 2019</string>
 
 </resources>

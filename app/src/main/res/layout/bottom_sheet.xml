@@ -38,6 +38,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:onClick="onLogoFrameClicked">
+
                 <ImageView
                     android:id="@+id/smallLogo"
                     android:layout_width="50dp"
@@ -64,11 +65,6 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back_small" />
 
-            <!--<FrameLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_vertical">-->
-
             <ImageButton
                 android:id="@+id/smallPlay"
                 android:layout_width="30dp"
@@ -82,18 +78,6 @@
                 android:maxHeight="30dp"
                 android:scaleType="center"
                 android:src="@drawable/avd_play_pause_small" />
-
-            <!--<ImageButton-->
-            <!--android:id="@+id/smallPause"-->
-            <!--android:layout_width="35dp"-->
-            <!--android:layout_height="35dp"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:background="?selectableItemBackgroundBorderless"-->
-            <!--android:src="@drawable/ic_pause_two"-->
-            <!--android:visibility="gone" />-->
-
-            <!--</FrameLayout>-->
 
             <ImageButton
                 android:layout_width="20dp"
@@ -116,57 +100,57 @@
                 android:textSize="17sp" />
         </LinearLayout>
 
-        <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/bottomsheet_menu_items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0"
-            android:visibility="visible"
-            tools:visibility="visible">
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/bottomsheet_menu_items"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:alpha="0"-->
+        <!--android:visibility="visible"-->
+        <!--tools:visibility="visible">-->
 
-            <ImageButton
-                android:id="@+id/bottomsheet_menu_collapse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:cropToPadding="true"
-                android:focusable="true"
-                android:onClick="onClickMenuCollapse"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_arrow_up" />
+        <!--<ImageButton-->
+        <!--android:id="@+id/bottomsheet_menu_collapse"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:background="?selectableItemBackgroundBorderless"-->
+        <!--android:clickable="true"-->
+        <!--android:cropToPadding="true"-->
+        <!--android:focusable="true"-->
+        <!--android:onClick="onClickMenuCollapse"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/ic_arrow_up" />-->
 
-            <ImageButton
-                android:id="@+id/more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="?selectableItemBackgroundBorderless"
-                android:onClick="onClickBottomSheetMore"
-                android:padding="10dp"
-                android:src="@drawable/ic_more" />
+        <!--<ImageButton-->
+        <!--android:id="@+id/more"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:background="?selectableItemBackgroundBorderless"-->
+        <!--android:onClick="onClickBottomSheetMore"-->
+        <!--android:padding="10dp"-->
+        <!--android:src="@drawable/ic_more" />-->
 
-            <ImageButton
-                android:id="@+id/share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/more"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="10dp"
-                android:src="@drawable/ic_share" />
+        <!--<ImageButton-->
+        <!--android:id="@+id/share"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_toLeftOf="@id/more"-->
+        <!--android:background="?selectableItemBackgroundBorderless"-->
+        <!--android:padding="10dp"-->
+        <!--android:src="@drawable/ic_share" />-->
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/share"
-                android:background="?selectableItemBackgroundBorderless"
-                android:padding="10dp"
-                android:src="@drawable/ic_download" />
+        <!--<ImageButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_toLeftOf="@id/share"-->
+        <!--android:background="?selectableItemBackgroundBorderless"-->
+        <!--android:padding="10dp"-->
+        <!--android:src="@drawable/ic_download" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
     </FrameLayout>
 
@@ -244,17 +228,6 @@
                     android:background="?selectableItemBackgroundBorderless"
                     android:src="@drawable/avd_play_pause" />
 
-                <!--<ImageButton-->
-                <!--android:id="@+id/pause"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="20dp"-->
-                <!--android:layout_marginRight="20dp"-->
-                <!--android:background="?selectableItemBackgroundBorderless"-->
-                <!--android:src="@drawable/ic_pause"-->
-                <!--android:visibility="gone" />-->
-
-                <!--</FrameLayout>-->
 
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -273,9 +246,9 @@
             android:ellipsize="marquee"
             android:gravity="center_horizontal"
             android:singleLine="true"
-            android:text="LIVE"
+            android:text="Live Online"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="17sp" />
 
     </LinearLayout>
 

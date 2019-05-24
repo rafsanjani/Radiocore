@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,19 +19,29 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="230dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/banner_home" />
+                    android:scaleType="fitXY"
+                    android:src="@drawable/banner_home"
+                    android:transitionName="bannerTransition" />
+
+                <!--<ImageButton-->
+                <!--android:id="@+id/more_main"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="end|top"-->
+                <!--android:background="?selectableItemBackgroundBorderless"-->
+                <!--android:padding="10dp"-->
+                <!--android:src="@drawable/ic_more_main" />-->
 
                 <ImageButton
-                    android:id="@+id/more_main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/imBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:layout_gravity="end|top"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_more_main" />
+                    android:padding="10dp" />
+
             </FrameLayout>
 
             <FrameLayout
@@ -52,8 +62,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="-1dp"
                     android:layout_marginRight="5dp"
-                    android:indeterminate="true"
-                    android:visibility="visible" />
+                    android:indeterminate="true" />
 
             </FrameLayout>
 

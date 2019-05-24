@@ -5,11 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,14 +24,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.viewpager.widget.ViewPager;
 
 import com.emperor95online.starfm.fragment.HomeFragment;
 import com.emperor95online.starfm.service.AudioStreamingService;
 import com.emperor95online.starfm.service.AudioStreamingService.AudioStreamingState;
 import com.emperor95online.starfm.util.PrefManager;
+import com.emperor95online.starfm.util.Tools;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.tabs.TabLayout;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.emperor95online.starfm.util.Constants.ACTION_PLAY;
 import static com.emperor95online.starfm.util.Constants.ACTION_STOP;
@@ -42,7 +57,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     //let's assume nothing is playing when application starts
     AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_STOPPED;
 
-    private RelativeLayout layoutBottomSheet, bottomSheetMenuItems;
+
+    //Declare UI variables
+    private RelativeLayout layoutBottomSheet;//, bottomSheetMenuItems;
     private LinearLayout bottomSheetPlaybackItems;
     private BottomSheetBehavior sheetBehavior;
     private ImageButton smallPlay, play, bottomSheetMenuCollapse;
@@ -52,20 +69,63 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView smallLogo;
     private PrefManager prefManager;
 
+    private ViewPager viewPager;
+    private SectionsPagerAdapter viewPagerAdapter;
+    private TabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         initViews();
+        initTabComponents();
+        initToolbar();
         initializeBottomSheetCallback();
         setUpInitPlayerState();
         setUpAudioStreamingServiceReceiver();
+    }
 
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
+        Tools.setSystemBarColor(this);
+    }
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content, new HomeFragment())
-                .commit();
+    private void initTabComponents() {
+        viewPager = findViewById(R.id.view_pager);
+        tabLayout = findViewById(R.id.tab_layout);
+        setupViewPager(viewPager);
+
+        tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_radio_live);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_about);
+
+        // set icon color pre-selected
+        tabLayout.getTabAt(0).getIcon().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // getSupportActionBar().setTitle(viewPagerAdapter.getTitle(tab.getPosition()));
+                if (tab.getPosition() != 0)
+                    tab.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if (tab.getPosition() != 0)
+                    tab.getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     /**
@@ -174,7 +234,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         smallLogo = findViewById(R.id.smallLogo);
         smallLogo.setOnClickListener(this);
 
-        bottomSheetMenuItems = findViewById(R.id.bottomsheet_menu_items);
+        //bottomSheetMenuItems = findViewById(R.id.bottomsheet_menu_items);
         bottomSheetPlaybackItems = findViewById(R.id.bottomsheet_playback_items);
         smallProgressBar = findViewById(R.id.smallProgressBar);
         progressBar = findViewById(R.id.progressBar);
@@ -186,7 +246,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         play = findViewById(R.id.mediacontrol_play);
 
-        bottomSheetMenuCollapse = findViewById(R.id.bottomsheet_menu_collapse);
+        // bottomSheetMenuCollapse = findViewById(R.id.bottomsheet_menu_collapse);
 
 
         smallPlay.setOnClickListener(this);
@@ -213,7 +273,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 performAlphaTransition(slideOffset);
                 rotateCollapseButton(slideOffset);
-
             }
         });
     }
@@ -225,7 +284,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void rotateCollapseButton(float slideOffset) {
         float rotationAngle = slideOffset * -180;
-        bottomSheetMenuCollapse.setRotation(rotationAngle);
+        //bottomSheetMenuCollapse.setRotation(rotationAngle);
         //System.out.println("Angle: " + rotationAngle);
     }
 
@@ -237,7 +296,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void performAlphaTransition(float slideOffset) {
         float alpha = 1 - slideOffset;
         bottomSheetPlaybackItems.setAlpha(alpha);
-        bottomSheetMenuItems.setAlpha(slideOffset);
+        //bottomSheetMenuItems.setAlpha(slideOffset);
     }
 
     /**
@@ -249,6 +308,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
+    }
+
+    /**
+     * Explicitly collapse the bottom sheet
+     */
+    public void collapseBottomSheet() {
+        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_COLLAPSED)
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     /**
@@ -274,22 +341,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @param streamingState The state of the Streaming Service (STATUS_PAUSED, STATUS_PLAYING ETC)
      */
-    private void onAudioStreamingStateReceived(AudioStreamingState streamingState) {
+    private void onAudioStreamingStateReceived(@NotNull AudioStreamingState streamingState) {
         switch (streamingState) {
             //we are only interested in PLAYING and PAUSED/STOPPED states
             case STATUS_PLAYING:
-                Log.i(DEBUG_TAG, "Media is Playing");
+                Log.i(DEBUG_TAG, "Media Playing");
                 findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
                 smallProgressBar.setVisibility(View.INVISIBLE);
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
                 break;
             case STATUS_STOPPED:
-                Log.i(DEBUG_TAG, "Media is Stopped");
+                Log.i(DEBUG_TAG, "Media Stopped");
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
                 break;
             case STATUS_LOADING:
+                Log.i(DEBUG_TAG, "Media is Loading");
                 findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 smallProgressBar.setVisibility(View.VISIBLE);
                 break;
@@ -321,5 +389,49 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         String phone = "+2330205573828";
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
         startActivity(intent);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
+        viewPagerAdapter.addFragment(new HomeFragment(), "About");   // index 1
+        viewPager.setAdapter(viewPagerAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public SectionsPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @NotNull
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        private void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

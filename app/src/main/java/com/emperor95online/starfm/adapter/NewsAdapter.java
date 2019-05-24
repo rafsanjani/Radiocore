@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.emperor95online.starfm.R;
 import com.emperor95online.starfm.model.News;
+import com.emperor95online.starfm.util.ItemAnimation;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -24,9 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-//import com.bumptech.glide.Glide;
-//import com.bumptech.glide.Glide;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
@@ -53,6 +51,21 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         return new NewsHolder(view);
     }
 
+//    @Override
+//    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                on_attach = false;
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//        });
+//        super.onAttachedToRecyclerView(recyclerView);
+//    }
+
+    private int lastPosition = -1;
+    private boolean on_attach = true;
+
     @Override
     public void onBindViewHolder(@NonNull final NewsHolder newsHolder, final int position) {
         final News newsObject = newsList.get(position);
@@ -62,14 +75,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         Date date = null;
 
 
-        try{
+        try {
             date = format.parse(string);
-        }catch (ParseException e){
+        } catch (ParseException e) {
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
         newsHolder.date.setText(simpleDateFormat.format(date));
         newsHolder.headline.setText(newsObject.getHeadline());
+
         Picasso.with(context)
                 .load(newsObject.getImage())
                 .into(newsHolder.imageView);
@@ -85,6 +99,26 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
         ViewCompat.setTransitionName(newsHolder.headline, headlineTransitionName + "_headline");
 
+        setAnimation(newsHolder.itemView, position);
+    }
+
+    private void setAnimation(View view, int position) {
+        if (position > lastPosition) {
+            int animation_type = ItemAnimation.FADE_IN;
+            ItemAnimation.animate(view, on_attach ? position : -1, animation_type);
+            lastPosition = position;
+        }
+    }
+
+    public void setOnNewsItemClickListener(NewsItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    ////
+
+
+    public interface NewsItemClickListener {
+        void onNewItemClicked(News newsObject, Pair[] pairs, int position);
     }
 
     public class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -118,16 +152,4 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
             listener.onNewItemClicked(newsList.get(position), pair, position);
         }
     }
-
-    ////
-
-
-    public void setOnNewsItemClickListener(NewsItemClickListener listener) {
-        this.listener = listener;
-    }
-
-    public interface NewsItemClickListener {
-        void onNewItemClicked(News newsObject, Pair[] pairs, int position);
-    }
-
 }

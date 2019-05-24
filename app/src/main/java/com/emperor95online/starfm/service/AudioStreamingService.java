@@ -46,7 +46,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     MediaPlayer mediaPlayer = null;
 
     private PrefManager prefManager;
-    private String notificationText = "This will be set when application context is created";
+    private String notificationText = "Empty"; //this will be set when context is created
     private NotificationCompat.Builder builder;
     private Notification streamNotification;
 
@@ -163,7 +163,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
 
-
         if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
             startPlayback();
 
@@ -218,6 +217,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     /**
      * Send a result back to the Broadcast receiver of the calling activity, in this case (HomeActivity.java)
+     *
      * @param message
      */
     public void sendResult(AudioStreamingState message) {
