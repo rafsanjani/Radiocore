@@ -11,25 +11,45 @@ import androidx.core.view.ViewCompat;
 
 import com.squareup.picasso.Picasso;
 
-public class NewsDetailActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private TextView textContent, textDate, textTitle;
+public class NewsDetailActivity extends AppCompatActivity {
+    //TODO: use ButterKnife throughout the project
+    @BindView(R.id.content)
+    private TextView textContent;
+
+    @BindView(R.id.headline)
+    private TextView textTitle;
+
+    @BindView(R.id.date)
+    private TextView textDate;
+
+
+    @BindView(R.id.image)
     private ImageView imageView;
 
-    private String content = "", image = "", title = "", date = "";
+    @BindView(R.id.toolbar)
+    private Toolbar toolbar;
+
+    private String content, image, title, date;
+
+//    private String content = "", image = "", title = "", date = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
+//        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textContent = findViewById(R.id.content);
-        textTitle = findViewById(R.id.headline);
-        textDate = findViewById(R.id.date);
-        imageView = findViewById(R.id.image);
+//        textContent = findViewById(R.id.content);
+//        textTitle = findViewById(R.id.headline);
+//        textDate = findViewById(R.id.date);
+//        imageView = findViewById(R.id.image);
 
         String[] transitions;
 
@@ -49,6 +69,5 @@ public class NewsDetailActivity extends AppCompatActivity {
         textDate.setText("Published on " + date);
 
         Picasso.get().load(image).into(imageView);
-
     }
 }
