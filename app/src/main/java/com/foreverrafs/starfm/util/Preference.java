@@ -39,7 +39,7 @@ public class Preference {
     }
 
     /**
-     * Checks wehther the application's status has been set
+     * Checks whether the application's status has been set
      * @return
      */
     public boolean isStatusSet() {
