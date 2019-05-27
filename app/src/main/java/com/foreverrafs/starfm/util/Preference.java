@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class PrefManager {
+public class Preference {
     ///////////////SETTINGS VARIABLES
     private final String AUTOPLAY = "autoplay";
     private SharedPreferences settings;
@@ -16,7 +16,7 @@ public class PrefManager {
     ////////////////END OF SETTINGS VARIABLES
 
 
-    public PrefManager(Context context) {
+    public Preference(Context context) {
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
 

@@ -20,7 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.foreverrafs.starfm.HomeActivity;
 import com.foreverrafs.starfm.R;
 import com.foreverrafs.starfm.util.Constants;
-import com.foreverrafs.starfm.util.PrefManager;
+import com.foreverrafs.starfm.util.Preference;
 
 import java.io.IOException;
 
@@ -45,7 +45,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     MediaPlayer mediaPlayer = null;
 
-    private PrefManager prefManager;
+    private Preference preference;
     private String notificationText = "Empty"; //this will be set when context is created
     private NotificationCompat.Builder builder;
     private Notification streamNotification;
@@ -71,7 +71,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         notificationText = this.getString(R.string.live_radio_freq);
 
         streamNotification = createNotification();
-        prefManager = new PrefManager(AudioStreamingService.this);
+        preference = new Preference(AudioStreamingService.this);
         broadcastManager = LocalBroadcastManager.getInstance(this);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -145,7 +145,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      * Start playback and set playback status in SharedPreferences.
      */
     private void startPlayback() {
-        prefManager.setStatus(LOADING);
+        preference.setStatus(LOADING);
         sendResult(AudioStreamingState.STATUS_LOADING);
         mediaPlayer.prepareAsync();
     }
@@ -155,7 +155,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      */
     private void stopPlayback() {
         mediaPlayer.stop();
-        prefManager.setStatus(STOPPED);
+        preference.setStatus(STOPPED);
         sendResult(AudioStreamingState.STATUS_STOPPED);
     }
 
@@ -184,7 +184,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-            prefManager.setStatus(STATUS_STOPPED);
+            preference.setStatus(STATUS_STOPPED);
             audioManager.abandonAudioFocus(this);
         }
     }
@@ -198,7 +198,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         if (player.isPlaying()) {
 
             sendResult(AudioStreamingState.STATUS_PLAYING);
-            prefManager.setStatus(PLAYING);
+            preference.setStatus(PLAYING);
         }
     }
 

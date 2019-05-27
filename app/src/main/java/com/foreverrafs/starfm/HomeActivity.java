@@ -33,7 +33,7 @@ import com.foreverrafs.starfm.fragment.AboutFragment;
 import com.foreverrafs.starfm.fragment.HomeFragment;
 import com.foreverrafs.starfm.service.AudioStreamingService;
 import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
-import com.foreverrafs.starfm.util.PrefManager;
+import com.foreverrafs.starfm.util.Preference;
 import com.foreverrafs.starfm.util.Tools;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     // private TextView streamProgress, streamDuration;
     private AppCompatSeekBar seekBar;
     private ImageView smallLogo;
-    private PrefManager prefManager;
+    private Preference preference;
 
     private ViewPager viewPager;
     private SectionsPagerAdapter viewPagerAdapter;
@@ -143,22 +143,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
     private void setUpInitPlayerState() {
-        prefManager = new PrefManager(HomeActivity.this);
+        preference = new Preference(HomeActivity.this);
         //SharedPreferences appSettings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
         if ((isMyServiceRunning(AudioStreamingService.class))) {
-            audioStreamingState = AudioStreamingState.valueOf(prefManager.getStatus());
+            audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
             //we only care about this if it's playing, yeah no one cares if you are dumb :) :) :)
             //TODO: Fix an ugly IllegalArgumentException thrown when the statement is unwrapped int the condition
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
                 onAudioStreamingStateReceived(audioStreamingState);
-            else if (prefManager.isAutoPlayOnStart()) {
+            else if (preference.isAutoPlayOnStart()) {
                 //service is running but nothing is playing so if this flag is set, then start playback right away
                 startPlayback();
 
             }
-        } else if (prefManager.isAutoPlayOnStart()/*prefManager.isAutoPlayOnStart()*/) {
+        } else if (preference.isAutoPlayOnStart()/*preference.isAutoPlayOnStart()*/) {
             //service is not running, apparently nothing is playing so if this flag is set, then start playback right away
             startPlayback();
 
