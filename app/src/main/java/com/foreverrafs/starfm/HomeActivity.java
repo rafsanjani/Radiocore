@@ -5,13 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -146,8 +144,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void setUpInitPlayerState() {
         prefManager = new PrefManager(HomeActivity.this);
-        SharedPreferences appSettings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Boolean autostart = appSettings.getBoolean("autostart_playback", false);
+        //SharedPreferences appSettings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
 
         if ((isMyServiceRunning(AudioStreamingService.class))) {
             audioStreamingState = AudioStreamingState.valueOf(prefManager.getStatus());
@@ -155,12 +153,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             //TODO: Fix an ugly IllegalArgumentException thrown when the statement is unwrapped int the condition
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
                 onAudioStreamingStateReceived(audioStreamingState);
-            else if (prefManager.getAutoPlayOnStart()) {
+            else if (prefManager.isAutoPlayOnStart()) {
                 //service is running but nothing is playing so if this flag is set, then start playback right away
                 startPlayback();
 
             }
-        } else if (autostart/*prefManager.getAutoPlayOnStart()*/) {
+        } else if (prefManager.isAutoPlayOnStart()/*prefManager.isAutoPlayOnStart()*/) {
             //service is not running, apparently nothing is playing so if this flag is set, then start playback right away
             startPlayback();
 
@@ -234,13 +232,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         smallLogo = findViewById(R.id.smallLogo);
         smallLogo.setOnClickListener(this);
 
-        //bottomSheetMenuItems = findViewById(R.id.bottomsheet_menu_items);
         bottomSheetPlaybackItems = findViewById(R.id.bottomsheet_playback_items);
         smallProgressBar = findViewById(R.id.smallProgressBar);
         progressBar = findViewById(R.id.progressBar);
         seekBar = findViewById(R.id.seekBar);
-//        streamProgress = findViewById(R.id.streamProgress);
-//        streamDuration = findViewById(R.id.streamDuration);
+
 
         smallPlay = findViewById(R.id.smallPlay);
 

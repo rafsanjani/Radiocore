@@ -4,60 +4,82 @@ package com.foreverrafs.starfm.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class PrefManager {
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-    Context _context;
-
-    // shared pref mode
-    int PRIVATE_MODE = 0;
-
-    // Shared preferences file name
-    private static final String PREF_NAME = "MY_APPLICATION";
-
+    ///////////////SETTINGS VARIABLES
+    private final String AUTOPLAY = "autoplay";
+    private SharedPreferences settings;
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
     private static final String STATUS = "status_set";
 
+    ////////////////END OF SETTINGS VARIABLES
+
+
     public PrefManager(Context context) {
-        this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = pref.edit();
+        settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public void setFirstTimeLaunch(boolean isFirstTime) {
-        editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
-        editor.commit();
-    }
-
+    /**
+     * Checks if we are starting the application for the first time.
+     *
+     * @return
+     */
     public boolean isFirstTimeLaunch() {
-        return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
+        return settings.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
 
+    /**
+     * Store a value which tells the context that the application is starting for the first time
+     *
+     * @param isFirstTime
+     */
+    public void setFirstTimeLaunch(boolean isFirstTime) {
+        settings.edit().putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime).apply();
+    }
+
+    /**
+     * Checks wehther the application's status has been set
+     * @return
+     */
     public boolean isStatusSet() {
-        return pref.contains(STATUS);
+        return settings.contains(STATUS);
     }
 
+    /**
+     * Get the application's playing state. This is either PLAYING, STOPPED or LOADING depending on what the
+     * user is doing
+     * @return
+     */
     public String getStatus() {
-        return pref.getString(STATUS, "");
+        return settings.getString(STATUS, "");
     }
 
+    /**
+     * Set the application's playing status, this can either be loading, playing or stopped depending on
+     * the user's actions or the network status
+     * @param status
+     */
     public void setStatus(String status) {
-        editor.putString(STATUS, status);
-        editor.commit();
+        settings.edit().putString(STATUS, status).apply();
+    }
+
+    /**
+     * Checks whether user wants to start audio stream when app is launched without explicitly clicking on the play button
+     *
+     * @return a boolean (true/false) indicating whether user has decided to enable autoplay or not
+     */
+    public boolean isAutoPlayOnStart() {
+        return settings.getBoolean(AUTOPLAY, false);
     }
 
     /**
      * User can decide to start the audio stream immediately the app is launched or not
-     * @param value
+     * This will be set mostly from the settings screen automatically
+     *
+     * @param value True or false, indicating whether we want to auto start or not
      */
     public void setAutoPlayOnStart(boolean value) {
-        editor.putBoolean(Constants.AUTOPLAY_ON_START, value);
-        editor.commit();
-    }
-
-
-    public boolean getAutoPlayOnStart() {
-        return pref.getBoolean(Constants.AUTOPLAY_ON_START, true);
+        settings.edit().putBoolean(Constants.AUTOPLAY_ON_START, value).apply();
     }
 }
