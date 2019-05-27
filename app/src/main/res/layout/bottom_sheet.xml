@@ -281,7 +281,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:onClick="onWebsiteClicked"
             android:text="Website: http://starfmatbonline.com/"
             android:textAlignment="center" />
 
@@ -295,7 +294,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:onClick="onPhoneClicked"
             android:text="Phone: +2330205573828"
             android:textAlignment="center" />
 

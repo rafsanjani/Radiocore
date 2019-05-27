@@ -25,14 +25,6 @@
                     android:src="@drawable/banner_home"
                     android:transitionName="bannerTransition" />
 
-                <!--<ImageButton-->
-                <!--android:id="@+id/more_main"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="end|top"-->
-                <!--android:background="?selectableItemBackgroundBorderless"-->
-                <!--android:padding="10dp"-->
-                <!--android:src="@drawable/ic_more_main" />-->
 
                 <ImageButton
                     android:id="@+id/imBtn"

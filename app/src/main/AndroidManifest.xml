@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.emperor95online.starfm">
+    package="com.foreverrafs.starfm">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -17,12 +18,14 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.emperor95online.starfm.NewsDetailActivity"
-            android:label="@string/star_news"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
         <activity
-            android:name="com.emperor95online.starfm.SplashActivity"
+            android:name=".NewsDetailActivity"
+            android:label="@string/star_news"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SplashActivity"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,13 +34,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.emperor95online.starfm.HomeActivity"
+            android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.emperor95online.starfm.SplashProgress"
+            android:name=".SplashProgress"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="com.emperor95online.starfm.service.AudioStreamingService" />
+        <service android:name=".service.AudioStreamingService" />
     </application>
 
 </manifest>
