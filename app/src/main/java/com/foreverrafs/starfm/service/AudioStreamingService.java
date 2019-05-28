@@ -86,6 +86,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         mediaPlayer = new MediaPlayer();
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
         try {
             mediaPlayer.setDataSource(STREAM_URL);
         } catch (IOException e) {
@@ -204,9 +205,8 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        // ... react appropriately ...
-        // The MediaPlayer has moved to the Error state, must be reset!
         Toast.makeText(this, "Error Loading Stream::::Are you Online?", Toast.LENGTH_LONG).show();
+        Log.e(DEBUG_TAG, "Error Loading Stream::::Possibly no network on target device");
         sendResult(AudioStreamingState.STATUS_STOPPED);
 
         stopForeground(true);

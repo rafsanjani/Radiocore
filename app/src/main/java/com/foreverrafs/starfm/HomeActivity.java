@@ -19,10 +19,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -30,7 +30,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
-import com.foreverrafs.starfm.fragment.HomeFragment;
+import com.foreverrafs.starfm.fragment.HomeNewsFragment;
 import com.foreverrafs.starfm.service.AudioStreamingService;
 import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
 import com.foreverrafs.starfm.util.Preference;
@@ -38,6 +38,9 @@ import com.foreverrafs.starfm.util.Tools;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
@@ -51,45 +54,64 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     //let's assume nothing is playing when application starts
     AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_STOPPED;
 
-
     //Declare UI variables
-    private RelativeLayout layoutBottomSheet;//, bottomSheetMenuItems;
-    private LinearLayout bottomSheetPlaybackItems;
-    private BottomSheetBehavior sheetBehavior;
-    private ImageButton smallPlay, play, bottomSheetMenuCollapse;
-    private ProgressBar smallProgressBar, progressBar;
-    // private TextView streamProgress, streamDuration;
-    private AppCompatSeekBar seekBar;
-    private ImageView smallLogo;
-    private Preference preference;
+    @BindView(R.id.bottom_sheet)
+    RelativeLayout layoutBottomSheet;//, bottomSheetMenuItems;
 
-    private ViewPager viewPager;
-    private SectionsPagerAdapter viewPagerAdapter;
-    private TabLayout tabLayout;
+    @BindView(R.id.bottomsheet_playback_items)
+    LinearLayout bottomSheetPlaybackItems;
+
+    @BindView(R.id.smallPlay)
+    ImageButton smallPlay;
+
+    @BindView(R.id.mediacontrol_play)
+    ImageButton play;
+
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+
+    @BindView(R.id.seekBar)
+    SeekBar seekBar;
+
+    @BindView(R.id.smallLogo)
+    ImageView smallLogo;
+
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+
+    @BindView(R.id.smallProgressBar)
+    ProgressBar smallProgressBar;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    private BottomSheetBehavior sheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        initViews();
-        initTabComponents();
-        initToolbar();
+        ButterKnife.bind(this);
+
+        initializeViews();
+        initializeTabComponents();
+        initializeToolbar();
         initializeBottomSheetCallback();
-        setUpInitPlayerState();
+        setUpInitialPlayerState();
         setUpAudioStreamingServiceReceiver();
     }
 
-    private void initToolbar() {
+    private void initializeToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.app_name));
         Tools.setSystemBarColor(this);
     }
 
-    private void initTabComponents() {
+    private void initializeTabComponents() {
         viewPager = findViewById(R.id.view_pager);
-        tabLayout = findViewById(R.id.tab_layout);
+//        tabLayout = findViewById(R.id.tab_layout);
         setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -142,27 +164,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Check if AudioStreamingService is running and change the AudioStreamingState accordingly
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
-    private void setUpInitPlayerState() {
-        preference = new Preference(HomeActivity.this);
-        //SharedPreferences appSettings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    private void setUpInitialPlayerState() {
+        Preference preference = new Preference(HomeActivity.this);
 
+        audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
 
-        if ((isMyServiceRunning(AudioStreamingService.class))) {
-            audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
-            //we only care about this if it's playing, yeah no one cares if you are dumb :) :) :)
-            //TODO: Fix an ugly IllegalArgumentException thrown when the statement is unwrapped int the condition
-            if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
-                onAudioStreamingStateReceived(audioStreamingState);
-            else if (preference.isAutoPlayOnStart()) {
-                //service is running but nothing is playing so if this flag is set, then start playback right away
-                startPlayback();
-
-            }
-        } else if (preference.isAutoPlayOnStart()/*preference.isAutoPlayOnStart()*/) {
-            //service is not running, apparently nothing is playing so if this flag is set, then start playback right away
+        if (!isMyServiceRunning(AudioStreamingService.class) && preference.isAutoPlayOnStart()) {
             startPlayback();
-
+            return;
         }
+
+        //Service is running, service only runs when media is playing
+        onAudioStreamingStateReceived(audioStreamingState);
     }
 
     private void startPlayback() {
@@ -198,7 +211,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        //Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         //one button to handle both states, stop when playing, play when stopped. Pretty cool huh :) :)
         if (v == smallPlay || v == play) {
             if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
@@ -225,22 +237,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Initialize all views by before findViewById or @Bind when using ButterKnife
      * Note: All view Initializing must be performed in this module
      */
-    private void initViews() {
-        layoutBottomSheet = findViewById(R.id.bottom_sheet);
+    private void initializeViews() {
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
-        smallLogo = findViewById(R.id.smallLogo);
         smallLogo.setOnClickListener(this);
-
-        bottomSheetPlaybackItems = findViewById(R.id.bottomsheet_playback_items);
-        smallProgressBar = findViewById(R.id.smallProgressBar);
-        progressBar = findViewById(R.id.progressBar);
-        seekBar = findViewById(R.id.seekBar);
-
-
-        smallPlay = findViewById(R.id.smallPlay);
-
-        play = findViewById(R.id.mediacontrol_play);
 
         smallPlay.setOnClickListener(this);
 
@@ -361,15 +361,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    public void onClickBottomSheetMore(View view) {
-//        toggleBottomSheet();
-//    }
-//
-//    //TODO: These two methods below do not work. Clicking the arrow button does nothing in this current implementation
-//    //TODO: Trying to handle this in the general OnclickEventHandler doesn't seem to work. Fix it later.
-//    public void onClickMenuCollapse(View view) {
-//        toggleBottomSheet();
-//    }
 
     //TODO: Remove this ugly logic and replace it with a call to onMenuCollapse
     public void onLogoFrameClicked(View view) {
@@ -378,8 +369,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void setupViewPager(ViewPager viewPager) {
-        viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
+        SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(new HomeNewsFragment(), "Live");    // index 0
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 1
         viewPager.setAdapter(viewPagerAdapter);
     }
