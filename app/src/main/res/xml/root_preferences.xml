@@ -20,7 +20,7 @@
     <PreferenceCategory app:title="GENERAL SETTINGS">
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="autoplay"
+            android:key="autoplay_on_start"
             android:title="Auto play on launch" />
     </PreferenceCategory>
 
