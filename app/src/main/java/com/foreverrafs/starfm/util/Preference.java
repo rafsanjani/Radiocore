@@ -6,16 +6,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import static com.foreverrafs.starfm.util.Constants.PLAYING;
+
 public class Preference {
+    private static final String IS_FIRST_TIME_LAUNCH = "is_first_time_launch";
+    private static final String STATUS = "streaming_status";
+    private static final String LAST_NEWS_FETCHED_DATE = "last_news_fetched_date";
     ///////////////SETTINGS VARIABLES
-    private final String AUTOPLAY = "autoplay";
+    private final String AUTOPLAY = "autoplay_on_start";
     private SharedPreferences settings;
-    private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
-    private static final String STATUS = "status_set";
 
     ////////////////END OF SETTINGS VARIABLES
 
 
+    //call to this constructor already returns a singletone so no need to define our class as one
     public Preference(Context context) {
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -40,6 +44,7 @@ public class Preference {
 
     /**
      * Checks whether the application's status has been set
+     *
      * @return
      */
     public boolean isStatusSet() {
@@ -49,15 +54,17 @@ public class Preference {
     /**
      * Get the application's playing state. This is either PLAYING, STOPPED or LOADING depending on what the
      * user is doing
+     *
      * @return
      */
     public String getStatus() {
-        return settings.getString(STATUS, "");
+        return settings.getString(STATUS, PLAYING);
     }
 
     /**
      * Set the application's playing status, this can either be loading, playing or stopped depending on
      * the user's actions or the network status
+     *
      * @param status
      */
     public void setStatus(String status) {
@@ -81,5 +88,23 @@ public class Preference {
      */
     public void setAutoPlayOnStart(boolean value) {
         settings.edit().putBoolean(Constants.AUTOPLAY_ON_START, value).apply();
+    }
+
+
+    /**
+     * Get the last time news items were fetched
+     */
+    public String getLastNewsFetchedDate() {
+        return settings.getString(LAST_NEWS_FETCHED_DATE, "May 27, 2019");
+    }
+
+    /**
+     * Store the date and time of the last time news items were fetched. This will be used for news items
+     * caching
+     *
+     * @param value
+     */
+    public void setLastNewsFetchedDate(String value) {
+        settings.edit().putString(LAST_NEWS_FETCHED_DATE, value).apply();
     }
 }

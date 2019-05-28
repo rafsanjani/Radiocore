@@ -15,22 +15,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NewsDetailActivity extends AppCompatActivity {
-    //TODO: use ButterKnife throughout the project
     @BindView(R.id.content)
-    private TextView textContent;
+    TextView textContent;
 
     @BindView(R.id.headline)
-    private TextView textTitle;
+    TextView textTitle;
 
     @BindView(R.id.date)
-    private TextView textDate;
-
+    TextView textDate;
 
     @BindView(R.id.image)
-    private ImageView imageView;
+    ImageView imageView;
 
     @BindView(R.id.toolbar)
-    private Toolbar toolbar;
+    Toolbar toolbar;
 
     private String content, image, title, date;
 
