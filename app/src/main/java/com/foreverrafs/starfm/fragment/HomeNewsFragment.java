@@ -34,7 +34,7 @@ import java.util.List;
 
 // Created by Emperor95 on 1/13/2019.
 
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     // private ImageButton more_main, imBtn;
 
