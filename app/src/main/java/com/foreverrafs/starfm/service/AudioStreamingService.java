@@ -19,6 +19,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.foreverrafs.starfm.HomeActivity;
 import com.foreverrafs.starfm.R;
+import com.foreverrafs.starfm.StreamPlayer;
 import com.foreverrafs.starfm.util.Constants;
 import com.foreverrafs.starfm.util.Preference;
 
@@ -43,7 +44,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
     LocalBroadcastManager broadcastManager;
 
-    MediaPlayer mediaPlayer = null;
+    MediaPlayer mediaPlayer = StreamPlayer.getPlayer();
 
     private Preference preference;
     private String notificationText = "Empty"; //this will be set when context is created
@@ -83,7 +84,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             }
         }
 
-        mediaPlayer = new MediaPlayer();
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
