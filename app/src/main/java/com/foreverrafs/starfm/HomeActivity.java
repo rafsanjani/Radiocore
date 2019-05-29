@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
+import com.chibde.visualizer.LineBarVisualizer;
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
 import com.foreverrafs.starfm.fragment.HomeNewsFragment;
@@ -85,6 +86,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    @BindView(R.id.visualizer)
+    LineBarVisualizer visualizer;
+
     private BottomSheetBehavior sheetBehavior;
 
     @Override
@@ -111,7 +115,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initializeTabComponents() {
         viewPager = findViewById(R.id.view_pager);
-//        tabLayout = findViewById(R.id.tab_layout);
         setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -247,6 +250,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         play.setOnClickListener(this);
 
         seekBar.setEnabled(false);
+
+        visualizer.setColor(ContextCompat.getColor(this, R.color.blue_500));
+
+        visualizer.setPlayer(StreamPlayer.getPlayer().getAudioSessionId());
     }
 
     /**
@@ -359,12 +366,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 smallProgressBar.setVisibility(View.VISIBLE);
                 break;
         }
-    }
-
-
-    //TODO: Remove this ugly logic and replace it with a call to onMenuCollapse
-    public void onLogoFrameClicked(View view) {
-        toggleBottomSheet();
     }
 
 
