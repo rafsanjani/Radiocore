@@ -8,6 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CardStyle" parent="CardView.Light">
+        <item name="cardElevation">5dp</item>
+        <item name="cardBackgroundColor">@color/orange_50</item>
+        <item name="cardCornerRadius">5dp</item>
+
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
