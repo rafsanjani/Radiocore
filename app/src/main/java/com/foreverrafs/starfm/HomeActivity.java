@@ -1,10 +1,12 @@
 package com.foreverrafs.starfm;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
@@ -24,6 +26,7 @@ import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
@@ -90,6 +93,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     LineBarVisualizer visualizer;
 
     private BottomSheetBehavior sheetBehavior;
+
+    private final int PERMISSION_RECORD_AUDIO = 9999;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,16 +249,40 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
         smallLogo.setOnClickListener(this);
-
         smallPlay.setOnClickListener(this);
-
         play.setOnClickListener(this);
 
         seekBar.setEnabled(false);
 
-        visualizer.setColor(ContextCompat.getColor(this, R.color.blue_500));
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
+                PackageManager.PERMISSION_GRANTED) {
+            requestAudioRecordingPermission();
+            return;
+        }
 
+        setUpAudioVisualizer();
+    }
+
+    private void setUpAudioVisualizer() {
+        visualizer.setColor(ContextCompat.getColor(this, R.color.teal_800));
         visualizer.setPlayer(StreamPlayer.getPlayer().getAudioSessionId());
+    }
+
+    public void requestAudioRecordingPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_RECORD_AUDIO);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_RECORD_AUDIO:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    setUpAudioVisualizer();
+                else
+                    Log.i(DEBUG_TAG, "Permission to record audio denied. Visualizer cannot be initialized");
+                break;
+        }
     }
 
     /**
