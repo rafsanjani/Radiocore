@@ -83,6 +83,9 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             }
         }
 
+        //start foreground audio service right away instead of waiting for onPrepared to complete
+        // to beat android 0 5sec limit
+        startForeground(1, streamNotification);
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -166,9 +169,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
             startPlayback();
 
-            //start foreground audio service right away instead of waiting for onPrepared to complete
-            // to beat android 0 5sec limit
-            startForeground(1, streamNotification);
         } else if (intent.getAction().equals(ACTION_STOP)) {
             stopPlayback();
 
