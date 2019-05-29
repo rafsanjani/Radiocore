@@ -1,47 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    tools:targetApi="lollipop">
+    xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
         <vector
+            android:name="play_pause"
             android:width="80dp"
             android:height="80dp"
             android:viewportWidth="24"
             android:viewportHeight="24">
-
             <path
-                android:name="play1"
+                android:name="path"
+                android:pathData="M 10 16.5 L 16 12 L 10 7.5 L 10 16.5 Z M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z"
                 android:fillColor="#fff"
-                android:pathData="M 8 5.14 L 8 19.14 L 11.456 16.661 L 11.456 7.339 Z" />
-
-            <path
-                android:name="play2"
-                android:fillColor="#fff"
-                android:pathData="M 11.245 16.795 L 19 12.14 L 19 12.14 L 11.245 7.205 Z" />
+                android:strokeWidth="1" />
         </vector>
     </aapt:attr>
-
-    <target android:name="play1">
+    <target android:name="path">
         <aapt:attr name="android:animation">
             <objectAnimator
-                android:interpolator="@android:anim/linear_interpolator"
                 android:propertyName="pathData"
+                android:duration="500"
+                android:interpolator="@android:interpolator/fast_out_slow_in"
+                android:valueFrom="M 14.32 13.26 L 10 10.25 L 10 13.696 L 10 16.5 L 10 16.5 L 14.32 13.26 M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 14.32 13.26 L 16 12 L 10 7.5 L 10 7.5 L 10 10.25 L 14.32 13.26"
                 android:valueType="pathType"
-                android:valueFrom="M 8 5.14 L 8 19.14 L 11.456 16.661 L 11.456 7.339 Z"
-                android:valueTo="M 6 5      L 6 19    L 10 19         L 10 5 Z" />
-        </aapt:attr>
-    </target>
-
-    <target android:name="play2">
-        <aapt:attr name="android:animation">
-            <objectAnimator
-                android:interpolator="@android:anim/linear_interpolator"
-                android:propertyName="pathData"
-                android:valueType="pathType"
-                android:valueFrom="M 11.245 16.795 L 19 12.14 L 19 12.14 L 11.245 7.205 Z"
-                android:valueTo="M 14 19           L 18 19    L 18 5     L 14 5 Z" />
+                android:valueTo="M 11 16 L 11 8 L 9 8 L 9 16 L 9 16 L 11 16 M 12 2 C 6.48 2 2 6.48 2 12 C 2 17.52 6.48 22 12 22 C 17.52 22 22 17.52 22 12 C 22 6.48 17.52 2 12 2 Z M 12 20 C 7.59 20 4 16.41 4 12 C 4 7.59 7.59 4 12 4 C 16.41 4 20 7.59 20 12 C 20 16.41 16.41 20 12 20 Z M 15 16 L 15 8 L 13 8 L 13 16 L 13 16 L 15 16" />
         </aapt:attr>
     </target>
 </animated-vector>

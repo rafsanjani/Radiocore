@@ -30,21 +30,19 @@
             android:orientation="horizontal"
             android:padding="5dp"
             android:visibility="visible"
-            tools:visibility="gone">
+            tools:visibility="visible">
             <!--Stack small logo and loading progress in this frame-->
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:onClick="onLogoFrameClicked">
+                android:layout_marginRight="10dp">
 
                 <ImageView
                     android:id="@+id/smallLogo"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="onLogoFrameClicked"
                     android:src="@drawable/logo_small"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
@@ -67,12 +65,11 @@
 
             <ImageButton
                 android:id="@+id/smallPlay"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/desc_small_play_button"
                 android:cropToPadding="true"
                 android:maxWidth="30dp"
                 android:maxHeight="30dp"
@@ -86,18 +83,28 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_next_small" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:ellipsize="marquee"
-                android:gravity="end"
-                android:paddingEnd="10dp"
-                android:paddingRight="10dp"
-                android:singleLine="true"
-                android:text="Live"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:ellipsize="marquee"-->
+            <!--android:gravity="end"-->
+            <!--android:paddingStart="10dp"-->
+            <!--android:paddingEnd="10dp"-->
+            <!--android:singleLine="true"-->
+            <!--android:text="Live"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="17sp" />-->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.chibde.visualizer.LineBarVisualizer
+                android:id="@+id/visualizer"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
         </LinearLayout>
 
         <!--<RelativeLayout-->
@@ -226,7 +233,8 @@
                     android:layout_marginRight="3dp"
                     android:adjustViewBounds="true"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/avd_play_pause" />
+                    android:src="@drawable/avd_play_pause"
+                    android:tint="@color/white" />
 
 
                 <ImageButton
