@@ -7,8 +7,8 @@ public class Constants {
 
     public static final String RESULT = "com.emperor95online.ashhfm.service.AudioStreamingService.REQUEST_PROCESSED";
     public static final String MESSAGE = "com.emperor95online.ashhfm.service.AudioStreamingService.AUDIO_STREAMING_STATUS";
-    //    public static final String STREAM_URL = "http://node-21.zeno.fm/sm3w0cp642quv?rj-ttl=5&rj-token=AAABauNwQ3G4lfvWvkyhRuTJ0_mgLB2oK-fWV41JG42CMMK1VQPH8Q";
-    public static final String STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3";
+    public static final String STREAM_URL = "http://node-21.zeno.fm/sm3w0cp642quv?rj-ttl=5&rj-token=AAABauNwQ3G4lfvWvkyhRuTJ0_mgLB2oK-fWV41JG42CMMK1VQPH8Q";
+    //    public static final String STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3";
     public static final String ACTION_PLAY = "com.emperor95Online.ashhfm.PLAY";
     public static final String ACTION_STOP = "com.emperor95Online.ashhfm.PAUSE";
 

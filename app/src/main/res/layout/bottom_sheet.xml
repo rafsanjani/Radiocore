@@ -83,81 +83,21 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_next_small" />
 
-            <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:ellipsize="marquee"-->
-            <!--android:gravity="end"-->
-            <!--android:paddingStart="10dp"-->
-            <!--android:paddingEnd="10dp"-->
-            <!--android:singleLine="true"-->
-            <!--android:text="Live"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:textSize="17sp" />-->
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <com.chibde.visualizer.LineBarVisualizer
+            <com.gauravk.audiovisualizer.visualizer.BarVisualizer
                 android:id="@+id/visualizer"
-                android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                app:avColor="@color/orange_900"
+                app:avDensity="0.8"
+                app:avSpeed="fast"
+                app:avType="fill" />
         </LinearLayout>
-
-        <!--<RelativeLayout-->
-        <!--android:id="@+id/bottomsheet_menu_items"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:alpha="0"-->
-        <!--android:visibility="visible"-->
-        <!--tools:visibility="visible">-->
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/bottomsheet_menu_collapse"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:background="?selectableItemBackgroundBorderless"-->
-        <!--android:clickable="true"-->
-        <!--android:cropToPadding="true"-->
-        <!--android:focusable="true"-->
-        <!--android:onClick="onClickMenuCollapse"-->
-        <!--android:scaleType="fitCenter"-->
-        <!--android:src="@drawable/ic_arrow_up" />-->
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/more"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:background="?selectableItemBackgroundBorderless"-->
-        <!--android:onClick="onClickBottomSheetMore"-->
-        <!--android:padding="10dp"-->
-        <!--android:src="@drawable/ic_more" />-->
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/share"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:layout_toLeftOf="@id/more"-->
-        <!--android:background="?selectableItemBackgroundBorderless"-->
-        <!--android:padding="10dp"-->
-        <!--android:src="@drawable/ic_share" />-->
-
-        <!--<ImageButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--android:layout_toLeftOf="@id/share"-->
-        <!--android:background="?selectableItemBackgroundBorderless"-->
-        <!--android:padding="10dp"-->
-        <!--android:src="@drawable/ic_download" />-->
-
-        <!--</RelativeLayout>-->
 
     </FrameLayout>
 
@@ -181,8 +121,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="15dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="15dp">
 
             <TextView
                 android:id="@+id/streamProgress"
@@ -195,58 +135,51 @@
                 android:id="@+id/streamDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:text="00:00"
                 android:textColor="@color/white" />
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <LinearLayout
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_back" />
-
-                <!--<FrameLayout-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content">-->
-
-                <ImageButton
-                    android:id="@+id/mediacontrol_play"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginRight="3dp"
-                    android:adjustViewBounds="true"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/avd_play_pause"
-                    android:tint="@color/white" />
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back" />
 
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_next" />
+            <ImageButton
+                android:id="@+id/mediacontrol_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="3dp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/avd_play_pause"
+                android:tint="@color/white" />
 
-            </LinearLayout>
 
-        </RelativeLayout>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_next" />
+
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"
@@ -269,9 +202,10 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:src="@drawable/logo" />
@@ -283,7 +217,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="invisible"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:layout_width="match_parent"

@@ -31,7 +31,6 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
-import com.chibde.visualizer.LineBarVisualizer;
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
 import com.foreverrafs.starfm.fragment.HomeNewsFragment;
@@ -39,6 +38,7 @@ import com.foreverrafs.starfm.service.AudioStreamingService;
 import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
 import com.foreverrafs.starfm.util.Preference;
 import com.foreverrafs.starfm.util.Tools;
+import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
@@ -91,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     ProgressBar progressBar;
 
     @BindView(R.id.visualizer)
-    LineBarVisualizer visualizer;
+    BarVisualizer visualizer;
 
     private BottomSheetBehavior sheetBehavior;
 
@@ -216,6 +216,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (visualizer != null)
+            visualizer.release();
     }
 
     @Override
@@ -265,8 +267,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setUpAudioVisualizer() {
-        visualizer.setColor(ContextCompat.getColor(this, R.color.teal_800));
-        visualizer.setPlayer(StreamPlayer.getPlayer().getAudioSessionId());
+        int audioSessionId = StreamPlayer.getPlayer().getAudioSessionId();
+        if (audioSessionId != -1)
+            visualizer.setAudioSessionId(audioSessionId);
     }
 
     private void requestAudioRecordingPermission() {
@@ -380,7 +383,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             //we are only interested in PLAYING and PAUSED/STOPPED states
             case STATUS_PLAYING:
                 Log.i(DEBUG_TAG, "Media Playing");
-                findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 smallProgressBar.setVisibility(View.INVISIBLE);
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
