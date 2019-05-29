@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Star FM</string>
+    <string name="app_name">Star 89.7 FM</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -64,5 +64,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="retry">RETRY</string>
     <string name="home_banner_image">home banner image</string>
+    <string name="desc_small_play_button">play button on bottom sheet</string>
 
 </resources>

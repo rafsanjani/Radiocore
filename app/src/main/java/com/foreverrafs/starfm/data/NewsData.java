@@ -1,6 +1,7 @@
 package com.foreverrafs.starfm.data;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -14,8 +15,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 
 public class NewsData {
     private final Context context;
@@ -48,7 +56,6 @@ public class NewsData {
                             String title = newsObject.getJSONObject("title").getString("rendered");
                             String content = newsObject.getJSONObject("content").getString("rendered");
 
-//                                String image = "https://pbs.twimg.com/profile_images/425274582581264384/X3QXBN8C.jpeg";
                             String image = "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
 
                             if (!newsObject.getJSONObject("_embedded").isNull("wp:featuredmedia")) {
@@ -56,9 +63,20 @@ public class NewsData {
                                         .getJSONArray("wp:featuredmedia").getJSONObject(0)
                                         .getString("source_url");
                             }
-                            String date = newsObject.getString("date");
+                            String dateStr = newsObject.getString("date");
+                            dateStr = dateStr.substring(0, dateStr.indexOf("T"));
 
-                            newsList.add(new News(title, date.substring(0, date.indexOf("T")), image/*images.get(i)*/, content));
+
+                            DateFormat format = new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH);
+                            Date date = null;
+
+                            try {
+                                date = format.parse(dateStr);
+                            } catch (ParseException e) {
+                                Log.e(DEBUG_TAG, e.getMessage());
+                            }
+
+                            newsList.add(new News(title, date, image/*images.get(i)*/, content));
                         }
                         newsFetchEventListener.onNewsFetched(newsList);
 

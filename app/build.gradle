@@ -50,4 +50,8 @@ dependencies {
 dependencies {
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
+
+    implementation 'com.chibde:audiovisualizer:2.1.0'
+
 }

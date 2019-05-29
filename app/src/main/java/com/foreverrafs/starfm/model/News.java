@@ -2,22 +2,24 @@ package com.foreverrafs.starfm.model;
 
 // Created by Emperor95 on 1/13/2019.
 
+import java.util.Date;
+
 public class News {
     private String headline;
-    private String date;
+    private Date date;
     private String image;
     private String content;
 
     public News() {
     }
 
-    public News(String headline, String date, String image) {
+    public News(String headline, Date date, String image) {
         this.headline = headline;
         this.date = date;
         this.image = image;
     }
 
-    public News(String headline, String date, String image, String content) {
+    public News(String headline, Date date, String image, String content) {
         this.headline = headline;
         this.date = date;
         this.image = image;
@@ -32,11 +34,11 @@ public class News {
         this.headline = headline;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

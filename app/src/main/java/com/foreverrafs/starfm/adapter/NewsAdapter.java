@@ -19,8 +19,6 @@ import com.foreverrafs.starfm.model.News;
 import com.foreverrafs.starfm.util.ItemAnimation;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -51,17 +49,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         return new NewsHolder(view);
     }
 
-//    @Override
-//    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                on_attach = false;
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//        });
-//        super.onAttachedToRecyclerView(recyclerView);
-//    }
 
     private int lastPosition = -1;
     private boolean on_attach = true;
@@ -70,15 +57,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     public void onBindViewHolder(@NonNull final NewsHolder newsHolder, final int position) {
         final News newsObject = newsList.get(position);
 
-        String string = newsObject.getDate();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH);
-        Date date = null;
-
-
-        try {
-            date = format.parse(string);
-        } catch (ParseException e) {
-        }
+        Date date = newsObject.getDate();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
         newsHolder.date.setText(simpleDateFormat.format(date));
@@ -111,9 +90,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     public void setOnNewsItemClickListener(NewsItemClickListener listener) {
         this.listener = listener;
     }
-
-    ////
-
 
     public interface NewsItemClickListener {
         void onNewItemClicked(News newsObject, Pair[] pairs, int position);
