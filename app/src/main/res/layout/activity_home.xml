@@ -28,11 +28,10 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:tabGravity="fill"
             app:tabIndicatorColor="@android:color/white"
-            app:tabIndicatorHeight="3dp"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@android:color/white"
             app:tabTextAppearance="@style/TextAppearance.Subhead.Bold"

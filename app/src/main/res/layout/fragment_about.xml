@@ -13,27 +13,25 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
+            style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/lightGray"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/spacing_mlarge"
-                android:paddingTop="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_mlarge"
-                android:paddingBottom="@dimen/spacing_large">
+                android:paddingBottom="@dimen/spacing_small">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Mission"
+                    android:text="@string/mission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90"
                     app:fontFamily="sans-serif-medium" />
@@ -43,14 +41,16 @@
                     android:layout_height="4dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/desc_swipe_up_handle"
                     android:src="@drawable/swipe_up_handle"
                     android:tint="@color/blue_900" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_large"
-                    android:lineSpacingExtra="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_mlarge"
+                    android:lineSpacingExtra="@dimen/spacing_medium"
                     android:text="@string/mission_statement"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="@color/grey_60"
@@ -60,16 +60,11 @@
 
         </androidx.cardview.widget.CardView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_middle" />
 
         <androidx.cardview.widget.CardView
+            style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/lightGray"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -79,13 +74,13 @@
                 android:paddingLeft="@dimen/spacing_mlarge"
                 android:paddingTop="@dimen/spacing_large"
                 android:paddingRight="@dimen/spacing_mlarge"
-                android:paddingBottom="@dimen/spacing_large">
+                android:paddingBottom="@dimen/spacing_small">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Contact"
+                    android:text="@string/contact"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90"
                     app:fontFamily="sans-serif-medium" />
@@ -95,6 +90,7 @@
                     android:layout_height="4dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/desc_swipe_up_handle"
                     android:src="@drawable/swipe_up_handle"
                     android:tint="@color/blue_900" />
 
@@ -228,21 +224,18 @@
                         app:layout_constraintStart_toStartOf="@+id/textView7" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/spacing_mlarge" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_middle" />
 
         <androidx.cardview.widget.CardView
+            style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/lightGray"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -258,7 +251,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Share"
+                    android:text="@string/share"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90"
                     app:fontFamily="sans-serif-medium" />
@@ -268,6 +261,7 @@
                     android:layout_height="4dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
+                    android:contentDescription="@string/desc_swipe_up_handle"
                     android:src="@drawable/swipe_up_handle"
                     android:tint="@color/blue_900" />
 
@@ -275,15 +269,19 @@
                     android:id="@+id/image_whatsapp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/desc_whatsapp_icon"
                     app:srcCompat="@drawable/whatsapp_icon" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spacing_xxxlarge" />
-
-
             </LinearLayout>
 
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/spacing_mlarge" />
         </androidx.cardview.widget.CardView>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_xxxlarge" />
+
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

@@ -4,52 +4,42 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:fitsSystemWindows="true"
+    android:gravity="center"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/lyt_no_connection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="vertical">
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:contentDescription="@string/desc_image_no_internet"
+        android:src="@drawable/img_no_internet_satellite" />
 
-            <ImageView
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:src="@drawable/img_no_internet_satellite" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/whoops"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Whoops!"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold" />
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_large"
-                android:gravity="center"
-                android:text="No internet connections found. Check your connection or try again"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorPrimary" />
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:gravity="center"
+        android:text="@string/no_internet_connection"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@color/colorPrimary" />
 
-            <Button
-                android:id="@+id/button_retry"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_large"
-                android:background="@drawable/btn_rounded_primary"
-                android:text="@string/retry"
-                android:textColor="@android:color/white" />
+    <Button
+        android:id="@+id/button_retry"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:background="@drawable/btn_rounded_primary"
+        android:text="@string/retry"
+        android:textColor="@android:color/white" />
 
-        </LinearLayout>
-    </RelativeLayout>
 
 </LinearLayout>
