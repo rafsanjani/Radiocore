@@ -51,6 +51,7 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.MESSAGE;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
+import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +178,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
 
-        if (!isMyServiceRunning(AudioStreamingService.class) && preference.isAutoPlayOnStart()) {
+        if (!isMyServiceRunning(AudioStreamingService.class) || (preference.isAutoPlayOnStart()) && preference.getStatus().equals(STATUS_PLAYING)) {
             startPlayback();
             return;
         }
@@ -268,7 +269,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         visualizer.setPlayer(StreamPlayer.getPlayer().getAudioSessionId());
     }
 
-    public void requestAudioRecordingPermission() {
+    private void requestAudioRecordingPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_RECORD_AUDIO);
     }
 
