@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
+import com.crashlytics.android.Crashlytics;
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
 import com.foreverrafs.starfm.fragment.HomeNewsFragment;
@@ -45,6 +46,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
@@ -104,12 +106,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         ButterKnife.bind(this);
 
+        setUpCrashlytics();
         initializeViews();
         initializeTabComponents();
         initializeToolbar();
         initializeBottomSheetCallback();
+        checkPermission();
         setUpInitialPlayerState();
         setUpAudioStreamingServiceReceiver();
+    }
+
+    private void setUpCrashlytics() {
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+            Log.i(DEBUG_TAG, "Enabled cloud crash reporting");
+        }
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
+                PackageManager.PERMISSION_GRANTED) {
+            requestAudioRecordingPermission();
+            return;
+        }
+        setUpAudioVisualizer();
     }
 
     private void initializeToolbar() {
@@ -256,14 +276,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         play.setOnClickListener(this);
 
         seekBar.setEnabled(false);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
-                PackageManager.PERMISSION_GRANTED) {
-            requestAudioRecordingPermission();
-            return;
-        }
-
-        setUpAudioVisualizer();
     }
 
     private void setUpAudioVisualizer() {
