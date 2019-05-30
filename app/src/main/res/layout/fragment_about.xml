@@ -125,7 +125,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:fontFamily="sans-serif-medium"
-                        android:text="+233505573828"
+                        android:text="+233205573828"
                         app:layout_constraintBottom_toBottomOf="@+id/textView9"
                         app:layout_constraintStart_toStartOf="@+id/text_email"
                         app:layout_constraintTop_toBottomOf="@+id/text_email" />

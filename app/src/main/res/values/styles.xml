@@ -9,10 +9,10 @@
     </style>
 
     <style name="CardStyle" parent="CardView.Light">
-        <item name="cardElevation">5dp</item>
-        <item name="cardBackgroundColor">@color/orange_50</item>
-        <item name="cardCornerRadius">5dp</item>
-
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="cardBackgroundColor">@color/lightGray</item>
+        <item name="android:layout_margin">@dimen/card_margin</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -21,7 +21,7 @@
     </style>
 
     <style name="AppTheme.SplashTheme">
-        <item name="android:background">@drawable/splash_image</item>
+        <item name="android:background">@drawable/splash_bg</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

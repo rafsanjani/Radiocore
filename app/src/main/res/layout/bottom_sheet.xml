@@ -1,122 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:clickable="true"
     android:focusable="true"
     android:minHeight="65dp"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="65dp"
+    app:behavior_peekHeight="@dimen/bottomsheet_peek_height"
     app:layout_behavior="@string/bottom_sheet_behavior"
     tools:context=".HomeActivity">
 
-    <FrameLayout
-        android:id="@+id/frame"
+
+    <LinearLayout
+        android:id="@+id/bottomsheet_playback_items"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!--give it a background color as the same color of the sheet
-        so that it will opaquely overlay the menuItems which will
-        be displayed through an alpha transition-->
-        <LinearLayout
-            android:id="@+id/bottomsheet_playback_items"
-            android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:visibility="visible"
+        tools:visibility="visible">
+        <!--Stack small logo and loading progress in this frame-->
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal"
-            android:padding="5dp"
-            android:visibility="visible"
-            tools:visibility="visible">
-            <!--Stack small logo and loading progress in this frame-->
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp">
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp">
 
-                <ImageView
-                    android:id="@+id/smallLogo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/logo_small"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-                <ProgressBar
-                    android:id="@+id/smallProgressBar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
-
-            </FrameLayout>
-
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_back_small" />
-
-            <ImageButton
-                android:id="@+id/smallPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="?selectableItemBackgroundBorderless"
-                android:contentDescription="@string/desc_small_play_button"
-                android:cropToPadding="true"
-                android:maxWidth="30dp"
-                android:maxHeight="30dp"
-                android:scaleType="center"
-                android:src="@drawable/avd_play_pause_small" />
-
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_next_small" />
-
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <com.gauravk.audiovisualizer.visualizer.BarVisualizer
-                android:id="@+id/visualizer"
-                android:layout_width="80dp"
+            <ImageView
+                android:id="@+id/smallLogo"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:avColor="@color/orange_900"
-                app:avDensity="0.8"
-                app:avSpeed="fast"
-                app:avType="fill" />
-        </LinearLayout>
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/logo_small"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-    </FrameLayout>
+            <ProgressBar
+                android:id="@+id/smallProgressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back_small" />
+
+        <ImageButton
+            android:id="@+id/smallPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_small_play_button"
+            android:cropToPadding="true"
+            android:maxWidth="30dp"
+            android:maxHeight="30dp"
+            android:scaleType="center"
+            android:src="@drawable/avd_play_pause_small" />
+
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_next_small" />
+
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.gauravk.audiovisualizer.visualizer.BarVisualizer
+            android:id="@+id/visualizer"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            app:avColor="@color/orange_900"
+            app:avDensity="0.8"
+            app:avSpeed="fast"
+            app:avType="fill" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/spacing_medium"
+        android:layout_marginRight="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/spacing_mlarge"
         android:orientation="vertical">
 
-
-        <androidx.appcompat.widget.AppCompatSeekBar
+        <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/CustomViews" />
+            android:background="@color/colorPrimary"
+            android:theme="@style/CustomViews"
+            android:visibility="visible" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -197,7 +190,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/line"
-        android:layout_below="@id/frame"
+        android:layout_below="@id/bottomsheet_playback_items"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -238,7 +231,5 @@
             android:layout_marginTop="15dp"
             android:text="Phone: +2330205573828"
             android:textAlignment="center" />
-
     </LinearLayout>
-
 </RelativeLayout>

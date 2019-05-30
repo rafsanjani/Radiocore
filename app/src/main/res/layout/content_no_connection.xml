@@ -1,45 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:fitsSystemWindows="true"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="@android:color/white">
 
-
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:contentDescription="@string/desc_image_no_internet"
-        android:src="@drawable/img_no_internet_satellite" />
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/whoops"
-
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_gravity="center"
+        android:fitsSystemWindows="true"
         android:gravity="center"
-        android:text="@string/no_internet_connection"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:textColor="@color/colorPrimary" />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button_retry"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:background="@drawable/btn_rounded_primary"
-        android:text="@string/retry"
-        android:textColor="@android:color/white" />
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="@dimen/spacing_mlarge"
+            android:contentDescription="@string/desc_image_no_internet"
+            android:src="@drawable/img_no_internet_satellite" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/whoops"
+
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:gravity="center"
+            android:text="@string/no_internet_connection"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/button_retry"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:background="@drawable/btn_rounded_primary"
+            android:text="@string/retry"
+            android:textColor="@android:color/white" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/bottomsheet_peek_height" />
 
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
