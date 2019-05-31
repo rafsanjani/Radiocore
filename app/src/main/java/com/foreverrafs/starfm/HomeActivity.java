@@ -210,13 +210,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void startPlayback() {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_PLAY);
-        ContextCompat.startForegroundService(this, audioServiceIntent);
+        startService(audioServiceIntent);
+        //ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
     private void stopPlayback() {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_STOP);
-        ContextCompat.startForegroundService(this, audioServiceIntent);
+        stopService(audioServiceIntent);
+        // ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
     @Override
@@ -280,8 +282,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setUpAudioVisualizer() {
         int audioSessionId = StreamPlayer.getPlayer().getAudioSessionId();
-        if (audioSessionId != -1)
-            visualizer.setAudioSessionId(audioSessionId);
+        try {
+            if (audioSessionId != -1)
+                visualizer.setAudioSessionId(audioSessionId);
+        } catch (Exception exception) {
+            Log.e(DEBUG_TAG, exception.getMessage());
+        }
+
     }
 
     private void requestAudioRecordingPermission() {

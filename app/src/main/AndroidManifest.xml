@@ -46,6 +46,7 @@
         </activity>
         <activity
             android:name=".HomeActivity"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

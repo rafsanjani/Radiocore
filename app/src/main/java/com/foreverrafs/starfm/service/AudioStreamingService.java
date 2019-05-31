@@ -85,7 +85,8 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
         //start foreground audio service right away instead of waiting for onPrepared to complete
         // to beat android 0 5sec limit
-        startForeground(1, streamNotification);
+        startForeground(8, streamNotification);
+
 
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -111,6 +112,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
                     NotificationManager.IMPORTANCE_LOW
             );
 
+
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(notificationChannel);
         }
@@ -127,21 +129,25 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         Intent pauseIntent = new Intent(this, AudioStreamingService.class);
         pauseIntent.setAction(Constants.ACTION_STOP);
 
-        PendingIntent p_contentIntent = PendingIntent.getActivity(this, 0,
+        PendingIntent contentPendingIntent = PendingIntent.getActivity(this, 5,
                 contentIntent, 0);
-        PendingIntent p_pauseIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+
+
+        PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 
 
         builder = new NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Online Radio")
-                .addAction(R.drawable.ic_pause_notification, "Pause", p_pauseIntent)
+                .addAction(R.drawable.ic_pause_notification, "Pause", pausePendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0))
                 .setContentText(notificationText)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentIntent(p_contentIntent);
+                .setContentIntent(contentPendingIntent);
 
         return builder.build();
+
+
     }
 
     /**
@@ -174,6 +180,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
             //stop the foreground audio service and take away the notification from the user's screen
             stopForeground(true);
+            stopSelf();
         }
         return START_NOT_STICKY;
     }
