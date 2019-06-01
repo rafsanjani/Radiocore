@@ -15,7 +15,7 @@ public class ItemAnimation {
 
     /* animation duration */
     private static final long DURATION_IN_BOTTOM_UP = 150;
-    private static final long DURATION_IN_FADE_ID = 500;
+    private static final long DURATION_IN_FADE_ID = 250;
     private static final long DURATION_IN_LEFT_RIGHT = 150;
     private static final long DURATION_IN_RIGHT_LEFT = 150;
 
