@@ -43,18 +43,22 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     // private ImageButton more_main, imBtn;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
+    @BindView(R.id.swipe_refresh_news)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.progress_news_loading)
+    ProgressBar progressBar;
 
     private ArrayList<News> newsList;
-    private ArrayList<String> images;
+    //    private ArrayList<String> images;
     @BindView(R.id.content_no_connection)
     ViewGroup contentNoConnection;
+
     private NewsAdapter newsAdapter, cachedAdapter;
 
-//    @BindView(R.id.button_retry)
-//    Button btnRetry;
 
     @Nullable
     @Override
@@ -63,21 +67,17 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         ButterKnife.bind(this, view);
         newsList = new ArrayList<>();
-        images = new ArrayList<>();
 
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_news);
+//        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_news);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
+//        recyclerView = view.findViewById(R.id.recyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
 
-        progressBar = view.findViewById(R.id.progress_news_loading);
-        //newsAdapter = new NewsAdapter(getActivity(), newsList);
-
-        //recyclerView.setAdapter(newsAdapter);
+//        progressBar = view.findViewById(R.id.progress_news_loading);
 
         getNewsData();
 
@@ -166,7 +166,8 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        newsData.fetchNewsFromOnlineAsync();
+//         newsData.fetchNewsFromOnlineAsync();
+        newsData.fetchNewsFromLocalStore();
     }
 
     private void setUpNewsItemClickListeners() {
@@ -175,7 +176,7 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
             return;
         }
 
-        newsAdapter.setOnNewsItemClickListener((newsObject, pairs, position) -> {
+        newsAdapter.setOnNewsItemClickListener((newsItem, pairs, position) -> {
             NewsAdapter.NewsHolder newsHolder = (NewsAdapter.NewsHolder) recyclerView.findViewHolderForAdapterPosition(position);
 
             String[] transitionNames = new String[]{
@@ -184,22 +185,25 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
             };
 
             Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-            intent.putExtra("title", newsObject.getHeadline());
-            intent.putExtra("content", newsObject.getContent());
-            intent.putExtra("image", newsObject.getImage());
-            intent.putExtra("date", newsObject.getDate());
+//            intent.putExtra("title", newsItem.getHeadline());
+//            intent.putExtra("content", newsItem.getContent());
+//            intent.putExtra("image", newsItem.getImage());
+//            intent.putExtra("date", newsItem.getDate().toString());
+            intent.putExtra("NEWS", newsItem);
 
             //also pass this for shared element transition
-            intent.putExtra("transitions", transitionNames);
+            // intent.putExtra("transitions", transitionNames);
 
-            ActivityOptions activityOptions = null;
-
+            // ActivityOptions activityOptions;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                         pairs);
-            }
 
-            startActivity(intent, activityOptions.toBundle());
+                startActivity(intent);
+
+            } else {
+                startActivity(intent);
+            }
         });
     }
 

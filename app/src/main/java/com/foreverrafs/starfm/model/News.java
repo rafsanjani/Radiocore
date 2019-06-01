@@ -2,28 +2,47 @@ package com.foreverrafs.starfm.model;
 
 // Created by Emperor95 on 1/13/2019.
 
-import java.util.Date;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class News {
+import org.joda.time.DateTime;
+
+public class News implements Parcelable {
     private String headline;
-    private Date date;
+    public static final Creator<News> CREATOR = new Creator<News>() {
+        @Override
+        public News createFromParcel(Parcel in) {
+            return new News(in);
+        }
+
+        @Override
+        public News[] newArray(int size) {
+            return new News[size];
+        }
+    };
     private String image;
     private String content;
+    private DateTime date;
 
-    public News() {
-    }
-
-    public News(String headline, Date date, String image) {
-        this.headline = headline;
-        this.date = date;
-        this.image = image;
-    }
-
-    public News(String headline, Date date, String image, String content) {
+    public News(String headline, DateTime date, String image, String content) {
         this.headline = headline;
         this.date = date;
         this.image = image;
         this.content = content;
+    }
+
+    public News(Parcel in) {
+//        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        headline = in.readString();
+        content = in.readString();
+        image = in.readString();
+        String dateStr = in.readString();
+
+        try {
+            date = DateTime.parse(dateStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getHeadline() {
@@ -34,11 +53,11 @@ public class News {
         this.headline = headline;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(DateTime date) {
         this.date = date;
     }
 
@@ -56,5 +75,18 @@ public class News {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(headline);
+        dest.writeString(content);
+        dest.writeString(image);
+        dest.writeString(date.toString());
     }
 }

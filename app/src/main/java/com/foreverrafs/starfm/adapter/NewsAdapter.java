@@ -19,10 +19,10 @@ import com.foreverrafs.starfm.model.News;
 import com.foreverrafs.starfm.util.ItemAnimation;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.List;
-import java.util.Locale;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
@@ -55,26 +55,17 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final NewsHolder newsHolder, final int position) {
-        final News newsObject = newsList.get(position);
+        final News newsItem = newsList.get(position);
 
-        Date date = newsObject.getDate();
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MMMM d, yyyy");
+        newsHolder.date.setText(newsItem.getDate().toString(formatter));
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH);
-        newsHolder.date.setText(simpleDateFormat.format(date));
-        newsHolder.headline.setText(newsObject.getHeadline());
+        newsHolder.headline.setText(newsItem.getHeadline());
 
-        Picasso.get().load(newsObject.getImage()).into(newsHolder.imageView);
+        Picasso.get().load(newsItem.getImage()).into(newsHolder.imageView);
 
-        //todo: replace with an MD5 hash
-        Long tsLong = System.currentTimeMillis() / 1000;
-        final String imageTransitionName = tsLong.toString();
-
-        ViewCompat.setTransitionName(newsHolder.imageView, imageTransitionName + "_image");
-
-        tsLong = System.currentTimeMillis() / 1000;
-        final String headlineTransitionName = tsLong.toString();
-
-        ViewCompat.setTransitionName(newsHolder.headline, headlineTransitionName + "_headline");
+        ViewCompat.setTransitionName(newsHolder.imageView, newsItem.getImage().substring(0, 5).trim());
+        ViewCompat.setTransitionName(newsHolder.headline, newsItem.getHeadline().substring(0, 5).trim());
 
         setAnimation(newsHolder.itemView, position);
     }
