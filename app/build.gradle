@@ -6,8 +6,8 @@ android {
         applicationId "com.foreverrafs.starfm"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 3
-        versionName "3.0 crashlytics update"
+        versionCode 4
+        versionName "Orion"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
