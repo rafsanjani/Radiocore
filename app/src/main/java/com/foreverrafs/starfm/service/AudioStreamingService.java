@@ -83,14 +83,8 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             }
         }
 
-        //start foreground audio service right away instead of waiting for onPrepared to complete
-        // to beat android 0 5sec limit
-        startForeground(8, streamNotification);
-
-
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
         try {
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(STREAM_URL);
         } catch (IOException e) {
             Log.e(DEBUG_TAG, e.getMessage());
@@ -154,6 +148,9 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      * Start playback and set playback status in SharedPreferences.
      */
     private void startPlayback() {
+        if (mediaPlayer.isPlaying())
+            return;
+
         preference.setStatus(LOADING);
         sendResult(AudioStreamingState.STATUS_LOADING);
         mediaPlayer.prepareAsync();
@@ -163,6 +160,9 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      * Stop playback and set playback status in SharedPreferences
      */
     private void stopPlayback() {
+        if (!mediaPlayer.isPlaying())
+            return;
+
         mediaPlayer.stop();
         preference.setStatus(STOPPED);
         sendResult(AudioStreamingState.STATUS_STOPPED);
@@ -172,6 +172,10 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
 
+        //start foreground audio service right away instead of waiting for onPrepared to complete
+        // to beat android 0 5sec limit
+        startForeground(5, streamNotification);
+
         if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
             startPlayback();
 
@@ -180,7 +184,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
             //stop the foreground audio service and take away the notification from the user's screen
             stopForeground(true);
-            stopSelf();
+            //stopSelf();
         }
         return START_NOT_STICKY;
     }
@@ -216,8 +220,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         sendResult(AudioStreamingState.STATUS_STOPPED);
 
         stopForeground(true);
-        stopSelf();
-        stopPlayback();
+        //stopPlayback();
         return true;
     }
 

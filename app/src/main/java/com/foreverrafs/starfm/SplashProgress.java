@@ -16,20 +16,17 @@ public class SplashProgress extends AppCompatActivity {
 
         Handler handler = new Handler();
         //just show a progress bar for a few seconds and transition to the HomeActivity
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        handler.postDelayed(() -> {
 //                Pair pair = new Pair(backgroundImage, ViewCompat.getTransitionName(backgroundImage));
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 //                    ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(SplashProgress.this, pair);
-                    startActivity(new Intent(SplashProgress.this, HomeActivity.class)/*, activityOptions.toBundle()*/);
-                } else {
-                    startActivity(new Intent(SplashProgress.this, HomeActivity.class));
-                }
-
-                finish();
+                startActivity(new Intent(SplashProgress.this, HomeActivity.class)/*, activityOptions.toBundle()*/);
+            } else {
+                startActivity(new Intent(SplashProgress.this, HomeActivity.class));
             }
-        }, 2000);
+
+            finish();
+        }, 1000);
     }
 }
