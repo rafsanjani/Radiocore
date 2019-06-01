@@ -1,7 +1,6 @@
 package com.foreverrafs.starfm;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -52,8 +51,9 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.MESSAGE;
+import static com.foreverrafs.starfm.util.Constants.PERMISSION_RECORD_AUDIO;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
-import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
+import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private BottomSheetBehavior sheetBehavior;
 
-    private final int PERMISSION_RECORD_AUDIO = 9999;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +198,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
 
-        if (!isMyServiceRunning(AudioStreamingService.class) || (preference.isAutoPlayOnStart()) && preference.getStatus().equals(STATUS_PLAYING)) {
+        if (!Tools.isServiceRunning(AudioStreamingService.class, this) && (preference.isAutoPlayOnStart()) && preference.getStatus().equals(STATUS_STOPPED)) {
             startPlayback();
             return;
         }
@@ -210,15 +210,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void startPlayback() {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_PLAY);
-        startService(audioServiceIntent);
-        //ContextCompat.startForegroundService(this, audioServiceIntent);
+        ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
     private void stopPlayback() {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_STOP);
-        stopService(audioServiceIntent);
-        // ContextCompat.startForegroundService(this, audioServiceIntent);
+        ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
     @Override
@@ -381,15 +379,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * @param serviceClass
      * @return
      */
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     /**
      * Called when a broadcast is received from the AudioStreamingService so that the
@@ -402,8 +392,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             //we are only interested in PLAYING and PAUSED/STOPPED states
             case STATUS_PLAYING:
                 Log.i(DEBUG_TAG, "Media Playing");
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                //findViewById(R.id.progressBar).setVisibility(View.GONE);
                 smallProgressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
                 break;
@@ -411,6 +402,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(DEBUG_TAG, "Media Stopped");
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
+                smallProgressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
                 break;
             case STATUS_LOADING:
                 Log.i(DEBUG_TAG, "Media is Loading");
