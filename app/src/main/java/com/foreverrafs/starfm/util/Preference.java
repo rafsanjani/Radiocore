@@ -5,13 +5,16 @@ package com.foreverrafs.starfm.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.PLAYING;
 
 public class Preference {
     private static final String IS_FIRST_TIME_LAUNCH = "is_first_time_launch";
     private static final String STATUS = "streaming_status";
     private static final String LAST_NEWS_FETCHED_DATE = "last_news_fetched_date";
+    private static final String CACHE_FILE_NAME = "news_cache_file_name";
     ///////////////SETTINGS VARIABLES
     private final String AUTOPLAY = "autoplay_on_start";
     private SharedPreferences settings;
@@ -96,6 +99,19 @@ public class Preference {
      */
     public String getLastNewsFetchedDate() {
         return settings.getString(LAST_NEWS_FETCHED_DATE, "May 27, 2019");
+    }
+
+    public void removeCacheFileEntry() {
+        settings.edit().remove(CACHE_FILE_NAME).apply();
+    }
+
+    public String getCacheFileName() {
+        return settings.getString(CACHE_FILE_NAME, null);
+    }
+
+    public void setCacheFileName(String fileName) {
+        settings.edit().putString(CACHE_FILE_NAME, fileName).apply();
+        Log.i(DEBUG_TAG, "Cache path saved. Path: " + fileName);
     }
 
     /**
