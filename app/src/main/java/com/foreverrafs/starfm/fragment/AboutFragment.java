@@ -1,5 +1,6 @@
 package com.foreverrafs.starfm.fragment;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,15 +40,20 @@ public class AboutFragment extends Fragment {
         TextView target = view;
         Intent actionIntent;
         String contact = target.getText().toString();
-        if (contact.contains(".com")) { //contact is an email
-            actionIntent = new Intent(Intent.ACTION_VIEW);
-            actionIntent.setData(Uri.parse("mailto:" + contact));
-        } else {
-            actionIntent = new Intent(Intent.ACTION_DIAL);
-            actionIntent.setData(Uri.fromParts("tel", contact, null));
-        }
 
-        startActivity(actionIntent);
+        try {
+            if (contact.contains(".com")) { //contact is an email
+                actionIntent = new Intent(Intent.ACTION_VIEW);
+                actionIntent.setData(Uri.parse("mailto:" + contact));
+            } else {
+                actionIntent = new Intent(Intent.ACTION_DIAL);
+                actionIntent.setData(Uri.fromParts("tel", contact, null));
+            }
+
+            startActivity(actionIntent);
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(getContext(), "Action not supported on this device", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.image_whatsapp)
@@ -63,7 +69,7 @@ public class AboutFragment extends Fragment {
 
         try {
             startActivity(whatsappIntent);
-        } catch (android.content.ActivityNotFoundException ex) {
+        } catch (ActivityNotFoundException ex) {
             Toast.makeText(getContext(), "WhatsApp is not installed", Toast.LENGTH_SHORT).show();
         }
     }
