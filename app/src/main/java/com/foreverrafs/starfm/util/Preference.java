@@ -80,7 +80,7 @@ public class Preference {
      * @return a boolean (true/false) indicating whether user has decided to enable autoplay or not
      */
     public boolean isAutoPlayOnStart() {
-        return settings.getBoolean(AUTOPLAY, false);
+        return settings.getBoolean(AUTOPLAY, true);
     }
 
     /**
