@@ -7,22 +7,21 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import static com.foreverrafs.starfm.util.Constants.AUTOPLAY_ON_START;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.PLAYING;
 
 public class Preference {
     private static final String IS_FIRST_TIME_LAUNCH = "is_first_time_launch";
     private static final String STATUS = "streaming_status";
-    private static final String LAST_NEWS_FETCHED_DATE = "last_news_fetched_date";
     private static final String CACHE_FILE_NAME = "news_cache_file_name";
     ///////////////SETTINGS VARIABLES
-    private final String AUTOPLAY = "autoplay_on_start";
     private SharedPreferences settings;
 
     ////////////////END OF SETTINGS VARIABLES
 
 
-    //call to this constructor already returns a singletone so no need to define our class as one
+    //call to this constructor already returns a singleton so no need to define our class as one
     public Preference(Context context) {
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -37,7 +36,8 @@ public class Preference {
     }
 
     /**
-     * Store a value which tells the context that the application is starting for the first time
+     * Store a value which tells the context that the application is starting for the first time. This is necessary
+     * for performing operations that are only necessary when the application is running for the first time
      *
      * @param isFirstTime
      */
@@ -46,7 +46,7 @@ public class Preference {
     }
 
     /**
-     * Checks whether the application's status has been set
+     * Checks whether the application's status has been set. Status is one of STATUS_PLAYING, STATUS_PAUSE or STATUS_STOPPED
      *
      * @return
      */
@@ -80,7 +80,7 @@ public class Preference {
      * @return a boolean (true/false) indicating whether user has decided to enable autoplay or not
      */
     public boolean isAutoPlayOnStart() {
-        return settings.getBoolean(AUTOPLAY, true);
+        return settings.getBoolean(AUTOPLAY_ON_START, true);
     }
 
     /**
@@ -95,32 +95,31 @@ public class Preference {
 
 
     /**
-     * Get the last time news items were fetched
+     * Removes the cache file. This usually happens when the cache has expired and needs
+     * to be rebuilt anew
      */
-    public String getLastNewsFetchedDate() {
-        return settings.getString(LAST_NEWS_FETCHED_DATE, "May 27, 2019");
-    }
-
     public void removeCacheFileEntry() {
         settings.edit().remove(CACHE_FILE_NAME).apply();
     }
 
+    /**
+     * Get the location of the cache file. This is only used internally by the app for storing cached
+     * news items to facilitate their easy retrieval.
+     *
+     * @return
+     */
     public String getCacheFileName() {
         return settings.getString(CACHE_FILE_NAME, null);
     }
 
+    /**
+     * Set's the name with which the cache file will be stored. This is usually the temporary
+     * storage location of the app with json extension appended to it.
+     *
+     * @param fileName The name to be used in storing the cache
+     */
     public void setCacheFileName(String fileName) {
         settings.edit().putString(CACHE_FILE_NAME, fileName).apply();
         Log.i(DEBUG_TAG, "Cache path saved. Path: " + fileName);
-    }
-
-    /**
-     * Store the date and time of the last time news items were fetched. This will be used for news items
-     * caching
-     *
-     * @param value
-     */
-    public void setLastNewsFetchedDate(String value) {
-        settings.edit().putString(LAST_NEWS_FETCHED_DATE, value).apply();
     }
 }
