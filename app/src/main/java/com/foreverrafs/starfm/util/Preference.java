@@ -7,14 +7,15 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import static com.foreverrafs.starfm.util.Constants.AUTOPLAY_ON_START;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.PLAYING;
+import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
 
 public class Preference {
-    private static final String IS_FIRST_TIME_LAUNCH = "is_first_time_launch";
-    private static final String STATUS = "streaming_status";
-    private static final String CACHE_FILE_NAME = "news_cache_file_name";
+    static final String AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start";
+    private static final String IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch";
+    private static final String STREAMING_STATUS = "com.foreverrafs.radiocore.streaming_status";
+    private static final String CACHE_FILE_NAME = "com.foreverrafs.radiocore.cache_file_name";
+    private static final String CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours";
     ///////////////SETTINGS VARIABLES
     private SharedPreferences settings;
 
@@ -51,7 +52,7 @@ public class Preference {
      * @return
      */
     public boolean isStatusSet() {
-        return settings.contains(STATUS);
+        return settings.contains(STREAMING_STATUS);
     }
 
     /**
@@ -61,7 +62,7 @@ public class Preference {
      * @return
      */
     public String getStatus() {
-        return settings.getString(STATUS, PLAYING);
+        return settings.getString(STREAMING_STATUS, STATUS_PLAYING);
     }
 
     /**
@@ -71,7 +72,7 @@ public class Preference {
      * @param status
      */
     public void setStatus(String status) {
-        settings.edit().putString(STATUS, status).apply();
+        settings.edit().putString(STREAMING_STATUS, status).apply();
     }
 
     /**
@@ -90,7 +91,7 @@ public class Preference {
      * @param value True or false, indicating whether we want to auto start or not
      */
     public void setAutoPlayOnStart(boolean value) {
-        settings.edit().putBoolean(Constants.AUTOPLAY_ON_START, value).apply();
+        settings.edit().putBoolean(AUTOPLAY_ON_START, value).apply();
     }
 
 
@@ -121,5 +122,18 @@ public class Preference {
     public void setCacheFileName(String fileName) {
         settings.edit().putString(CACHE_FILE_NAME, fileName).apply();
         Log.i(DEBUG_TAG, "Cache path saved. Path: " + fileName);
+    }
+
+    /**
+     * Get the hours it takes for the news cache to expire.
+     *
+     * @return
+     */
+    public int getCacheExpiryHours() {
+        return settings.getInt(CACHE_EXPIRY_HOURS, 5);
+    }
+
+    public void setCacheExpiryHours(int hours) {
+        settings.edit().putInt(CACHE_EXPIRY_HOURS, hours).apply();
     }
 }

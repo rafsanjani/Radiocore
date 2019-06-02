@@ -8,11 +8,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -22,37 +21,40 @@ import com.foreverrafs.starfm.R;
 import com.foreverrafs.starfm.StreamPlayer;
 import com.foreverrafs.starfm.util.Constants;
 import com.foreverrafs.starfm.util.Preference;
-
-import java.io.IOException;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.LOADING;
 import static com.foreverrafs.starfm.util.Constants.MESSAGE;
-import static com.foreverrafs.starfm.util.Constants.PLAYING;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
+import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
-import static com.foreverrafs.starfm.util.Constants.STOPPED;
 import static com.foreverrafs.starfm.util.Constants.STREAM_URL;
 
 /***
  * Handle Audio playback
  */
-public class AudioStreamingService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
-        AudioManager.OnAudioFocusChangeListener {
+public class AudioStreamingService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
+    private final Object mFocusLock = new Object();
     LocalBroadcastManager broadcastManager;
-
-    MediaPlayer mediaPlayer = StreamPlayer.getPlayer();
-
+    SimpleExoPlayer mediaPlayer;
+    MediaSource streamSrc = null;
     private Preference preference;
     private String notificationText = "Empty"; //this will be set when context is created
     private NotificationCompat.Builder builder;
     private Notification streamNotification;
-    private final Object mFocusLock = new Object();
     private AudioManager audioManager;
     private boolean mResumeOnFocusGain;
+    private boolean isAudioPlaying;
 
     public AudioStreamingService() {
     }
@@ -83,13 +85,55 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         }
 
         try {
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(STREAM_URL);
-        } catch (IOException e) {
+            mediaPlayer = StreamPlayer.getPlayer(this);
+
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, getString(R.string.app_name)));
+            streamSrc = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(STREAM_URL));
+
+            mediaPlayer.prepare(streamSrc);
+            mediaPlayer.setPlayWhenReady(true);
+
+            mediaPlayer.addListener(new Player.EventListener() {
+                @Override
+                public void onLoadingChanged(boolean isLoading) {
+                    isAudioPlaying = false;
+                }
+
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    if (playWhenReady && playbackState == Player.STATE_READY) {
+                        // Active playback.
+                        isAudioPlaying = true;
+                        sendResult(AudioStreamingState.STATUS_PLAYING);
+                        preference.setStatus(STATUS_PLAYING);
+                    } else if (playWhenReady) {
+                        // Not playing because playback ended, the player is buffering, stopped or
+                        // failed. Check playbackState and player.getPlaybackError for details.
+                        isAudioPlaying = false;
+                        sendResult(AudioStreamingState.STATUS_STOPPED);
+                        preference.setStatus(STATUS_STOPPED);
+
+                    } else {
+                        // Paused by app.
+                        isAudioPlaying = false;
+                        sendResult(AudioStreamingState.STATUS_STOPPED);
+                        preference.setStatus(STATUS_STOPPED);
+                    }
+
+                }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+                    isAudioPlaying = false;
+                    sendResult(AudioStreamingState.STATUS_STOPPED);
+                    preference.setStatus(STATUS_STOPPED);
+                    Log.e(DEBUG_TAG, error.getMessage());
+                }
+            });
+
+        } catch (Exception e) {
             Log.e(DEBUG_TAG, e.getMessage());
         }
-        mediaPlayer.setOnPreparedListener(this);
-        mediaPlayer.setOnErrorListener(this);
     }
 
     /**
@@ -145,23 +189,22 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      * Start playback and set playback status in SharedPreferences.
      */
     private void startPlayback() {
-        if (mediaPlayer.isPlaying())
-            return;
+//        if (!isAudioPlaying)
+//            return;
 
-        preference.setStatus(LOADING);
-        sendResult(AudioStreamingState.STATUS_LOADING);
-        mediaPlayer.prepareAsync();
+//        preference.setStatus(STATUS_LOADING);
+//        sendResult(AudioStreamingState.STATUS_LOADING);
+        mediaPlayer.setPlayWhenReady(true);
     }
 
     /**
      * Stop playback and set playback status in SharedPreferences
      */
     private void stopPlayback() {
-        if (mediaPlayer.isPlaying())
-            mediaPlayer.stop();
+        if (isAudioPlaying)
+            mediaPlayer.setPlayWhenReady(false);
 
-        preference.setStatus(STOPPED);
-        sendResult(AudioStreamingState.STATUS_STOPPED);
+//        preference.setStatus(STATUS_STOPPED);
     }
 
     @Override
@@ -195,31 +238,10 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         }
     }
 
-
-    /**
-     * Called when MediaPlayer is ready
-     */
-    public void onPrepared(MediaPlayer player) {
-        player.start();
-        if (player.isPlaying()) {
-            sendResult(AudioStreamingState.STATUS_PLAYING);
-            preference.setStatus(PLAYING);
-        }
-    }
-
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-        Toast.makeText(this, "Error Loading Stream::::Are you Online?", Toast.LENGTH_LONG).show();
-        Log.e(DEBUG_TAG, "Error Loading Stream::::Possibly no network on target device");
-        sendResult(AudioStreamingState.STATUS_STOPPED);
-
-        stopForeground(true);
-        return true;
-    }
-
     /**
      * Send a result back to the Broadcast receiver of the calling activity, in this case (HomeActivity.java)
+     * The result is basically the state of the stream audio and is usually one of STATUS_LOADING, STATUS_STOPPED or STATUS_PLAYING
+     *
      * @param message
      */
     public void sendResult(AudioStreamingState message) {
@@ -257,7 +279,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 synchronized (mFocusLock) {
-                    mResumeOnFocusGain = mediaPlayer.isPlaying();
+                    mResumeOnFocusGain = isAudioPlaying;
                 }
                 stopPlayback();
                 break;

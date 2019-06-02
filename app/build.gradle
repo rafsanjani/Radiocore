@@ -64,6 +64,11 @@ dependencies {
     //google gson for storing news items as json
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    //google exoplayer for audio rendering
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.10.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
+
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'

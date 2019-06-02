@@ -1,13 +1,16 @@
 package com.foreverrafs.starfm;
 
-import android.media.MediaPlayer;
+import android.content.Context;
+
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 
 public class StreamPlayer {
-    private static MediaPlayer mediaPlayer;
+    private static SimpleExoPlayer mediaPlayer;
 
-    public static MediaPlayer getPlayer() {
+    public static SimpleExoPlayer getPlayer(Context context) {
         if (mediaPlayer == null)
-            mediaPlayer = new MediaPlayer();
+            mediaPlayer = ExoPlayerFactory.newSimpleInstance(context);
 
         return mediaPlayer;
     }

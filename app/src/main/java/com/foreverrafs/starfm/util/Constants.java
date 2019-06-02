@@ -17,11 +17,6 @@ public class Constants {
     public static final String ACTION_PLAY = "com.emperor95Online.ashhfm.PLAY";
     public static final String ACTION_STOP = "com.emperor95Online.ashhfm.STOP";
 
-    //these values will be stored to persistent storage so their values are mapped to AudioStates
-    //for backward conversion
-    public static final String PLAYING = "STATUS_PLAYING";
-    public static final String STOPPED = "STATUS_STOPPED";
-    public static final String LOADING = "STATUS_LOADING";
 
     //PLAYER STATES
     public static final String STATUS_PLAYING = "STATUS_PLAYING";
@@ -37,5 +32,5 @@ public class Constants {
     public static final String NOTIFICATION_CHANNEL_ID = "com.emperor95Online.ashhfm";
 
     //SETTINGS
-    static final String AUTOPLAY_ON_START = "com.emperor95online.AUTOPLAY";
+
 }

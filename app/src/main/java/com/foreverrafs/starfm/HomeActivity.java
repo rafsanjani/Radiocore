@@ -109,7 +109,6 @@ public class HomeActivity extends AppCompatActivity {
 
         setUpCrashlytics();
         initializeViews();
-        setUpAudioRecordingPermission();
         setUpInitialPlayerState();
         setUpAudioStreamingServiceReceiver();
     }
@@ -121,11 +120,10 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpAudioRecordingPermission() {
+    private void intiializeAudioVisualizer() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
                 PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission();
-            return;
         }
         setUpAudioVisualizer();
     }
@@ -194,12 +192,11 @@ public class HomeActivity extends AppCompatActivity {
 
         audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
 
-        if (!Tools.isServiceRunning(AudioStreamingService.class, this) && (preference.isAutoPlayOnStart() && preference.getStatus().equals(STATUS_STOPPED))) {
+        if (!Tools.isServiceRunning(AudioStreamingService.class, this) ||
+                preference.isAutoPlayOnStart() ||
+                preference.getStatus().equals(STATUS_STOPPED))
             startPlayback();
-            return;
-        }
 
-        //Service is running, service only runs when media is playing
         onAudioStreamingStateReceived(audioStreamingState);
     }
 
@@ -270,7 +267,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setUpAudioVisualizer() {
-        int audioSessionId = StreamPlayer.getPlayer().getAudioSessionId();
+        int audioSessionId = StreamPlayer.getPlayer(this).getAudioSessionId();
         try {
             if (audioSessionId != -1)
                 visualizer.setAudioSessionId(audioSessionId);
@@ -381,6 +378,8 @@ public class HomeActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
+
+                intiializeAudioVisualizer();
                 break;
             case STATUS_STOPPED:
                 Log.i(DEBUG_TAG, "Media Stopped");
