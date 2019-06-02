@@ -45,6 +45,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
 
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
@@ -55,7 +56,7 @@ import static com.foreverrafs.starfm.util.Constants.PERMISSION_RECORD_AUDIO;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     BroadcastReceiver audioServiceBroadcastReceiver;
     //let's assume nothing is playing when application starts
@@ -74,6 +75,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.mediacontrol_play)
     ImageButton play;
 
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
 
@@ -82,9 +86,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @BindView(R.id.smallLogo)
     ImageView smallLogo;
-
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
 
     @BindView(R.id.smallProgressBar)
     ProgressBar smallProgressBar;
@@ -95,8 +96,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.visualizer)
     BarVisualizer visualizer;
 
-    private BottomSheetBehavior sheetBehavior;
 
+    private BottomSheetBehavior sheetBehavior;
 
 
     @Override
@@ -140,7 +141,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initializeTabComponents() {
-        viewPager = findViewById(R.id.view_pager);
+//        viewPager = findViewById(R.id.view_pager);
         setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -198,7 +199,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
 
-        if (!Tools.isServiceRunning(AudioStreamingService.class, this) && (preference.isAutoPlayOnStart()) && preference.getStatus().equals(STATUS_STOPPED)) {
+        if (!Tools.isServiceRunning(AudioStreamingService.class, this) && (preference.isAutoPlayOnStart() && preference.getStatus().equals(STATUS_STOPPED))) {
             startPlayback();
             return;
         }
@@ -240,17 +241,26 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             visualizer.release();
     }
 
-    @Override
-    public void onClick(View v) {
-        //one button to handle both states, stop when playing, play when stopped. Pretty cool huh :) :)
-        if (v == smallPlay || v == play) {
-            if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-                stopPlayback();
-            } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
-                startPlayback();
-            }
+    @OnClick({R.id.smallPlay, R.id.mediacontrol_play})
+    public void onPlay() {
+        if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
+            stopPlayback();
+        } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
+            startPlayback();
         }
     }
+
+//    @Override
+//    public void onClick(View v) {
+//        //one button to handle both states, stop when playing, play when stopped. Pretty cool huh :) :)
+//        if (v == smallPlay || v == play) {
+//            if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
+//                stopPlayback();
+//            } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
+//                startPlayback();
+//            }
+//        }
+//    }
 
     /**
      * Morph a target Button's image property from it's present one to the drawable specified by toDrawable
@@ -271,9 +281,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void initializeViews() {
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
-        smallLogo.setOnClickListener(this);
-        smallPlay.setOnClickListener(this);
-        play.setOnClickListener(this);
+//        smallLogo.setOnClickListener(this);
+//        smallPlay.setOnClickListener(this);
+//        play.setOnClickListener(this);
 
         seekBar.setEnabled(false);
     }
@@ -373,17 +383,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Check if MediaPlayerService is running in the background, usually performed at first run
-     * If it's running, we resolve the media player states accordingly
-     *
-     * @param serviceClass
-     * @return
-     */
-
-
-    /**
      * Called when a broadcast is received from the AudioStreamingService so that the
-     * UI can be resolved accordingly to corresponding with the states
+     * UI can be resolved accordingly to correspond with the states
      *
      * @param streamingState The state of the Streaming Service (STATUS_PAUSED, STATUS_PLAYING ETC)
      */
