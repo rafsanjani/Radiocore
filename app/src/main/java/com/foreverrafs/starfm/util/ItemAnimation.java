@@ -14,7 +14,7 @@ public class ItemAnimation {
     public static final int NONE = 0;
 
     /* animation duration */
-    private static final long DURATION_IN_BOTTOM_UP = 150;
+    private static final long DURATION_IN_BOTTOM_UP = 250;
     private static final long DURATION_IN_FADE_ID = 250;
     private static final long DURATION_IN_LEFT_RIGHT = 150;
     private static final long DURATION_IN_RIGHT_LEFT = 150;
@@ -69,10 +69,10 @@ public class ItemAnimation {
     private static void animateLeftRight(View view, int position) {
         boolean not_first_item = position == -1;
         position = position + 1;
-        view.setTranslationX(-400f);
+        view.setTranslationX(-800f);
         view.setAlpha(0.f);
         AnimatorSet animatorSet = new AnimatorSet();
-        ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(view, "translationX", -400f, 0);
+        ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(view, "translationX", -800f, 0);
         ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1.f);
         ObjectAnimator.ofFloat(view, "alpha", 0.f).start();
         animatorTranslateY.setStartDelay(not_first_item ? DURATION_IN_LEFT_RIGHT : (position * DURATION_IN_LEFT_RIGHT));
