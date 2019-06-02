@@ -7,7 +7,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 
+import com.foreverrafs.starfm.fragment.HomeNewsFragment;
 import com.foreverrafs.starfm.model.News;
 import com.squareup.picasso.Picasso;
 
@@ -29,11 +31,9 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.image)
     ImageView imageView;
-
+    //
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    private String content, image, title, date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +44,10 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-
-//        String[] transitions;
         News newsItem = null;
         if (getIntent() != null) {
-//            content = getIntent().getExtras().getString("content", "");
-//            title = getIntent().getExtras().getString("title", "");
-//            date = getIntent().getExtras().getString("date", "");
-//            image = getIntent().getExtras().getString("image", "");
-//            transitions = getIntent().getExtras().getStringArray("transitions");
-            newsItem = getIntent().getParcelableExtra("NEWS");
-
-//            ViewCompat.setTransitionName(imageView, transitions[0]);
-//            ViewCompat.setTransitionName(textHeadline, transitions[1]);
+            newsItem = getIntent().getParcelableExtra(HomeNewsFragment.NEWS_ITEM_EXTRA);
+            ViewCompat.setTransitionName(imageView, getIntent().getStringExtra(HomeNewsFragment.IMAGE_TRANSITION_NAME_EXTRA));
         }
 
         textContent.setText(Html.fromHtml(newsItem.getContent()));

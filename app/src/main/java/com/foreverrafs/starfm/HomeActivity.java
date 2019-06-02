@@ -109,10 +109,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setUpCrashlytics();
         initializeViews();
-        initializeTabComponents();
-        initializeToolbar();
-        initializeBottomSheetCallback();
-        checkPermission();
+        setUpAudioRecordingPermission();
         setUpInitialPlayerState();
         setUpAudioStreamingServiceReceiver();
     }
@@ -124,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPermission() {
+    private void setUpAudioRecordingPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
                 PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission();
@@ -141,7 +138,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeTabComponents() {
-//        viewPager = findViewById(R.id.view_pager);
         setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
@@ -157,7 +153,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 collapseBottomSheet();
-                // getSupportActionBar().setTitle(viewPagerAdapter.getTitle(tab.getPosition()));
                 if (tab.getPosition() != 0)
                     tab.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             }
@@ -250,18 +245,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        //one button to handle both states, stop when playing, play when stopped. Pretty cool huh :) :)
-//        if (v == smallPlay || v == play) {
-//            if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-//                stopPlayback();
-//            } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
-//                startPlayback();
-//            }
-//        }
-//    }
-
     /**
      * Morph a target Button's image property from it's present one to the drawable specified by toDrawable
      *
@@ -275,15 +258,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Initialize all views by before findViewById or @Bind when using ButterKnife
-     * Note: All view Initializing must be performed in this module
+     * Initialize all views by findViewById or @Bind when using ButterKnife
+     * Note: All view Initializing must be performed in this module or it's submodules
      */
     private void initializeViews() {
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-
-//        smallLogo.setOnClickListener(this);
-//        smallPlay.setOnClickListener(this);
-//        play.setOnClickListener(this);
+        initializeTabComponents();
+        initializeToolbar();
+        initializeBottomSheet();
 
         seekBar.setEnabled(false);
     }
@@ -320,7 +301,9 @@ public class HomeActivity extends AppCompatActivity {
      * bottom sheet state change listener
      * We are transitioning between collapsed and settled states, well that is what we are interested in, isn't it?
      */
-    public void initializeBottomSheetCallback() {
+    public void initializeBottomSheet() {
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -419,6 +402,7 @@ public class HomeActivity extends AppCompatActivity {
         SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new HomeNewsFragment(), "Live");    // index 0
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 1
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(viewPagerAdapter);
     }
 

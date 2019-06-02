@@ -50,7 +50,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     private String notificationText = "Empty"; //this will be set when context is created
     private NotificationCompat.Builder builder;
     private Notification streamNotification;
-
     private final Object mFocusLock = new Object();
     private AudioManager audioManager;
     private boolean mResumeOnFocusGain;
@@ -140,8 +139,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
                 .setContentIntent(contentPendingIntent);
 
         return builder.build();
-
-
     }
 
     /**
@@ -160,10 +157,9 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
      * Stop playback and set playback status in SharedPreferences
      */
     private void stopPlayback() {
-        if (!mediaPlayer.isPlaying())
-            return;
+        if (mediaPlayer.isPlaying())
+            mediaPlayer.stop();
 
-        mediaPlayer.stop();
         preference.setStatus(STOPPED);
         sendResult(AudioStreamingState.STATUS_STOPPED);
     }
@@ -176,7 +172,7 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         // to beat android 0 5sec limit
         startForeground(5, streamNotification);
 
-        if (intent.getAction().equals(ACTION_PLAY) && !mediaPlayer.isPlaying()) {
+        if (intent.getAction().equals(ACTION_PLAY)) {
             startPlayback();
 
         } else if (intent.getAction().equals(ACTION_STOP)) {
@@ -184,7 +180,6 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
 
             //stop the foreground audio service and take away the notification from the user's screen
             stopForeground(true);
-            //stopSelf();
         }
         return START_NOT_STICKY;
     }
@@ -207,11 +202,11 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
     public void onPrepared(MediaPlayer player) {
         player.start();
         if (player.isPlaying()) {
-
             sendResult(AudioStreamingState.STATUS_PLAYING);
             preference.setStatus(PLAYING);
         }
     }
+
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -220,13 +215,11 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         sendResult(AudioStreamingState.STATUS_STOPPED);
 
         stopForeground(true);
-        //stopPlayback();
         return true;
     }
 
     /**
      * Send a result back to the Broadcast receiver of the calling activity, in this case (HomeActivity.java)
-     *
      * @param message
      */
     public void sendResult(AudioStreamingState message) {
@@ -238,6 +231,12 @@ public class AudioStreamingService extends Service implements MediaPlayer.OnPrep
         broadcastManager.sendBroadcast(intent);
     }
 
+    /***
+     * Called when a different application interrupts the audio on the target device. This can
+     * be triggered by the phone ringing as a result of an incoming call or the user opening and accessing
+     * an app which produces a sound such as a media player or a game
+     * @param focusChange
+     */
     @Override
     public void onAudioFocusChange(int focusChange) {
         switch (focusChange) {

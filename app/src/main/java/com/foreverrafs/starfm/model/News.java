@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import org.joda.time.DateTime;
 
 public class News implements Parcelable {
-    private String headline;
     public static final Creator<News> CREATOR = new Creator<News>() {
         @Override
         public News createFromParcel(Parcel in) {
@@ -20,6 +19,7 @@ public class News implements Parcelable {
             return new News[size];
         }
     };
+    private String headline;
     private String image;
     private String content;
     private DateTime date;
@@ -32,7 +32,6 @@ public class News implements Parcelable {
     }
 
     public News(Parcel in) {
-//        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         headline = in.readString();
         content = in.readString();
         image = in.readString();

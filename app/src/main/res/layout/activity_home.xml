@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_10"
-    tools:context=".HomeActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -36,15 +36,17 @@
             app:tabSelectedTextColor="@android:color/white"
             app:tabTextAppearance="@style/TextAppearance.Subhead.Bold"
             app:tabTextColor="@color/grey_20" />
-
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+    </androidx.viewpager.widget.ViewPager>
+
 
     <View
         android:id="@+id/bottom_sheet_shadow"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,10 +39,9 @@ import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 
 
 // Created by Emperor95 on 1/13/2019.
-
 public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
-    // private ImageButton more_main, imBtn;
+    public static final String NEWS_ITEM_EXTRA = "com.foreverrafs.starfm.news_extra";
+    public static final String IMAGE_TRANSITION_NAME_EXTRA = "com.foreverrafs.starfm.newsfragment.image_transition_name_extra";
 
     @BindView(R.id.swipe_refresh_news)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -51,12 +51,9 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @BindView(R.id.progress_news_loading)
     ProgressBar progressBar;
-
-    private ArrayList<News> newsList;
-    //    private ArrayList<String> images;
     @BindView(R.id.content_no_connection)
     ViewGroup contentNoConnection;
-
+    private ArrayList<News> newsList;
     private NewsAdapter newsAdapter, cachedAdapter;
 
 
@@ -68,16 +65,11 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
         ButterKnife.bind(this, view);
         newsList = new ArrayList<>();
 
-//        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_news);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-//        recyclerView = view.findViewById(R.id.recyclerView);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-
-//        progressBar = view.findViewById(R.id.progress_news_loading);
 
         getNewsData();
 
@@ -126,7 +118,7 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onNewsFetched(List<News> fetchedNewsItems) {
                 newsAdapter = new NewsAdapter(getContext(), fetchedNewsItems);
 
-                setUpNewsItemClickListeners();
+                setUpNewsItemClickListener();
 
                 recyclerView.setAdapter(newsAdapter);
 
@@ -159,52 +151,42 @@ public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                 new Handler().postDelayed(() -> {
                     newsAdapter = cachedAdapter;
-                    setUpNewsItemClickListeners();
+                    setUpNewsItemClickListener();
                     recyclerView.setAdapter(newsAdapter);
 
                 }, 3000);
             }
         });
 
-//         newsData.fetchNewsFromOnlineAsync();
-        newsData.fetchNewsFromLocalStore();
+        newsData.fetchNewsFromOnlineAsync();
+//        newsData.fetchNewsFromLocalStore();
     }
 
-    private void setUpNewsItemClickListeners() {
+    private void setUpNewsItemClickListener() {
         if (newsAdapter == null) {
             Log.e(DEBUG_TAG, "News adapter is null, unable to set listeners");
             return;
         }
 
-        newsAdapter.setOnNewsItemClickListener((newsItem, pairs, position) -> {
-            NewsAdapter.NewsHolder newsHolder = (NewsAdapter.NewsHolder) recyclerView.findViewHolderForAdapterPosition(position);
-
-            String[] transitionNames = new String[]{
-                    ViewCompat.getTransitionName(newsHolder.getImageImageView()),// newsHolder.getHeadlineTextView().getTransitionName(),
-                    ViewCompat.getTransitionName(newsHolder.getHeadlineTextView())
-            };
-
+        newsAdapter.setOnNewsItemClickListener((position, newsItem, newsImageView, headline) -> {
             Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-//            intent.putExtra("title", newsItem.getHeadline());
-//            intent.putExtra("content", newsItem.getContent());
-//            intent.putExtra("image", newsItem.getImage());
-//            intent.putExtra("date", newsItem.getDate().toString());
-            intent.putExtra("NEWS", newsItem);
-
-            //also pass this for shared element transition
-            // intent.putExtra("transitions", transitionNames);
+            intent.putExtra(NEWS_ITEM_EXTRA, newsItem);
+            intent.putExtra(IMAGE_TRANSITION_NAME_EXTRA, ViewCompat.getTransitionName(newsImageView));
 
             // ActivityOptions activityOptions;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                        pairs);
 
-                startActivity(intent);
+            //view transition pairs
+            Pair<View, String> imageViewPair = Pair.create(newsImageView, newsImageView.getTransitionName());
+
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        imageViewPair);
+                startActivity(intent/*, options.toBundle()*/);
 
             } else {
                 startActivity(intent);
             }
         });
     }
-
 }
