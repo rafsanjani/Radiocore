@@ -3,7 +3,6 @@ package com.foreverrafs.starfm.adapter;
 // Created by Emperor95 on 1/13/2019.
 
 import android.content.Context;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +48,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         return new NewsHolder(view);
     }
 
-
     private int lastPosition = -1;
+
+
+    public void setOnNewsItemClickListener(NewsItemClickListener listener) {
+        this.listener = listener;
+    }
     private boolean on_attach = true;
 
     @Override
@@ -64,57 +67,49 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
         Picasso.get().load(newsItem.getImage()).into(newsHolder.imageView);
 
-        ViewCompat.setTransitionName(newsHolder.imageView, newsItem.getImage().substring(0, 5).trim());
-        ViewCompat.setTransitionName(newsHolder.headline, newsItem.getHeadline().substring(0, 5).trim());
+        ViewCompat.setTransitionName(newsHolder.imageView, newsItem.getImage());
+        ViewCompat.setTransitionName(newsHolder.headline, newsItem.getHeadline());
+
+        newsHolder.itemView.setOnClickListener(v -> listener.onNewItemClicked(newsHolder.getAdapterPosition(), newsItem, newsHolder.imageView, newsHolder.headline));
 
         setAnimation(newsHolder.itemView, position);
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                on_attach = false;
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
     private void setAnimation(View view, int position) {
         if (position > lastPosition) {
-            int animation_type = ItemAnimation.FADE_IN;
-            ItemAnimation.animate(view, on_attach ? position : -1, animation_type);
+            ItemAnimation.animate(view, on_attach ? position : -1, ItemAnimation.LEFT_RIGHT);
             lastPosition = position;
         }
     }
 
-    public void setOnNewsItemClickListener(NewsItemClickListener listener) {
-        this.listener = listener;
-    }
 
     public interface NewsItemClickListener {
-        void onNewItemClicked(News newsObject, Pair[] pairs, int position);
+        void onNewItemClicked(int position, News newsItem, ImageView newsImage, TextView headline);
     }
 
-    public class NewsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class NewsHolder extends RecyclerView.ViewHolder {
 
         private TextView date, headline;
         private ImageView imageView;
 
         NewsHolder(View view) {
             super(view);
-            view.setOnClickListener(this);
+
             headline = itemView.findViewById(R.id.headline);
             date = itemView.findViewById(R.id.date);
             imageView = itemView.findViewById(R.id.image);
-        }
-
-        public TextView getHeadlineTextView() {
-            return headline;
-        }
-
-        public ImageView getImageImageView() {
-            return imageView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            Pair[] pair = new Pair[]{
-                    new Pair(imageView, ViewCompat.getTransitionName(imageView)),
-                    new Pair(headline, ViewCompat.getTransitionName(headline))
-            };
-            listener.onNewItemClicked(newsList.get(position), pair, position);
         }
     }
 }
