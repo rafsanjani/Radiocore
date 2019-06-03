@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -28,6 +29,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
@@ -101,6 +103,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    Log.i(DEBUG_TAG, "Player state changed to : " + playbackState);
                     if (playWhenReady && playbackState == Player.STATE_READY) {
                         // Active playback.
                         isAudioPlaying = true;
@@ -112,6 +115,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                         isAudioPlaying = false;
                         sendResult(AudioStreamingState.STATUS_STOPPED);
                         preference.setStatus(STATUS_STOPPED);
+                        Log.i(DEBUG_TAG, "Error Buffering");
 
                     } else {
                         // Paused by app.
@@ -128,6 +132,9 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                     sendResult(AudioStreamingState.STATUS_STOPPED);
                     preference.setStatus(STATUS_STOPPED);
                     Log.e(DEBUG_TAG, error.getMessage());
+
+                    if (error.getSourceException() instanceof HttpDataSource.HttpDataSourceException)
+                        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -189,12 +196,10 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
      * Start playback and set playback status in SharedPreferences.
      */
     private void startPlayback() {
-//        if (!isAudioPlaying)
-//            return;
-
-//        preference.setStatus(STATUS_LOADING);
-//        sendResult(AudioStreamingState.STATUS_LOADING);
         mediaPlayer.setPlayWhenReady(true);
+
+        if (mediaPlayer.getPlaybackState() == Player.STATE_IDLE)
+            mediaPlayer.prepare(streamSrc);
     }
 
     /**
