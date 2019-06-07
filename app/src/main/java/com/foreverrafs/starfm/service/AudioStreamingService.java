@@ -17,9 +17,9 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.foreverrafs.starfm.HomeActivity;
 import com.foreverrafs.starfm.R;
 import com.foreverrafs.starfm.StreamPlayer;
+import com.foreverrafs.starfm.activity.HomeActivity;
 import com.foreverrafs.starfm.util.Constants;
 import com.foreverrafs.starfm.util.Preference;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -139,6 +139,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
                     if (error.getSourceException() instanceof HttpDataSource.HttpDataSourceException)
                         Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_LONG).show();
+                    stopForeground(true);
                 }
             });
 

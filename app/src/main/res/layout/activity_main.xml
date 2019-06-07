@@ -12,6 +12,7 @@
         android:id="@+id/backgroundImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:contentDescription="@string/fm_station_logo_desc"
         android:scaleType="fitXY"
         android:src="@drawable/starfm_logo"
         app:layout_constraintBottom_toBottomOf="parent"

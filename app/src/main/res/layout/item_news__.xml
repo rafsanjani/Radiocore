@@ -39,7 +39,7 @@
             android:lines="3"
             android:text="@string/news_item_default_text"
             android:textAllCaps="false"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:typeface="sans"
             app:layout_constraintEnd_toEndOf="parent"

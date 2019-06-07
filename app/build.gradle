@@ -71,6 +71,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.10.0'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
 
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'

@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm;
+package com.foreverrafs.starfm.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -31,9 +31,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.crashlytics.android.Crashlytics;
+import com.foreverrafs.starfm.BuildConfig;
+import com.foreverrafs.starfm.R;
+import com.foreverrafs.starfm.StreamPlayer;
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
-import com.foreverrafs.starfm.fragment.HomeNewsFragment;
+import com.foreverrafs.starfm.fragment.HomeFragment;
+import com.foreverrafs.starfm.fragment.NewsFragment;
 import com.foreverrafs.starfm.service.AudioStreamingService;
 import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
 import com.foreverrafs.starfm.util.Preference;
@@ -52,11 +56,11 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.MESSAGE;
-import static com.foreverrafs.starfm.util.Constants.PERMISSION_RECORD_AUDIO;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
 
 public class HomeActivity extends AppCompatActivity {
+    private final int PERMISSION_RECORD_AUDIO = 6900;
     ///////////////////////////////////////////////////////////////////////////////////////////////
     BroadcastReceiver audioServiceBroadcastReceiver;
     //let's assume nothing is playing when application starts
@@ -141,11 +145,13 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_radio_live);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_about);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_news);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_about);
 
         // set icon color pre-selected
         tabLayout.getTabAt(0).getIcon().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -284,13 +290,11 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RECORD_AUDIO:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    setUpAudioVisualizer();
-                else
-                    Log.i(DEBUG_TAG, "Permission to record audio denied. Visualizer cannot be initialized");
-                break;
+        if (requestCode == PERMISSION_RECORD_AUDIO) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                setUpAudioVisualizer();
+            else
+                Log.i(DEBUG_TAG, "Permission to record audio denied. Visualizer cannot be initialized");
         }
     }
 
@@ -399,9 +403,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new HomeNewsFragment(), "Live");    // index 0
+        viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
+        viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 1
-        viewPager.setOffscreenPageLimit(2);
+
+//        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(viewPagerAdapter);
     }
 
