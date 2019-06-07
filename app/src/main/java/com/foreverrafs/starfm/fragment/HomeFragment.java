@@ -39,7 +39,7 @@ import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 
 
 // Created by Emperor95 on 1/13/2019.
-public class HomeNewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     public static final String NEWS_ITEM_EXTRA = "com.foreverrafs.starfm.news_extra";
     public static final String IMAGE_TRANSITION_NAME_EXTRA = "com.foreverrafs.starfm.newsfragment.image_transition_name_extra";
 

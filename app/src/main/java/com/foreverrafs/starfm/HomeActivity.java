@@ -33,7 +33,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.crashlytics.android.Crashlytics;
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
-import com.foreverrafs.starfm.fragment.HomeNewsFragment;
+import com.foreverrafs.starfm.fragment.HomeFragment;
+import com.foreverrafs.starfm.fragment.NewsFragment;
 import com.foreverrafs.starfm.service.AudioStreamingService;
 import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
 import com.foreverrafs.starfm.util.Preference;
@@ -141,11 +142,13 @@ public class HomeActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_radio_live);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_about);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_news);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_about);
 
         // set icon color pre-selected
         tabLayout.getTabAt(0).getIcon().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -399,8 +402,10 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new HomeNewsFragment(), "Live");    // index 0
+        viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
+        viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 1
+
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(viewPagerAdapter);
     }
