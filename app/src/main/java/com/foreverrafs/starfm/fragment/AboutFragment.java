@@ -35,11 +35,11 @@ public class AboutFragment extends Fragment {
         return rootView;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @OnClick({R.id.text_email, R.id.text_mobile, R.id.text_phone1, R.id.text_phone2})
     public void onContactInfoClicked(TextView view) {
-        TextView target = view;
         Intent actionIntent;
-        String contact = target.getText().toString();
+        String contact = view.getText().toString();
 
         try {
             if (contact.contains(".com")) { //contact is an email
@@ -56,6 +56,7 @@ public class AboutFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @OnClick(R.id.image_whatsapp)
     public void onWhatsappIconClicked() {
         Intent whatsappIntent = new Intent(Intent.ACTION_SEND);

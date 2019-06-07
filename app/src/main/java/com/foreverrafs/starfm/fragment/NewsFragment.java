@@ -78,6 +78,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         return view;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @OnClick(R.id.button_retry)
     public void onRetryClicked() {
         contentNoConnection.setVisibility(View.INVISIBLE);
