@@ -98,12 +98,16 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
             mediaPlayer.addListener(new Player.EventListener() {
                 @Override
                 public void onLoadingChanged(boolean isLoading) {
+                    Log.i(DEBUG_TAG, "Media " + (isLoading ? "Loading..." : "Loaded!"));
+                    if (isLoading)
+                        sendResult(AudioStreamingState.STATUS_LOADING);
                     isAudioPlaying = false;
                 }
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                     Log.i(DEBUG_TAG, "Player state changed to : " + playbackState);
+
                     if (playWhenReady && playbackState == Player.STATE_READY) {
                         // Active playback.
                         isAudioPlaying = true;
@@ -196,10 +200,10 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
      * Start playback and set playback status in SharedPreferences.
      */
     private void startPlayback() {
-        mediaPlayer.setPlayWhenReady(true);
-
         if (mediaPlayer.getPlaybackState() == Player.STATE_IDLE)
             mediaPlayer.prepare(streamSrc);
+
+        mediaPlayer.setPlayWhenReady(true);
     }
 
     /**
