@@ -1,12 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#1070c2ba">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
-</FrameLayout>
+    <include
+        android:id="@+id/content_no_network"
+        layout="@layout/content_no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/swipe_refresh_news"
+        app:layout_constraintStart_toStartOf="@+id/swipe_refresh_news"
+        app:layout_constraintTop_toTopOf="@+id/swipe_refresh_news"
+        tools:visibility="visible" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/progress_loading"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:src="@drawable/loading"
+        app:layout_constraintBottom_toBottomOf="@+id/content_no_network"
+        app:layout_constraintEnd_toEndOf="@+id/content_no_network"
+        app:layout_constraintStart_toStartOf="@+id/content_no_network"
+        app:layout_constraintTop_toTopOf="@+id/swipe_refresh_news" />
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_news"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="50dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="invisible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_newslist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
