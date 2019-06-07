@@ -171,7 +171,7 @@ public class NewsData {
     }
 
     private void readFromCache(String cacheFilePath) {
-        final int defaultCacheExpiryHours = 5;
+        final int defaultCacheExpiryHours = preference.getCacheExpiryHours();
         final File cacheFile = new File(cacheFilePath);
 
         try {
