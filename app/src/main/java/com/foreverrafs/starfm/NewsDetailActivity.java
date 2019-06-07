@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
 
-import com.foreverrafs.starfm.fragment.HomeFragment;
+import com.foreverrafs.starfm.fragment.NewsFragment;
 import com.foreverrafs.starfm.model.News;
 import com.squareup.picasso.Picasso;
 
@@ -46,8 +46,8 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         News newsItem = null;
         if (getIntent() != null) {
-            newsItem = getIntent().getParcelableExtra(HomeFragment.NEWS_ITEM_EXTRA);
-            ViewCompat.setTransitionName(imageView, getIntent().getStringExtra(HomeFragment.IMAGE_TRANSITION_NAME_EXTRA));
+            newsItem = getIntent().getParcelableExtra(NewsFragment.NEWS_ITEM_EXTRA);
+            ViewCompat.setTransitionName(imageView, getIntent().getStringExtra(NewsFragment.IMAGE_TRANSITION_NAME_EXTRA));
         }
 
         textContent.setText(Html.fromHtml(newsItem.getContent()));

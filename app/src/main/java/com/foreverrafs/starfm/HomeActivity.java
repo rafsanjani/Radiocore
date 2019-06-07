@@ -287,13 +287,11 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_RECORD_AUDIO:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    setUpAudioVisualizer();
-                else
-                    Log.i(DEBUG_TAG, "Permission to record audio denied. Visualizer cannot be initialized");
-                break;
+        if (requestCode == PERMISSION_RECORD_AUDIO) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                setUpAudioVisualizer();
+            else
+                Log.i(DEBUG_TAG, "Permission to record audio denied. Visualizer cannot be initialized");
         }
     }
 
@@ -406,7 +404,7 @@ public class HomeActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 1
 
-        viewPager.setOffscreenPageLimit(2);
+//        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(viewPagerAdapter);
     }
 
