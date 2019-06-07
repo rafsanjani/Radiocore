@@ -53,5 +53,6 @@
     <string name="desc_whatsapp_icon">Whatsapp Icon</string>
     <string name="contact">Contact</string>
     <string name="mission">Mission</string>
+    <string name="fm_station_logo_desc">FM Station Logo</string>
 
 </resources>

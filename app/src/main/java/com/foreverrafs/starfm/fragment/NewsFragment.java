@@ -21,8 +21,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.NetworkError;
 import com.android.volley.VolleyError;
-import com.foreverrafs.starfm.NewsDetailActivity;
 import com.foreverrafs.starfm.R;
+import com.foreverrafs.starfm.activity.NewsDetailActivity;
 import com.foreverrafs.starfm.adapter.NewsAdapter;
 import com.foreverrafs.starfm.data.NewsData;
 import com.foreverrafs.starfm.model.News;

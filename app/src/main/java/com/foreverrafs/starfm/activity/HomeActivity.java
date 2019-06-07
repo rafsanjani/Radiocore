@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm;
+package com.foreverrafs.starfm.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -31,6 +31,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.crashlytics.android.Crashlytics;
+import com.foreverrafs.starfm.BuildConfig;
+import com.foreverrafs.starfm.R;
+import com.foreverrafs.starfm.StreamPlayer;
 import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
 import com.foreverrafs.starfm.fragment.AboutFragment;
 import com.foreverrafs.starfm.fragment.HomeFragment;
@@ -53,11 +56,11 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.MESSAGE;
-import static com.foreverrafs.starfm.util.Constants.PERMISSION_RECORD_AUDIO;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
 
 public class HomeActivity extends AppCompatActivity {
+    private final int PERMISSION_RECORD_AUDIO = 6900;
     ///////////////////////////////////////////////////////////////////////////////////////////////
     BroadcastReceiver audioServiceBroadcastReceiver;
     //let's assume nothing is playing when application starts

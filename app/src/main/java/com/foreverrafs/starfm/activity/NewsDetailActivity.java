@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm;
+package com.foreverrafs.starfm.activity;
 
 import android.os.Bundle;
 import android.text.Html;
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
 
+import com.foreverrafs.starfm.R;
 import com.foreverrafs.starfm.fragment.NewsFragment;
 import com.foreverrafs.starfm.model.News;
 import com.squareup.picasso.Picasso;
