@@ -9,9 +9,11 @@ public class StreamPlayer {
     private static SimpleExoPlayer mediaPlayer;
 
     public static SimpleExoPlayer getPlayer(Context context) {
-        if (mediaPlayer == null)
-            mediaPlayer = ExoPlayerFactory.newSimpleInstance(context);
+        synchronized (SimpleExoPlayer.class) {
+            if (mediaPlayer == null)
+                mediaPlayer = ExoPlayerFactory.newSimpleInstance(context);
 
-        return mediaPlayer;
+            return mediaPlayer;
+        }
     }
 }
