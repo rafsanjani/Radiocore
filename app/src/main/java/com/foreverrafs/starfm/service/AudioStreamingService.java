@@ -139,6 +139,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
                     if (error.getSourceException() instanceof HttpDataSource.HttpDataSourceException)
                         Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_LONG).show();
+                    stopForeground(true);
                 }
             });
 
