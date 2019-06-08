@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
 
     //Declare UI variables
     @BindView(R.id.bottom_sheet)
-    RelativeLayout layoutBottomSheet;//, bottomSheetMenuItems;
+    RelativeLayout layoutBottomSheet;
 
     @BindView(R.id.bottomsheet_playback_items)
     LinearLayout bottomSheetPlaybackItems;
@@ -374,12 +374,11 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void onAudioStreamingStateReceived(@NonNull AudioStreamingState streamingState) {
         switch (streamingState) {
-            //we are only interested in PLAYING and PAUSED/STOPPED states
             case STATUS_PLAYING:
                 Log.i(DEBUG_TAG, "Media Playing");
-                //findViewById(R.id.progressBar).setVisibility(View.GONE);
-                smallProgressBar.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
+
+                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
+
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
 
@@ -389,13 +388,14 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i(DEBUG_TAG, "Media Stopped");
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
-                smallProgressBar.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
+
+                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
+
                 break;
             case STATUS_LOADING:
                 Log.i(DEBUG_TAG, "Media is Loading");
-                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                smallProgressBar.setVisibility(View.VISIBLE);
+
+                Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar);
                 break;
         }
     }

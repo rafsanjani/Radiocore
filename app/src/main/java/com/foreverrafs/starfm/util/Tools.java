@@ -19,14 +19,17 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.foreverrafs.starfm.R;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -96,39 +99,13 @@ public class Tools {
         }
     }
 
-//    public static void displayImageOriginal(Context ctx, ImageView img, @DrawableRes int drawable) {
-//        try {
-//            Glide.with(ctx).load(drawable)
-//                    .crossFade()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .into(img);
-//        } catch (Exception e) {
-//        }
-//    }
-//
-//    public static void displayImageRound(final Context ctx, final ImageView img, @DrawableRes int drawable) {
-//        try {
-//            Glide.with(ctx).load(drawable).asBitmap().centerCrop().into(new BitmapImageViewTarget(img) {
-//                @Override
-//                protected void setResource(Bitmap resource) {
-//                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
-//                    circularBitmapDrawable.setCircular(true);
-//                    img.setImageDrawable(circularBitmapDrawable);
-//                }
-//            });
-//        } catch (Exception e) {
-//        }
-////    }
-//
-//    public static void displayImageOriginal(Context ctx, ImageView img, String url) {
-//        try {
-//            Glide.with(ctx).load(url)
-//                    .crossFade()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .into(img);
-//        } catch (Exception e) {
-//        }
-//    }
+    public static void displayImageOriginal(Context ctx, ImageView img, @DrawableRes int drawable) {
+        try {
+            Picasso.get().load(drawable).into(img);
+        } catch (Exception e) {
+        }
+    }
+
 
     public static String getFormattedDateSimple(Long dateTime) {
         SimpleDateFormat newFormat = new SimpleDateFormat("MMMM dd, yyyy");
@@ -310,6 +287,13 @@ public class Tools {
             }
         }
         return false;
+    }
+
+    public static void toggleViewsVisibility(int flag, View... views) {
+        for (View view : views) {
+            if (flag == View.VISIBLE || flag == View.INVISIBLE || flag == View.GONE)
+                view.setVisibility(flag);
+        }
     }
 
 }
