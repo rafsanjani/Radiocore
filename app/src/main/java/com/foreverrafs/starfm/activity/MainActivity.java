@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.foreverrafs.starfm.R;
 
 /**
- * We just use the MainActivity to show a fake progress for 1/8th of a second and just proceeds to HomeActivity and dismiss it
+ * We just use this class to show a fake progress for 1/8th of a second and just proceeds to HomeActivity and dismiss it
  */
 public class MainActivity extends AppCompatActivity {
     @Override

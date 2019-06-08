@@ -31,6 +31,7 @@ public class News implements Parcelable {
         this.content = content;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public News(Parcel in) {
         headline = in.readString();
         content = in.readString();

@@ -190,7 +190,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Check if AudioStreamingService is running and change the AudioStreamingState accordingly
+     * Check if Audio Streaming Service is running and change the AudioStreamingState accordingly
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
     private void setUpInitialPlayerState() {

@@ -2,7 +2,6 @@ package com.foreverrafs.starfm.adapter;
 
 // Created by Emperor95 on 1/13/2019.
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +24,12 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
-    private Context context;
     private List<News> newsList;
     private NewsItemClickListener listener;
+    private int lastPosition = -1;
+    private boolean on_attach = true;
 
-    public NewsAdapter(Context context, List<News> list) {
-        this.context = context;
+    public NewsAdapter(List<News> list) {
         this.newsList = list;
     }
 
@@ -48,14 +47,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         return new NewsHolder(view);
     }
 
-    private int lastPosition = -1;
-
-
     public void setOnNewsItemClickListener(NewsItemClickListener listener) {
         this.listener = listener;
     }
-    private boolean on_attach = true;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onBindViewHolder(@NonNull final NewsHolder newsHolder, final int position) {
         final News newsItem = newsList.get(position);
@@ -75,11 +73,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         setAnimation(newsHolder.itemView, position);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 on_attach = false;
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -87,6 +88,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+    /**
+     * Set's an animation to be used with the adapter during view {@link #onBindViewHolder(NewsHolder, int)}.
+     *
+     * @param view     The itemView of the recyclerView to be animated
+     * @param position The position of the itemView
+     */
     private void setAnimation(View view, int position) {
         if (position > lastPosition) {
             ItemAnimation.animate(view, on_attach ? position : -1, ItemAnimation.LEFT_RIGHT);
@@ -99,6 +106,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         void onNewItemClicked(int position, News newsItem, ImageView newsImage, TextView headline);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public class NewsHolder extends RecyclerView.ViewHolder {
 
         private TextView date, headline;

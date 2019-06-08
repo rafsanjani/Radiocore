@@ -55,7 +55,6 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @BindView(R.id.content_no_network)
     View contentNoConnection;
 
-    //    private ArrayList<News> newsList;
     private NewsAdapter newsAdapter, cachedAdapter;
 
 
@@ -94,10 +93,6 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             return;
         }
 
-        // Clear the news items before adding new set of data
-//        newsList.clear();
-//        newsAdapter.notifyDataSetChanged();
-
         getNewsData();
     }
 
@@ -117,7 +112,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onNewsFetched(List<News> fetchedNewsItems) {
                 swipeRefreshLayout.setVisibility(View.VISIBLE);
 
-                newsAdapter = new NewsAdapter(getContext(), fetchedNewsItems);
+                newsAdapter = new NewsAdapter(fetchedNewsItems);
 
                 setUpNewsItemClickListener();
 
@@ -161,7 +156,6 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 
         newsData.fetchNewsFromOnlineAsync();
-//        newsData.fetchNewsFromLocalStore();
     }
 
     private void setUpNewsItemClickListener() {

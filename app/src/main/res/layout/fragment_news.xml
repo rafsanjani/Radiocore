@@ -20,8 +20,8 @@
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/progress_loading"
-        android:layout_width="300dp"
-        android:layout_height="150dp"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
         android:src="@drawable/loading"
         app:layout_constraintBottom_toBottomOf="@+id/content_no_network"
         app:layout_constraintEnd_toEndOf="@+id/content_no_network"
