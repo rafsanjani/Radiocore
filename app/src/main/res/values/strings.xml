@@ -30,7 +30,6 @@
     </string>
 
 
-
     <string name="action_share">Share</string>
     <string name="action_reply">Reply</string>
 
@@ -54,5 +53,13 @@
     <string name="contact">Contact</string>
     <string name="mission">Mission</string>
     <string name="fm_station_logo_desc">FM Station Logo</string>
+
+
+    <!--Preferences Strings-->
+    <string name="auto_play_on_start_key">com.radiocore.settings.auto_play_on_start</string>
+    <string name="auto_play_on_start">Autoplay on start</string>
+
+    <string name="stream_duration_key">com.radiocore.settings.stream_duration</string>
+    <string name="stream_duration">Stream Duration</string>
 
 </resources>

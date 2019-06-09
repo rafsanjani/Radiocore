@@ -11,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,12 +43,17 @@ import com.foreverrafs.starfm.fragment.HomeFragment;
 import com.foreverrafs.starfm.fragment.NewsFragment;
 import com.foreverrafs.starfm.service.AudioStreamingService;
 import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
-import com.foreverrafs.starfm.util.Preference;
+import com.foreverrafs.starfm.util.RadioPreferences;
 import com.foreverrafs.starfm.util.Tools;
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
+
+import org.joda.time.Period;
+import org.joda.time.Seconds;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,8 +93,8 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
 
-    @BindView(R.id.seekBar)
-    SeekBar seekBar;
+    @BindView(R.id.seekbar_streamprogress)
+    SeekBar seekBarProgress;
 
     @BindView(R.id.smallLogo)
     ImageView smallLogo;
@@ -100,14 +108,23 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.visualizer)
     BarVisualizer visualizer;
 
+    @BindView(R.id.text_stream_duration)
+    TextView textStreamDuration;
 
+    @BindView(R.id.text_stream_progress)
+    TextView textStreamProgress;
+
+
+    //Radio settings
+    RadioPreferences radioPreferences;
     private BottomSheetBehavior sheetBehavior;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        radioPreferences = new RadioPreferences(this);
 
         ButterKnife.bind(this);
 
@@ -194,22 +211,71 @@ public class HomeActivity extends AppCompatActivity {
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
     private void setUpInitialPlayerState() {
-        Preference preference = new Preference(HomeActivity.this);
+        RadioPreferences radioPreferences = new RadioPreferences(this);
 
-        audioStreamingState = AudioStreamingState.valueOf(preference.getStatus());
+        audioStreamingState = AudioStreamingState.valueOf(radioPreferences.getStatus());
 
         if (!Tools.isServiceRunning(AudioStreamingService.class, this) ||
-                preference.isAutoPlayOnStart() ||
-                preference.getStatus().equals(STATUS_STOPPED))
+                radioPreferences.isAutoPlayOnStart() ||
+                radioPreferences.getStatus().equals(STATUS_STOPPED))
             startPlayback();
+
 
         onAudioStreamingStateReceived(audioStreamingState);
     }
 
     private void startPlayback() {
+        // RadioPreferences radioPreferences = new RadioPreferences(this);
+
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_PLAY);
         ContextCompat.startForegroundService(this, audioServiceIntent);
+
+        startUpdateStreamProgress();
+    }
+
+    private void startUpdateStreamProgress() {
+        //convert streaming timer to seconds
+        seekBarProgress.setMax(radioPreferences.getStreamingTimer() * 3600);
+
+        Handler mHandler = new Handler(Looper.getMainLooper());
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Seconds streamDurationHrs = Seconds.seconds(radioPreferences.getStreamingTimer() * 3600);
+                Seconds currentPosition = Seconds.seconds((int) StreamPlayer.getPlayer(getApplicationContext()).getCurrentPosition() / 1000);
+
+
+                Period streamDurationPeriod = new Period(streamDurationHrs);
+                Period currentPositionPeriod = new Period(currentPosition);
+
+
+                PeriodFormatter formatter = new PeriodFormatterBuilder()
+                        .printZeroAlways()
+                        .minimumPrintedDigits(2)
+                        .appendHours()
+                        .appendSuffix(":")
+                        .appendMinutes()
+                        .appendSuffix(":")
+                        .appendSeconds()
+                        .toFormatter();
+
+                String totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard());
+                String streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard());
+
+                textStreamDuration.setText(totalStreamStr);
+                textStreamProgress.setText(streamProgressStr);
+
+
+                if (StreamPlayer.getPlayer(getApplicationContext()) != null) {
+                    if (seekBarProgress != null)
+                        seekBarProgress.setProgress(currentPosition.getSeconds());
+
+                }
+                mHandler.postDelayed(this, 1000);
+            }
+        });
     }
 
     private void stopPlayback() {
@@ -224,6 +290,9 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver((audioServiceBroadcastReceiver),
                 new IntentFilter(RESULT)
         );
+
+        if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
+            startUpdateStreamProgress();
     }
 
     @Override
@@ -269,7 +338,7 @@ public class HomeActivity extends AppCompatActivity {
         initializeToolbar();
         initializeBottomSheet();
 
-        seekBar.setEnabled(false);
+        seekBarProgress.setEnabled(false);
     }
 
     private void setUpAudioVisualizer() {
