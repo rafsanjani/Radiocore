@@ -61,5 +61,22 @@
 
     <string name="stream_duration_key">com.radiocore.settings.stream_duration</string>
     <string name="stream_duration">Stream Duration</string>
+    <string name="stream_timer">Radio Timer</string>
+
+    <string-array name="settings_timer_entries">
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>4 hours</item>
+        <item>5 hours</item>
+    </string-array>
+
+    <string-array name="settings_timer_entries_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 
 </resources>

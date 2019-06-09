@@ -20,7 +20,14 @@
     <PreferenceCategory app:title="GENERAL SETTINGS">
         <SwitchPreference
             android:defaultValue="false"
-            android:key="@string/auto_play_on_start_key"
+            android:key="com.foreverrafs.radiocore.autoplay_on_start"
+            android:summary="Start playing when app opens"
             android:title="@string/auto_play_on_start" />
+        <ListPreference
+            android:entries="@array/settings_timer_entries"
+            android:entryValues="@array/settings_timer_entries_values"
+            android:key="com.foreverrafs.radiocore.streaming_timer"
+            android:summary="Stop stream after %s"
+            android:title="@string/stream_timer" />
     </PreferenceCategory>
 </PreferenceScreen>

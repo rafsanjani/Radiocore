@@ -140,9 +140,8 @@ public class RadioPreferences {
         settings.edit().putInt(CACHE_EXPIRY_HOURS, hours).apply();
     }
 
-    public int getStreamingTimer() {
-        return settings.getInt(STREAMING_TIMER, 1);
-
+    public String getStreamingTimer() {
+        return settings.getString(STREAMING_TIMER, "1");
     }
 
     /**

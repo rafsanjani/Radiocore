@@ -233,15 +233,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void startUpdateStreamProgress() {
-        //convert streaming timer to seconds
-        seekBarProgress.setMax(radioPreferences.getStreamingTimer() * 3600);
+
 
         Handler mHandler = new Handler(Looper.getMainLooper());
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Seconds streamDurationHrs = Seconds.seconds(radioPreferences.getStreamingTimer() * 3600);
+                int streamTimer = Integer.parseInt(radioPreferences.getStreamingTimer()) * 3600;
+                //convert streaming timer to seconds
+                seekBarProgress.setMax(streamTimer);
+
+                Seconds streamDurationHrs = Seconds.seconds(streamTimer);
                 Seconds currentPosition = Seconds.seconds((int) StreamPlayer.getPlayer(getApplicationContext()).getCurrentPosition() / 1000);
 
 
@@ -264,7 +267,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 textStreamDuration.setText(totalStreamStr);
                 textStreamProgress.setText(streamProgressStr);
-
 
                 if (StreamPlayer.getPlayer(getApplicationContext()) != null) {
                     if (seekBarProgress != null)
@@ -489,6 +491,5 @@ public class HomeActivity extends AppCompatActivity {
 
     public void onSettings(MenuItem item) {
         startActivity(new Intent(this, SettingsActivity.class));
-
     }
 }
