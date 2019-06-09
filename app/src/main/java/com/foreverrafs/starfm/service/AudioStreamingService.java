@@ -21,7 +21,7 @@ import com.foreverrafs.starfm.R;
 import com.foreverrafs.starfm.StreamPlayer;
 import com.foreverrafs.starfm.activity.HomeActivity;
 import com.foreverrafs.starfm.util.Constants;
-import com.foreverrafs.starfm.util.Preference;
+import com.foreverrafs.starfm.util.RadioPreferences;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -50,7 +50,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
     LocalBroadcastManager broadcastManager;
     SimpleExoPlayer mediaPlayer;
     MediaSource streamSrc = null;
-    private Preference preference;
+    private RadioPreferences radioPreferences;
     private String notificationText = "Empty"; //this will be set when context is created
     private NotificationCompat.Builder builder;
     private Notification streamNotification;
@@ -74,7 +74,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         notificationText = this.getString(R.string.live_radio_freq);
 
         streamNotification = createNotification();
-        preference = new Preference(AudioStreamingService.this);
+        radioPreferences = new RadioPreferences(AudioStreamingService.this);
         broadcastManager = LocalBroadcastManager.getInstance(this);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -112,20 +112,20 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                         // Active playback.
                         isAudioPlaying = true;
                         sendResult(AudioStreamingState.STATUS_PLAYING);
-                        preference.setStatus(STATUS_PLAYING);
+                        radioPreferences.setStatus(STATUS_PLAYING);
                     } else if (playWhenReady) {
                         // Not playing because playback ended, the player is buffering, stopped or
                         // failed. Check playbackState and player.getPlaybackError for details.
                         isAudioPlaying = false;
                         sendResult(AudioStreamingState.STATUS_STOPPED);
-                        preference.setStatus(STATUS_STOPPED);
+                        radioPreferences.setStatus(STATUS_STOPPED);
                         Log.i(DEBUG_TAG, "Error Buffering");
 
                     } else {
                         // Paused by app.
                         isAudioPlaying = false;
                         sendResult(AudioStreamingState.STATUS_STOPPED);
-                        preference.setStatus(STATUS_STOPPED);
+                        radioPreferences.setStatus(STATUS_STOPPED);
                     }
 
                 }
@@ -134,7 +134,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                 public void onPlayerError(ExoPlaybackException error) {
                     isAudioPlaying = false;
                     sendResult(AudioStreamingState.STATUS_STOPPED);
-                    preference.setStatus(STATUS_STOPPED);
+                    radioPreferences.setStatus(STATUS_STOPPED);
                     Log.e(DEBUG_TAG, error.getMessage());
 
                     if (error.getSourceException() instanceof HttpDataSource.HttpDataSourceException)
@@ -213,8 +213,6 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
     private void stopPlayback() {
         if (isAudioPlaying)
             mediaPlayer.setPlayWhenReady(false);
-
-//        preference.setStatus(STATUS_STOPPED);
     }
 
     @Override
@@ -243,7 +241,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-            preference.setStatus(STATUS_STOPPED);
+            radioPreferences.setStatus(STATUS_STOPPED);
             audioManager.abandonAudioFocus(this);
         }
     }

@@ -10,7 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.foreverrafs.starfm.model.News;
-import com.foreverrafs.starfm.util.Preference;
+import com.foreverrafs.starfm.util.RadioPreferences;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
@@ -36,13 +36,13 @@ public class NewsData {
     private List<News> newsList;
     private NewsFetchEventListener newsFetchEventListener;
 
-    private Preference preference;
+    private RadioPreferences radioPreferences;
 
     public NewsData(Context context) {
         this.context = context;
         newsList = new ArrayList<>();
 
-        preference = new Preference(context);
+        radioPreferences = new RadioPreferences(context);
     }
 
     /**
@@ -55,7 +55,7 @@ public class NewsData {
         }
 
         //try reading from the cache if the file has previously been created
-        String cacheFilePath = preference.getCacheFileName();
+        String cacheFilePath = radioPreferences.getCacheFileName();
         if (cacheFilePath != null) {
             Log.i(DEBUG_TAG, "News cache hit. Trying to read from Cache");
             readFromCache(cacheFilePath);
@@ -121,7 +121,7 @@ public class NewsData {
         }
 
         //try reading from the cache if the file has previously been created
-        String cacheFilePath = preference.getCacheFileName();
+        String cacheFilePath = radioPreferences.getCacheFileName();
         if (cacheFilePath != null) {
             Log.i(DEBUG_TAG, "News cache hit. Trying to read from Cache");
             readFromCache(cacheFilePath);
@@ -163,7 +163,7 @@ public class NewsData {
             fileOutputStream.close();
 
             Log.i(DEBUG_TAG, "Cache Saved at " + file.getAbsolutePath());
-            preference.setCacheFileName(file.getAbsolutePath());
+            radioPreferences.setCacheFileName(file.getAbsolutePath());
 
         } catch (IOException exception) {
             Log.e(DEBUG_TAG, exception.getMessage());
@@ -171,7 +171,7 @@ public class NewsData {
     }
 
     private void readFromCache(String cacheFilePath) {
-        final int defaultCacheExpiryHours = preference.getCacheExpiryHours();
+        final int defaultCacheExpiryHours = radioPreferences.getCacheExpiryHours();
         final File cacheFile = new File(cacheFilePath);
 
         try {
@@ -203,7 +203,7 @@ public class NewsData {
                 if (cacheFile.delete()) {
                     Log.i(DEBUG_TAG, "Successfully deleted cache file" + cacheFile.getName());
                     Log.i(DEBUG_TAG, "Loading news from online");
-                    preference.removeCacheFileEntry();
+                    radioPreferences.removeCacheFileEntry();
                     fetchNewsFromOnlineAsync();
                 }
             }

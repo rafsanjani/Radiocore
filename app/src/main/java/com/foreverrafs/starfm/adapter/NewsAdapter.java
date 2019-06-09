@@ -68,7 +68,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         ViewCompat.setTransitionName(newsHolder.imageView, newsItem.getImage());
         ViewCompat.setTransitionName(newsHolder.headline, newsItem.getHeadline());
 
-        newsHolder.itemView.setOnClickListener(v -> listener.onNewItemClicked(newsHolder.getAdapterPosition(), newsItem, newsHolder.imageView, newsHolder.headline));
+        newsHolder.itemView.setOnClickListener(v -> listener.onNewsItemClicked(newsHolder.getAdapterPosition(), newsItem, newsHolder.imageView, newsHolder.headline));
 
         setAnimation(newsHolder.itemView, position);
     }
@@ -101,9 +101,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
         }
     }
 
-
+    /**
+     * Propagate click events to the RecyclervView to which this adapter is attached.
+     */
     public interface NewsItemClickListener {
-        void onNewItemClicked(int position, News newsItem, ImageView newsImage, TextView headline);
+        void onNewsItemClicked(int position, News newsItem, ImageView newsImage, TextView headline);
     }
 
     @SuppressWarnings("WeakerAccess")

@@ -10,20 +10,23 @@ import android.util.Log;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
 
-public class Preference {
-    static final String AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start";
+public class RadioPreferences {
+    private static final String AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start";
     private static final String IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch";
     private static final String STREAMING_STATUS = "com.foreverrafs.radiocore.streaming_status";
     private static final String CACHE_FILE_NAME = "com.foreverrafs.radiocore.cache_file_name";
     private static final String CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours";
+    private static final String STREAMING_TIMER = "com.foreverrafs.radiocore.streaming_timer";
+
     ///////////////SETTINGS VARIABLES
     private SharedPreferences settings;
+    private Context context;
 
     ////////////////END OF SETTINGS VARIABLES
 
 
-    //call to this constructor already returns a singleton so no need to define our class as one
-    public Preference(Context context) {
+    public RadioPreferences(Context context) {
+        this.context = context;
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -135,5 +138,19 @@ public class Preference {
 
     public void setCacheExpiryHours(int hours) {
         settings.edit().putInt(CACHE_EXPIRY_HOURS, hours).apply();
+    }
+
+    public int getStreamingTimer() {
+        return settings.getInt(STREAMING_TIMER, 1);
+
+    }
+
+    /**
+     * Sets the number of hours or minutes a stream should play before automatically shutting
+     * down. The default is set to 99 Hours
+     */
+
+    public void setStreamingTimer(int hours) {
+        settings.edit().putInt(STREAMING_TIMER, hours).apply();
     }
 }
