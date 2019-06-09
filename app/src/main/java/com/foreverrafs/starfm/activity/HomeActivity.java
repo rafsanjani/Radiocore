@@ -230,8 +230,6 @@ public class HomeActivity extends AppCompatActivity {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_PLAY);
         ContextCompat.startForegroundService(this, audioServiceIntent);
-
-        startUpdateStreamProgress();
     }
 
     private void startUpdateStreamProgress() {
@@ -452,6 +450,9 @@ public class HomeActivity extends AppCompatActivity {
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_play_pause_small));
 
                 intiializeAudioVisualizer();
+
+                //start updating seekbar when something is actually playing
+                startUpdateStreamProgress();
                 break;
             case STATUS_STOPPED:
                 Log.i(DEBUG_TAG, "Media Stopped");
