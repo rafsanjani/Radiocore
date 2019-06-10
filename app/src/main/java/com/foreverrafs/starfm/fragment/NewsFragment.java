@@ -176,7 +176,8 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                         imageViewPair);
-                startActivity(intent/*,options.toBundle()*/);
+                //todo: Fix using a scene transition causes the UI to hang, resulting in undesired behaviour.
+                startActivity(intent/*, options.toBundle()*/);
 
             } else {
                 startActivity(intent);
