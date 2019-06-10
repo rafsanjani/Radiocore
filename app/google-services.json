@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "187746440429",
+    "firebase_url": "https://ardent-gate-173721.firebaseio.com",
+    "project_id": "ardent-gate-173721",
+    "storage_bucket": "ardent-gate-173721.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187746440429:android:50a235b0f83481f6",
+        "android_client_info": {
+          "package_name": "com.foreverrafs.starfm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187746440429-ff0t9rs5baupt41memh5bojkdjr9jijt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76_sxpz7m476H1Km1GKSf5xP9ejhiN7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "187746440429-ff0t9rs5baupt41memh5bojkdjr9jijt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
