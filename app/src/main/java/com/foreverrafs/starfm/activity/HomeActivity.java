@@ -17,12 +17,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -113,6 +116,9 @@ public class HomeActivity extends AppCompatActivity {
 
     @BindView(R.id.text_stream_progress)
     TextView textStreamProgress;
+
+    @BindView(R.id.text_switcher_network_status)
+    TextSwitcher textNetworkStatus;
 
 
     //Radio settings
@@ -334,6 +340,16 @@ public class HomeActivity extends AppCompatActivity {
      * Note: All view Initializing must be performed in this module or it's submodules
      */
     private void initializeViews() {
+
+        Animation textAnimationIn = AnimationUtils.
+                loadAnimation(this, android.R.anim.slide_in_left);
+
+        Animation textAnimationOut = AnimationUtils.
+                loadAnimation(this, android.R.anim.slide_out_right);
+
+        textNetworkStatus.setInAnimation(textAnimationIn);
+        textNetworkStatus.setOutAnimation(textAnimationOut);
+
         initializeTabComponents();
         initializeToolbar();
         initializeBottomSheet();
@@ -455,6 +471,8 @@ public class HomeActivity extends AppCompatActivity {
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress();
+                textNetworkStatus.setText(getString(R.string.live_online));
+                //  textNetworkStatus.setTextColor(getResources().getColor(R.color.green_200));
                 break;
             case STATUS_STOPPED:
                 Log.i(DEBUG_TAG, "Media Stopped");
@@ -462,10 +480,14 @@ public class HomeActivity extends AppCompatActivity {
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
 
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
+                textNetworkStatus.setText(getString(R.string.stopped));
+                // textNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
 
                 break;
             case STATUS_LOADING:
                 Log.i(DEBUG_TAG, "Media is Loading");
+                textNetworkStatus.setText(getString(R.string.buffering));
+                //  textNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
 
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar);
                 break;

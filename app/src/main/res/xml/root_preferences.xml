@@ -22,7 +22,8 @@
             android:defaultValue="false"
             android:icon="@drawable/ic_play_arrow_black_24dp"
             android:key="com.foreverrafs.radiocore.autoplay_on_start"
-            android:summary="Start playing when app opens"
+            android:summaryOff="Don't start playing when app opens"
+            android:summaryOn="Start playing when app opens"
             android:title="@string/auto_play_on_start" />
         <ListPreference
             android:entries="@array/settings_timer_entries"

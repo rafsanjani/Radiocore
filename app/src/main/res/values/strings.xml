@@ -62,6 +62,9 @@
     <string name="stream_duration_key">com.radiocore.settings.stream_duration</string>
     <string name="stream_duration">Stream Duration</string>
     <string name="stream_timer">Radio Timer</string>
+    <string name="buffering">Buffering...</string>
+    <string name="live_online">Live Online</string>
+    <string name="stopped">Stopped</string>
 
     <string-array name="settings_timer_entries">
         <item>1 hour</item>

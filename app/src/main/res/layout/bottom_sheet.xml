@@ -175,15 +175,32 @@
         </LinearLayout>
 
 
-        <TextView
+        <TextSwitcher
+            android:id="@+id/text_switcher_network_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="Live Online"
-            android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:layout_marginBottom="10dp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="@string/buffering"
+                android:textColor="@color/pink_600"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="@string/buffering"
+                android:textColor="@color/green_200"
+                android:textSize="17sp" />
+        </TextSwitcher>
+
 
     </LinearLayout>
 
