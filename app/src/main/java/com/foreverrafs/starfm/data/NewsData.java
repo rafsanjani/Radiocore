@@ -100,7 +100,7 @@ public class NewsData {
 
                             newsList.add(new News(title, date, image/*images.get(i)*/, content));
                         }
-                        //todo: persist news objects in json file for caching
+
                         saveToCache(newsList);
                         newsFetchEventListener.onNewsFetched(newsList);
 

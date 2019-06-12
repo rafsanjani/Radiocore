@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@SuppressWarnings("unused")
 public class Tools {
 
     public static void setSystemBarColor(Activity act) {
@@ -296,4 +299,15 @@ public class Tools {
         }
     }
 
+    /**
+     * Morph a target Button's image property from it's present one to the drawable specified by toDrawable
+     *
+     * @param target     the imageButton whose image property is to be animated
+     * @param toDrawable the drawable which will be used for the morphing
+     */
+    public static void animateButtonDrawable(ImageButton target, Drawable toDrawable) {
+        target.setImageDrawable(toDrawable);
+        final Animatable animatable = (Animatable) target.getDrawable();
+        animatable.start();
+    }
 }

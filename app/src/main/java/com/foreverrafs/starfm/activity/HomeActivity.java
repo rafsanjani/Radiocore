@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -69,6 +67,7 @@ import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.MESSAGE;
 import static com.foreverrafs.starfm.util.Constants.RESULT;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
+import static com.foreverrafs.starfm.util.Tools.animateButtonDrawable;
 
 public class HomeActivity extends AppCompatActivity {
     private final int PERMISSION_RECORD_AUDIO = 6900;
@@ -118,7 +117,10 @@ public class HomeActivity extends AppCompatActivity {
     TextView textStreamProgress;
 
     @BindView(R.id.text_switcher_network_status)
-    TextSwitcher textNetworkStatus;
+    TextSwitcher textSwitcherNetworkStatus;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
 
     //Radio settings
@@ -156,7 +158,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.app_name));
         Tools.setSystemBarColor(this);
@@ -236,18 +237,21 @@ public class HomeActivity extends AppCompatActivity {
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_PLAY);
         ContextCompat.startForegroundService(this, audioServiceIntent);
+
     }
 
+    /**
+     * Update the stream progress seekbar and timer accordingly.
+     * Also checks if the stream timer is up which triggers a shutdown of the app
+     */
     private void startUpdateStreamProgress() {
-
-
         Handler mHandler = new Handler(Looper.getMainLooper());
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int streamTimer = Integer.parseInt(radioPreferences.getStreamingTimer()) * 3600;
-                //convert streaming timer to seconds
+                int streamTimer = Integer.parseInt(radioPreferences.getStreamingTimer()) * 36;
+
                 seekBarProgress.setMax(streamTimer);
 
                 Seconds streamDurationHrs = Seconds.seconds(streamTimer);
@@ -256,6 +260,16 @@ public class HomeActivity extends AppCompatActivity {
 
                 Period streamDurationPeriod = new Period(streamDurationHrs);
                 Period currentPositionPeriod = new Period(currentPosition);
+
+                Period diffPeriod = streamDurationPeriod.minus(currentPositionPeriod);
+
+                // Duration timeToDeath = diffPeriod.toStandardDuration();
+
+                if (diffPeriod.getSeconds() == 0) {
+                    Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+                    stopService(audioServiceIntent);
+                    finishAffinity();
+                }
 
 
                 PeriodFormatter formatter = new PeriodFormatterBuilder()
@@ -312,6 +326,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (visualizer != null)
             visualizer.release();
+        Log.i(DEBUG_TAG, "shutting down main application");
     }
 
     @OnClick({R.id.smallPlay, R.id.mediacontrol_play})
@@ -323,17 +338,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Morph a target Button's image property from it's present one to the drawable specified by toDrawable
-     *
-     * @param target
-     * @param toDrawable
-     */
-    private void animateButtonDrawable(ImageButton target, Drawable toDrawable) {
-        target.setImageDrawable(toDrawable);
-        final Animatable animatable = (Animatable) target.getDrawable();
-        animatable.start();
-    }
 
     /**
      * Initialize all views by findViewById or @Bind when using ButterKnife
@@ -347,8 +351,8 @@ public class HomeActivity extends AppCompatActivity {
         Animation textAnimationOut = AnimationUtils.
                 loadAnimation(this, android.R.anim.slide_out_right);
 
-        textNetworkStatus.setInAnimation(textAnimationIn);
-        textNetworkStatus.setOutAnimation(textAnimationOut);
+        textSwitcherNetworkStatus.setInAnimation(textAnimationIn);
+        textSwitcherNetworkStatus.setOutAnimation(textAnimationOut);
 
         initializeTabComponents();
         initializeToolbar();
@@ -413,7 +417,7 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * rotate the collapse button clockwise when collapsing and counter-clockwise when expanding
      *
-     * @param slideOffset
+     * @param slideOffset the initial angle where rotation begins
      */
     private void rotateCollapseButton(float slideOffset) {
         float rotationAngle = slideOffset * -180;
@@ -435,6 +439,7 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Expand or collapse the bottom sheet based on it's current state
      */
+    @SuppressWarnings("unused")
     public void toggleBottomSheet() {
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -471,8 +476,8 @@ public class HomeActivity extends AppCompatActivity {
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress();
-                textNetworkStatus.setText(getString(R.string.live_online));
-                //  textNetworkStatus.setTextColor(getResources().getColor(R.color.green_200));
+                textSwitcherNetworkStatus.setText(getString(R.string.live_online));
+                //  textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.green_200));
                 break;
             case STATUS_STOPPED:
                 Log.i(DEBUG_TAG, "Media Stopped");
@@ -480,14 +485,14 @@ public class HomeActivity extends AppCompatActivity {
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
 
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
-                textNetworkStatus.setText(getString(R.string.stopped));
-                // textNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
+                textSwitcherNetworkStatus.setText(getString(R.string.stopped));
+                // textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
 
                 break;
             case STATUS_LOADING:
                 Log.i(DEBUG_TAG, "Media is Loading");
-                textNetworkStatus.setText(getString(R.string.buffering));
-                //  textNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
+                textSwitcherNetworkStatus.setText(getString(R.string.buffering));
+                //  textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
 
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar);
                 break;
@@ -499,9 +504,8 @@ public class HomeActivity extends AppCompatActivity {
         SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
         viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
-        viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 1
+        viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 2
 
-//        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(viewPagerAdapter);
     }
 

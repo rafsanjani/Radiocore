@@ -52,7 +52,6 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
     MediaSource streamSrc = null;
     private RadioPreferences radioPreferences;
     private String notificationText = "Empty"; //this will be set when context is created
-    private NotificationCompat.Builder builder;
     private Notification streamNotification;
     private AudioManager audioManager;
     private boolean mResumeOnFocusGain;
@@ -185,7 +184,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
 
 
-        builder = new NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Online Radio")
                 .addAction(R.drawable.ic_pause_notification, "Pause", pausePendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
@@ -240,10 +239,11 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         super.onDestroy();
         if (mediaPlayer != null) {
             mediaPlayer.release();
-            mediaPlayer = null;
             radioPreferences.setStatus(STATUS_STOPPED);
             audioManager.abandonAudioFocus(this);
         }
+
+        Log.i(DEBUG_TAG, "Service is destroyed");
     }
 
     /**
