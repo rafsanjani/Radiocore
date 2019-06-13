@@ -21,7 +21,6 @@ import com.foreverrafs.starfm.StreamPlayer;
 import com.foreverrafs.starfm.activity.HomeActivity;
 import com.foreverrafs.starfm.util.Constants;
 import com.foreverrafs.starfm.util.RadioPreferences;
-import com.google.android.exoplayer2.source.MediaSource;
 
 import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
@@ -40,16 +39,13 @@ import static com.foreverrafs.starfm.util.Constants.STREAM_URL;
 public class AudioStreamingService extends Service implements AudioManager.OnAudioFocusChangeListener {
 
     private final Object mFocusLock = new Object();
-    LocalBroadcastManager broadcastManager;
-    // SimpleExoPlayer mediaPlayer;
-    MediaSource streamSrc = null;
-    StreamPlayer mediaPlayer;
+    private LocalBroadcastManager broadcastManager;
+    private StreamPlayer mediaPlayer;
     private RadioPreferences radioPreferences;
     private String notificationText = "Empty"; //this will be set when context is created
     private Notification streamNotification;
     private AudioManager audioManager;
     private boolean mResumeOnFocusGain;
-    // private boolean isAudioPlaying;
 
     public AudioStreamingService() {
     }
@@ -85,6 +81,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                 public void onPlay() {
                     sendResult(AudioStreamingState.STATUS_PLAYING);
                     radioPreferences.setStatus(STATUS_PLAYING);
+                    startForeground(5, streamNotification);
                 }
 
                 @Override
@@ -97,17 +94,21 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                 public void onStop() {
                     sendResult(AudioStreamingState.STATUS_STOPPED);
                     radioPreferences.setStatus(STATUS_STOPPED);
+                    stopForeground(true);
                 }
 
                 @Override
                 public void onPause() {
                     sendResult(AudioStreamingState.STATUS_STOPPED);
                     radioPreferences.setStatus(STATUS_STOPPED);
+                    stopForeground(true);
                 }
 
                 @Override
                 public void onError(Exception exception) {
                     sendResult(AudioStreamingState.STATUS_STOPPED);
+                    radioPreferences.setStatus(STATUS_STOPPED);
+                    stopForeground(true);
                 }
             });
 
@@ -213,7 +214,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
             stopPlayback();
 
             //stop the foreground audio service and take away the notification from the user's screen
-            stopForeground(true);
+            // stopForeground(true);
         } else if (intent.getAction().equals(ACTION_PAUSE)) {
             pausePlayback();
         }
