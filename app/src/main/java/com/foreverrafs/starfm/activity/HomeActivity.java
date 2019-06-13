@@ -61,6 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
 
+import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
@@ -227,7 +228,6 @@ public class HomeActivity extends AppCompatActivity {
                 radioPreferences.getStatus().equals(STATUS_STOPPED))
             startPlayback();
 
-
         onAudioStreamingStateReceived(audioStreamingState);
     }
 
@@ -250,12 +250,12 @@ public class HomeActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int streamTimer = Integer.parseInt(radioPreferences.getStreamingTimer()) * 36;
+                int streamTimer = Integer.parseInt(radioPreferences.getStreamingTimer()) * 3600;
 
                 seekBarProgress.setMax(streamTimer);
 
                 Seconds streamDurationHrs = Seconds.seconds(streamTimer);
-                Seconds currentPosition = Seconds.seconds((int) StreamPlayer.getPlayer(getApplicationContext()).getCurrentPosition() / 1000);
+                Seconds currentPosition = Seconds.seconds((int) StreamPlayer.getInstance(getApplicationContext()).getCurrentPosition() / 1000);
 
 
                 Period streamDurationPeriod = new Period(streamDurationHrs);
@@ -266,9 +266,9 @@ public class HomeActivity extends AppCompatActivity {
                 // Duration timeToDeath = diffPeriod.toStandardDuration();
 
                 if (diffPeriod.getSeconds() == 0) {
-                    Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
-                    stopService(audioServiceIntent);
-                    finishAffinity();
+                    // Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+                    stopPlayback();
+                    finish();
                 }
 
 
@@ -288,14 +288,18 @@ public class HomeActivity extends AppCompatActivity {
                 textStreamDuration.setText(totalStreamStr);
                 textStreamProgress.setText(streamProgressStr);
 
-                if (StreamPlayer.getPlayer(getApplicationContext()) != null) {
-                    if (seekBarProgress != null)
-                        seekBarProgress.setProgress(currentPosition.getSeconds());
+                if (StreamPlayer.getInstance(getApplicationContext()) != null && seekBarProgress != null)
+                    seekBarProgress.setProgress(currentPosition.getSeconds());
 
-                }
                 mHandler.postDelayed(this, 1000);
             }
         });
+    }
+
+    private void pausePlayback() {
+        Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
+        audioServiceIntent.setAction(ACTION_PAUSE);
+        ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
     private void stopPlayback() {
@@ -332,7 +336,7 @@ public class HomeActivity extends AppCompatActivity {
     @OnClick({R.id.smallPlay, R.id.mediacontrol_play})
     public void onPlay() {
         if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-            stopPlayback();
+            pausePlayback();
         } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
             startPlayback();
         }
@@ -362,7 +366,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setUpAudioVisualizer() {
-        int audioSessionId = StreamPlayer.getPlayer(this).getAudioSessionId();
+        int audioSessionId = StreamPlayer.getInstance(getApplicationContext()).getAudioSessionId();
         try {
             if (audioSessionId != -1)
                 visualizer.setAudioSessionId(audioSessionId);
