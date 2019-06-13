@@ -159,15 +159,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
-        Tools.setSystemBarColor(this);
+        if (getSupportActionBar() != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+            Tools.setSystemBarColor(this);
+        }
     }
 
     private void initializeTabComponents() {
         setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
+
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_radio_live);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_news);
@@ -258,19 +261,20 @@ public class HomeActivity extends AppCompatActivity {
                 Seconds currentPosition = Seconds.seconds((int) StreamPlayer.getInstance(getApplicationContext()).getCurrentPosition() / 1000);
 
 
+                //the total Stream duration
                 Period streamDurationPeriod = new Period(streamDurationHrs);
+
+                //the current position of the stream
                 Period currentPositionPeriod = new Period(currentPosition);
 
+                //the difference between the total duration and the current duration
                 Period diffPeriod = streamDurationPeriod.minus(currentPositionPeriod);
 
-                // Duration timeToDeath = diffPeriod.toStandardDuration();
 
                 if (diffPeriod.getSeconds() == 0) {
-                    // Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
                     stopPlayback();
                     finish();
                 }
-
 
                 PeriodFormatter formatter = new PeriodFormatterBuilder()
                         .printZeroAlways()
@@ -285,6 +289,7 @@ public class HomeActivity extends AppCompatActivity {
                 String totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard());
                 String streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard());
 
+                //display the total stream and the current stream for now
                 textStreamDuration.setText(totalStreamStr);
                 textStreamProgress.setText(streamProgressStr);
 
@@ -423,6 +428,7 @@ public class HomeActivity extends AppCompatActivity {
      *
      * @param slideOffset the initial angle where rotation begins
      */
+    @SuppressWarnings("unused")
     private void rotateCollapseButton(float slideOffset) {
         float rotationAngle = slideOffset * -180;
         //bottomSheetMenuCollapse.setRotation(rotationAngle);
@@ -481,6 +487,7 @@ public class HomeActivity extends AppCompatActivity {
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress();
                 textSwitcherNetworkStatus.setText(getString(R.string.live_online));
+                ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.green_200));
                 //  textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.green_200));
                 break;
             case STATUS_STOPPED:
@@ -488,16 +495,15 @@ public class HomeActivity extends AppCompatActivity {
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
 
+                textSwitcherNetworkStatus.getRootView();
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
                 textSwitcherNetworkStatus.setText(getString(R.string.stopped));
-                // textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
-
+                ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.pink_600));
                 break;
             case STATUS_LOADING:
                 Log.i(DEBUG_TAG, "Media is Loading");
                 textSwitcherNetworkStatus.setText(getString(R.string.buffering));
-                //  textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.pink_600));
-
+                ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.pink_600));
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar);
                 break;
         }
