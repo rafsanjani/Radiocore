@@ -47,7 +47,6 @@ public class NewsData {
 
     /**
      * Fetch news Items from an online source
-     * todo: cache news items into an offline json file for 24hours
      */
     public void fetchNewsFromOnlineAsync() {
         if (newsFetchEventListener == null) {
