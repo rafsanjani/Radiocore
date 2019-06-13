@@ -159,8 +159,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+
         if (getSupportActionBar() != null) {
-            setSupportActionBar(toolbar);
             getSupportActionBar().setTitle(getString(R.string.app_name));
             Tools.setSystemBarColor(this);
         }
