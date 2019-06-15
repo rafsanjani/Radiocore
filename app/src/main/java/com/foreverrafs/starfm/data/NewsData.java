@@ -1,6 +1,7 @@
 package com.foreverrafs.starfm.data;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -147,70 +148,97 @@ public class NewsData {
     }
 
     private void saveToCache(List<News> newsItems) {
-        NewsCache newsCache = new NewsCache(DateTime.now(), newsItems);
-        final String fileName = "newscache";
 
-        Gson gson = NewsJson.getInstance();
+        AsyncTask<List<News>, Void, Void> task = new AsyncTask<List<News>, Void, Void>() {
+            @Override
+            protected Void doInBackground(List<News>... lists) {
+                List<News> newsItems = lists[0];
 
-        String newsCacheJson = gson.toJson(newsCache);
+                NewsCache newsCache = new NewsCache(DateTime.now(), newsItems);
+                final String fileName = "newscache";
 
-        try {
-            File file = File.createTempFile(fileName, ".json", context.getCacheDir());
+                Gson gson = NewsJson.getInstance();
 
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(newsCacheJson.getBytes());
-            fileOutputStream.close();
+                String newsCacheJson = gson.toJson(newsCache);
 
-            Log.i(DEBUG_TAG, "Cache Saved at " + file.getAbsolutePath());
-            radioPreferences.setCacheFileName(file.getAbsolutePath());
+                try {
+                    File file = File.createTempFile(fileName, ".json", context.getCacheDir());
 
-        } catch (IOException exception) {
-            Log.e(DEBUG_TAG, exception.getMessage());
-        }
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    fileOutputStream.write(newsCacheJson.getBytes());
+                    fileOutputStream.close();
+
+                    Log.i(DEBUG_TAG, "Cache Saved at " + file.getAbsolutePath());
+                    radioPreferences.setCacheFileName(file.getAbsolutePath());
+
+                } catch (IOException exception) {
+                    Log.e(DEBUG_TAG, exception.getMessage());
+                }
+                return null;
+            }
+        };
+
+        task.execute(newsItems);
     }
 
     private void readFromCache(String cacheFilePath) {
-        final int defaultCacheExpiryHours = radioPreferences.getCacheExpiryHours();
-        final File cacheFile = new File(cacheFilePath);
+        AsyncTask<String, Void, List<News>> task = new AsyncTask<String, Void, List<News>>() {
+            @Override
+            protected List<News> doInBackground(String... strings) {
+                String cacheFilePath = strings[0];
 
-        try {
-            FileInputStream fileInputStream = new FileInputStream(cacheFile);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-            String line = bufferedReader.readLine();
-            StringBuilder stringBuilder = new StringBuilder();
+                final int defaultCacheExpiryHours = radioPreferences.getCacheExpiryHours();
+                final File cacheFile = new File(cacheFilePath);
 
-            while (line != null) {
-                stringBuilder.append(line).append("\n");
-                line = bufferedReader.readLine();
-            }
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(cacheFile);
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+                    String line = bufferedReader.readLine();
+                    StringBuilder stringBuilder = new StringBuilder();
 
-            String fileAsString = stringBuilder.toString();
-            Gson gson = NewsJson.getInstance();
+                    while (line != null) {
+                        stringBuilder.append(line).append("\n");
+                        line = bufferedReader.readLine();
+                    }
 
-            NewsCache newsCache = gson.fromJson(fileAsString, NewsCache.class);
+                    String fileAsString = stringBuilder.toString();
+                    Gson gson = NewsJson.getInstance();
 
-            //lets calculate how many hours have elapsed since the last news items were cached.
-            //a news cache can expire after some specified hours. The default is 5
-            Period interval = new Period(newsCache.fetchTime, DateTime.now());
-            int hoursElapsed = interval.getHours();
+                    NewsCache newsCache = gson.fromJson(fileAsString, NewsCache.class);
 
-            if (hoursElapsed < defaultCacheExpiryHours) {
-                Log.i(DEBUG_TAG, "Reading from cache. Local cache expires in " + (defaultCacheExpiryHours - hoursElapsed) + " hours");
-                newsFetchEventListener.onNewsFetched(newsCache.getNewsItems());
-            } else {
-                Log.i(DEBUG_TAG, "Cache expired. Deleting it now");
-                if (cacheFile.delete()) {
-                    Log.i(DEBUG_TAG, "Successfully deleted cache file" + cacheFile.getName());
-                    Log.i(DEBUG_TAG, "Loading news from online");
-                    radioPreferences.removeCacheFileEntry();
-                    fetchNewsFromOnlineAsync();
+                    //lets calculate how many hours have elapsed since the last news items were cached.
+                    //a news cache can expire after some specified hours. The default is 5
+                    Period interval = new Period(newsCache.fetchTime, DateTime.now());
+                    int hoursElapsed = interval.getHours();
+
+                    if (hoursElapsed < defaultCacheExpiryHours) {
+                        Log.i(DEBUG_TAG, "Reading from cache. Local cache expires in " + (defaultCacheExpiryHours - hoursElapsed) + " hours");
+                        return newsCache.getNewsItems();
+                    } else {
+                        Log.i(DEBUG_TAG, "Cache expired. Deleting it now");
+                        if (cacheFile.delete()) {
+                            Log.i(DEBUG_TAG, "Successfully deleted cache file" + cacheFile.getName());
+                            Log.i(DEBUG_TAG, "Loading news from online");
+                            radioPreferences.removeCacheFileEntry();
+                            fetchNewsFromOnlineAsync();
+                        }
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+                return null;
             }
 
+            @Override
+            protected void onPostExecute(List<News> news) {
+                newsFetchEventListener.onNewsFetched(news);
+            }
+        };
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        task.execute(cacheFilePath);
     }
 
     /**
