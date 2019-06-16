@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,9 +66,9 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.MESSAGE;
-import static com.foreverrafs.starfm.util.Constants.RESULT;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
+import static com.foreverrafs.starfm.util.Constants.STREAMING_STATUS;
+import static com.foreverrafs.starfm.util.Constants.STREAM_RESULT;
 import static com.foreverrafs.starfm.util.Tools.animateButtonDrawable;
 
 public class HomeActivity extends AppCompatActivity {
@@ -137,10 +138,22 @@ public class HomeActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        enableStrictMode();
         setUpCrashlytics();
         initializeViews();
         setUpInitialPlayerState();
         setUpAudioStreamingServiceReceiver();
+    }
+
+    private void enableStrictMode() {
+        if (BuildConfig.DEBUG) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build();
+
+            StrictMode.setThreadPolicy(policy);
+        }
     }
 
     private void setUpCrashlytics() {
@@ -211,7 +224,7 @@ public class HomeActivity extends AppCompatActivity {
         audioServiceBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String receivedState = intent.getStringExtra(MESSAGE);
+                String receivedState = intent.getStringExtra(STREAMING_STATUS);
                 audioStreamingState = AudioStreamingService.AudioStreamingState.valueOf(receivedState);
                 onAudioStreamingStateReceived(audioStreamingState);
             }
@@ -318,7 +331,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((audioServiceBroadcastReceiver),
-                new IntentFilter(RESULT)
+                new IntentFilter(STREAM_RESULT)
         );
 
         if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
@@ -419,7 +432,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 performAlphaTransition(slideOffset);
-                rotateCollapseButton(slideOffset);
+                rotateSmallLogo(slideOffset);
             }
         });
     }
@@ -430,10 +443,9 @@ public class HomeActivity extends AppCompatActivity {
      * @param slideOffset the initial angle where rotation begins
      */
     @SuppressWarnings("unused")
-    private void rotateCollapseButton(float slideOffset) {
-        float rotationAngle = slideOffset * -180;
-        //bottomSheetMenuCollapse.setRotation(rotationAngle);
-        //System.out.println("Angle: " + rotationAngle);
+    private void rotateSmallLogo(float slideOffset) {
+        float rotationAngle = slideOffset * -360;
+        smallLogo.setRotation(rotationAngle);
     }
 
     /**

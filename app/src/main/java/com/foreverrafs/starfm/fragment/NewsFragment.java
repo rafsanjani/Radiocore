@@ -101,9 +101,10 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (getActivity() == null)
             return;
 
-
-        if (newsAdapter != null && newsAdapter.getItemCount() != 0)
-            cachedAdapter = newsAdapter;
+        if (newsAdapter != null) {
+            if (newsAdapter.getItemCount() != 0)
+                cachedAdapter = newsAdapter;
+        }
 
         NewsData newsData = new NewsData(getContext());
 

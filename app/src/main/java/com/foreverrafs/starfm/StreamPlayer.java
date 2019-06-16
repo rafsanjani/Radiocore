@@ -86,7 +86,7 @@ public class StreamPlayer implements Player.EventListener {
      * @param state one of PlaybackState.PLAYING, PlaybackState.STOPPED, PlaybackState.PAUSED, PlaybackState.IDLE
      *              and PlaybackState.BUFFERING
      */
-    public void setPlaybackState(PlaybackState state) {
+    private void setPlaybackState(PlaybackState state) {
         this.playbackState = state;
     }
 
@@ -116,6 +116,11 @@ public class StreamPlayer implements Player.EventListener {
         return -1;
     }
 
+    /**
+     * Only play when there is media loaded and the media controller is ready to play. If the state of the
+     * media controller is IDLE or STOPPED, there is apparently no media playing so a call to prepare is required
+     * which prepares the media controller for playback using the specified media source
+     */
     public void play() {
         if ((getPlaybackState() == PlaybackState.IDLE || getPlaybackState() == PlaybackState.STOPPED) && !isPlaying)
             exoPlayer.prepare(mediaSource);
@@ -186,6 +191,9 @@ public class StreamPlayer implements Player.EventListener {
         listener.onError(error);
     }
 
+    /**
+     * Distinct Media playback states
+     */
     public enum PlaybackState {
         PLAYING,
         PAUSED,

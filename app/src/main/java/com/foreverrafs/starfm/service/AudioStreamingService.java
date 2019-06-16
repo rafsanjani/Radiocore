@@ -26,11 +26,11 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.MESSAGE;
-import static com.foreverrafs.starfm.util.Constants.RESULT;
 import static com.foreverrafs.starfm.util.Constants.STATUS_LOADING;
 import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
 import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
+import static com.foreverrafs.starfm.util.Constants.STREAMING_STATUS;
+import static com.foreverrafs.starfm.util.Constants.STREAM_RESULT;
 import static com.foreverrafs.starfm.util.Constants.STREAM_URL;
 
 /***
@@ -150,9 +150,8 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
     }
 
     /**
-     * Create notification using the channel created by createNotificationChannel
+     * Create notification using the channel created by {@link #createNotificationChannel()}
      * and also instantiate the field variable (builder)
-     *
      * @return a Notification object which c
      */
     private Notification createNotification() {
@@ -175,6 +174,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                 .setContentText(notificationText)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(contentPendingIntent);
+
 
         return builder.build();
     }
@@ -202,21 +202,21 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
         createNotificationChannel();
 
-        //start foreground audio service right away instead of waiting for onPrepared to complete
-        // to beat android 0 5sec limit
         startForeground(5, streamNotification);
 
 
-        if (intent.getAction().equals(ACTION_PLAY)) {
-            startPlayback();
+        switch (intent.getAction()) {
+            case ACTION_PLAY:
+                startPlayback();
+                break;
 
-        } else if (intent.getAction().equals(ACTION_STOP)) {
-            stopPlayback();
+            case ACTION_STOP:
+                stopPlayback();
+                break;
 
-            //stop the foreground audio service and take away the notification from the user's screen
-            // stopForeground(true);
-        } else if (intent.getAction().equals(ACTION_PAUSE)) {
-            pausePlayback();
+            case ACTION_PAUSE:
+                pausePlayback();
+                break;
         }
         return START_NOT_STICKY;
     }
@@ -240,10 +240,10 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
      * @param message
      */
     public void sendResult(AudioStreamingState message) {
-        Intent intent = new Intent(RESULT);
+        Intent intent = new Intent(STREAM_RESULT);
         if (message != null)
             //Perform backwards convertion to AudioStreamingState in it's receivers
-            intent.putExtra(MESSAGE, message.toString());
+            intent.putExtra(STREAMING_STATUS, message.toString());
 
         broadcastManager.sendBroadcast(intent);
     }

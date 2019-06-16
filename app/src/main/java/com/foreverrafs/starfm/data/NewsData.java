@@ -237,7 +237,6 @@ public class NewsData {
             }
         };
 
-
         task.execute(cacheFilePath);
     }
 
