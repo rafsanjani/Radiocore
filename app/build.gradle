@@ -28,23 +28,23 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
     implementation 'com.google.android.material:material:1.1.0-alpha07'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.cardview:cardview:1.0.0'
-
-    testImplementation 'junit:junit:4.13-beta-3'
+    implementation 'androidx.media:media:1.1.0-rc01'
     implementation "androidx.preference:preference:1.0.0"
-    androidTestImplementation 'androidx.test:runner:1.2.0'
+
+    //testing
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    implementation 'com.android.volley:volley:1.1.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-
-    //implementation 'androidx.media:media:1.1.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
-
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'junit:junit:4.13-beta-3'
 }
 
 dependencies {
+    //networking libraries
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     //butterknife for view injections
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
@@ -56,10 +56,8 @@ dependencies {
     implementation 'com.gauravk.audiovisualizer:audiovisualizer:0.9.2'
 
     //firebase for crashlytics analysis
-    implementation 'com.google.firebase:firebase-core:16.0.9'
-    implementation 'com.google.firebase:firebase-core:16.0.9'
-
-    // Add dependency
+    implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //google gson for storing news items as json
@@ -70,6 +68,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.10.0'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
 
+    //for that fancy loading icon at the news tab
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
 }
 apply plugin: 'com.google.gms.google-services'
