@@ -66,7 +66,6 @@ import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
 import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
 import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
 import static com.foreverrafs.starfm.util.Constants.STREAMING_STATUS;
 import static com.foreverrafs.starfm.util.Constants.STREAM_RESULT;
 import static com.foreverrafs.starfm.util.Tools.animateButtonDrawable;
@@ -241,20 +240,17 @@ public class HomeActivity extends AppCompatActivity {
         audioStreamingState = AudioStreamingState.valueOf(radioPreferences.getStatus());
 
         if (!Tools.isServiceRunning(AudioStreamingService.class, this) ||
-                radioPreferences.isAutoPlayOnStart() ||
-                radioPreferences.getStatus().equals(STATUS_STOPPED))
+                radioPreferences.isAutoPlayOnStart()/* ||
+                radioPreferences.getStatus().equals(STATUS_STOPPED)*/)
             startPlayback();
 
         onAudioStreamingStateReceived(audioStreamingState);
     }
 
     private void startPlayback() {
-        // RadioPreferences radioPreferences = new RadioPreferences(this);
-
         Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
         audioServiceIntent.setAction(ACTION_PLAY);
         ContextCompat.startForegroundService(this, audioServiceIntent);
-
     }
 
     /**
@@ -456,7 +452,6 @@ public class HomeActivity extends AppCompatActivity {
     private void performAlphaTransition(float slideOffset) {
         float alpha = 1 - slideOffset;
         bottomSheetPlaybackItems.setAlpha(alpha);
-        //bottomSheetMenuItems.setAlpha(slideOffset);
     }
 
     /**

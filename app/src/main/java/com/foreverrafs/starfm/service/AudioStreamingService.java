@@ -152,6 +152,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
     /**
      * Create notification using the channel created by {@link #createNotificationChannel()}
      * and also instantiate the field variable (builder)
+     *
      * @return a Notification object which c
      */
     private Notification createNotification() {
@@ -199,6 +200,12 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+//        Log.i(DEBUG_TAG, "Clean Shut Down is : " + isCleanShutDown);
+
+        //lets assume that the player wasn't shut down properly
+//        if (!isCleanShutDown)
+//            sendResult(AudioStreamingState.STATUS_STOPPED);
 
         createNotificationChannel();
 
