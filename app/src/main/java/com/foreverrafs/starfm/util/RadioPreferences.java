@@ -11,13 +11,14 @@ import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
 
 public class RadioPreferences {
+    public static final String CACHE_NOT_FOUND = "com.foreverrafs.radiocore.not_found";
     private static final String AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start";
     private static final String IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch";
     private static final String STREAMING_STATUS = "com.foreverrafs.radiocore.streaming_status";
     private static final String CACHE_FILE_NAME = "com.foreverrafs.radiocore.cache_file_name";
     private static final String CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours";
     private static final String STREAMING_TIMER = "com.foreverrafs.radiocore.streaming_timer";
-
+    private static final String CLEAN_SHUT_DOWN = "com.foreverrafs.radiocore.clean_shut_down";
     ///////////////SETTINGS VARIABLES
     private SharedPreferences settings;
     private Context context;
@@ -113,7 +114,7 @@ public class RadioPreferences {
      * @return
      */
     public String getCacheFileName() {
-        return settings.getString(CACHE_FILE_NAME, null);
+        return settings.getString(CACHE_FILE_NAME, CACHE_NOT_FOUND);
     }
 
     /**
@@ -132,8 +133,8 @@ public class RadioPreferences {
      *
      * @return
      */
-    public int getCacheExpiryHours() {
-        return settings.getInt(CACHE_EXPIRY_HOURS, 5);
+    public String getCacheExpiryHours() {
+        return settings.getString(CACHE_EXPIRY_HOURS, "5");
     }
 
     public void setCacheExpiryHours(int hours) {
@@ -151,5 +152,13 @@ public class RadioPreferences {
 
     public void setStreamingTimer(int hours) {
         settings.edit().putInt(STREAMING_TIMER, hours).apply();
+    }
+
+    public boolean getCleanShutdown() {
+        return settings.getBoolean(CLEAN_SHUT_DOWN, false);
+    }
+
+    public void setCleanShutdown(boolean value) {
+        settings.edit().putBoolean(CLEAN_SHUT_DOWN, value).apply();
     }
 }

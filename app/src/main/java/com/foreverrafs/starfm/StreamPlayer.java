@@ -174,7 +174,8 @@ public class StreamPlayer implements Player.EventListener {
             setPlaybackState(PlaybackState.STOPPED);
             isPlaying = false;
             listener.onStop();
-            Log.i(DEBUG_TAG, "Error Buffering");
+            if (playbackState == Player.STATE_BUFFERING)
+                Log.i(DEBUG_TAG, "Buffering...");
 
         } else {
             // Paused by app.

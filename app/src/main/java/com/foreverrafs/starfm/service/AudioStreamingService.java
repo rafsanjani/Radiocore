@@ -192,6 +192,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
      */
     private void stopPlayback() {
         mediaPlayer.stop();
+        cleanShutDown();
     }
 
     private void pausePlayback() {
@@ -200,12 +201,10 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-//        Log.i(DEBUG_TAG, "Clean Shut Down is : " + isCleanShutDown);
-
-        //lets assume that the player wasn't shut down properly
-//        if (!isCleanShutDown)
-//            sendResult(AudioStreamingState.STATUS_STOPPED);
+        //on some rare occasions, the state of the stream is indeterminate so we perform a cleanup before attempting to reload
+        if (!isCleanShutdown())
+            stopPlayback();
+        // cleanShutDown();
 
         createNotificationChannel();
 
@@ -226,6 +225,18 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                 break;
         }
         return START_NOT_STICKY;
+    }
+
+    private void cleanShutDown() {
+        // stopPlayback();
+        Log.i(DEBUG_TAG, "Performing stream status cleanup");
+        radioPreferences.setCleanShutdown(true);
+        //radioPreferences.setStatus(STATUS_STOPPED);
+        // sendResult(AudioStreamingState.STATUS_STOPPED);
+    }
+
+    private boolean isCleanShutdown() {
+        return radioPreferences.getCleanShutdown();
     }
 
     @Override

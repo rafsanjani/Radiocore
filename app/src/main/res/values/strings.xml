@@ -65,6 +65,7 @@
     <string name="buffering">Buffering...</string>
     <string name="live_online">Live Online</string>
     <string name="stopped">Stopped</string>
+    <string name="news_timer">News Fetch Delay</string>
 
     <string-array name="settings_timer_entries">
         <item>1 hour</item>

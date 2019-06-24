@@ -156,7 +156,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
 
-        newsData.fetchNewsFromOnlineAsync();
+        newsData.fetchNews();
     }
 
     private void setUpNewsItemClickListener() {

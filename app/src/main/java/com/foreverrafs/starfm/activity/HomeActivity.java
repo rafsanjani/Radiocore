@@ -483,7 +483,7 @@ public class HomeActivity extends AppCompatActivity {
     private void onAudioStreamingStateReceived(@NonNull AudioStreamingState streamingState) {
         switch (streamingState) {
             case STATUS_PLAYING:
-                Log.i(DEBUG_TAG, "Media Playing");
+                //  Log.i(DEBUG_TAG, "Media Playing");
 
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
 
@@ -499,7 +499,7 @@ public class HomeActivity extends AppCompatActivity {
                 //  textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.green_200));
                 break;
             case STATUS_STOPPED:
-                Log.i(DEBUG_TAG, "Media Stopped");
+                //Log.i(DEBUG_TAG, "Media Stopped");
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
 
@@ -509,7 +509,6 @@ public class HomeActivity extends AppCompatActivity {
                 ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.pink_600));
                 break;
             case STATUS_LOADING:
-                Log.i(DEBUG_TAG, "Media is Loading");
                 textSwitcherNetworkStatus.setText(getString(R.string.buffering));
                 ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.pink_600));
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar);
