@@ -1,5 +1,6 @@
 package com.foreverrafs.starfm.data;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.foreverrafs.starfm.model.News;
+import com.foreverrafs.starfm.model.NewsCache;
 import com.foreverrafs.starfm.util.RadioPreferences;
 import com.google.gson.Gson;
 
@@ -36,6 +38,7 @@ public class NewsData {
     private final String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
     private List<News> newsList;
     private NewsFetchEventListener newsFetchEventListener;
+    // private String cacheFilePath;
 
     private RadioPreferences radioPreferences;
 
@@ -44,29 +47,41 @@ public class NewsData {
         newsList = new ArrayList<>();
 
         radioPreferences = new RadioPreferences(context);
+
+
+    }
+
+
+    public void fetchNews() {
+        String cacheFilePath = radioPreferences.getCacheFileName();
+
+        if (cacheFilePath == null) {
+            Log.i(DEBUG_TAG, "Location of cache is not known. Possible because this is the first run or cache is corrupted. Loading from online");
+            loadFromOnline();
+            return;
+        }
+
+        //try reading from the cache if it is available
+        File cacheFile = new File(cacheFilePath);
+
+        if (cacheFile.exists()) {
+            Log.i(DEBUG_TAG, "News cache hit. Trying to read from Cache");
+            loadFromCache(cacheFilePath);
+        } else {
+            Log.i(DEBUG_TAG, "Cache doesn't exist in it's previously saved location. Clearing the dir and loading from online");
+            loadFromOnline();
+            clearCache(cacheFile);
+        }
     }
 
     /**
      * Fetch news Items from an online source
      */
-    public void fetchNewsFromOnlineAsync() {
+    private void loadFromOnline() {
         if (newsFetchEventListener == null) {
             throw new IllegalArgumentException("NewsFetchEventListener must be supplied and cannot be null");
         }
 
-        //try reading from the cache if the file has previously been created
-        String cacheFilePath = radioPreferences.getCacheFileName();
-        if (cacheFilePath != null) {
-            Log.i(DEBUG_TAG, "News cache hit. Trying to read from Cache");
-            readFromCache(cacheFilePath);
-            return;
-        }
-
-        Log.i(DEBUG_TAG, "No News Cache found. Loading from online");
-
-
-        //only proceed with an online request when there is nothing in the cache or the cache items exceed 24 hours, in that case
-        //it will be cleared for news to be fetched from online
         RequestQueue queue = Volley.newRequestQueue(context);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -89,7 +104,6 @@ public class NewsData {
                             dateStr = dateStr.substring(0, dateStr.indexOf("T"));
 
 
-//                            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                             DateTime date = null;
 
                             try {
@@ -100,9 +114,8 @@ public class NewsData {
 
                             newsList.add(new News(title, date, image/*images.get(i)*/, content));
                         }
-
-                        saveToCache(newsList);
                         newsFetchEventListener.onNewsFetched(newsList);
+                        saveToCache(newsList);
 
                     } catch (JSONException e) {
                         Toast.makeText(context, "JSON Exception", Toast.LENGTH_SHORT).show();
@@ -115,7 +128,7 @@ public class NewsData {
     /**
      * Fetch news Items from in-memory. Only meant for debugging
      */
-    public void fetchNewsFromLocalStore() {
+    private void fetchNewsFromLocalStore() {
         if (newsFetchEventListener == null) {
             throw new IllegalArgumentException("NewsFetchEventListener must be supplied and cannot be null");
         }
@@ -124,7 +137,7 @@ public class NewsData {
         String cacheFilePath = radioPreferences.getCacheFileName();
         if (cacheFilePath != null) {
             Log.i(DEBUG_TAG, "News cache hit. Trying to read from Cache");
-            readFromCache(cacheFilePath);
+            loadFromCache(cacheFilePath);
             return;
         }
 
@@ -147,11 +160,12 @@ public class NewsData {
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void saveToCache(List<News> newsItems) {
-
         AsyncTask<List<News>, Void, Void> task = new AsyncTask<List<News>, Void, Void>() {
+            @SafeVarargs
             @Override
-            protected Void doInBackground(List<News>... lists) {
+            protected final Void doInBackground(List<News>... lists) {
                 List<News> newsItems = lists[0];
 
                 NewsCache newsCache = new NewsCache(DateTime.now(), newsItems);
@@ -168,7 +182,6 @@ public class NewsData {
                     fileOutputStream.write(newsCacheJson.getBytes());
                     fileOutputStream.close();
 
-                    Log.i(DEBUG_TAG, "Cache Saved at " + file.getAbsolutePath());
                     radioPreferences.setCacheFileName(file.getAbsolutePath());
 
                 } catch (IOException exception) {
@@ -181,13 +194,14 @@ public class NewsData {
         task.execute(newsItems);
     }
 
-    private void readFromCache(String cacheFilePath) {
+    @SuppressLint("StaticFieldLeak")
+    private void loadFromCache(String cacheFilePath) {
         AsyncTask<String, Void, List<News>> task = new AsyncTask<String, Void, List<News>>() {
             @Override
             protected List<News> doInBackground(String... strings) {
                 String cacheFilePath = strings[0];
 
-                final int defaultCacheExpiryHours = radioPreferences.getCacheExpiryHours();
+                final int defaultCacheExpiryHours = Integer.parseInt(radioPreferences.getCacheExpiryHours());
                 final File cacheFile = new File(cacheFilePath);
 
                 try {
@@ -208,7 +222,7 @@ public class NewsData {
 
                     //lets calculate how many hours have elapsed since the last news items were cached.
                     //a news cache can expire after some specified hours. The default is 5
-                    Period interval = new Period(newsCache.fetchTime, DateTime.now());
+                    Period interval = new Period(newsCache.getFetchTime(), DateTime.now());
                     int hoursElapsed = interval.getHours();
 
                     if (hoursElapsed < defaultCacheExpiryHours) {
@@ -216,16 +230,15 @@ public class NewsData {
                         return newsCache.getNewsItems();
                     } else {
                         Log.i(DEBUG_TAG, "Cache expired. Deleting it now");
-                        if (cacheFile.delete()) {
-                            Log.i(DEBUG_TAG, "Successfully deleted cache file" + cacheFile.getName());
-                            Log.i(DEBUG_TAG, "Loading news from online");
-                            radioPreferences.removeCacheFileEntry();
-                            fetchNewsFromOnlineAsync();
-                        }
+                        clearCache(cacheFile);
+                        Log.i(DEBUG_TAG, "Loading news from online");
+                        loadFromOnline();
                     }
 
                 } catch (IOException e) {
+                    cacheFile.delete();
                     e.printStackTrace();
+                    Log.e(DEBUG_TAG, e.getMessage());
                 }
 
                 return null;
@@ -233,6 +246,10 @@ public class NewsData {
 
             @Override
             protected void onPostExecute(List<News> news) {
+                if (news == null) {
+                    newsFetchEventListener.onError(new CacheFetchError("Error reading message from cache"));
+                    return;
+                }
                 newsFetchEventListener.onNewsFetched(news);
             }
         };
@@ -240,11 +257,17 @@ public class NewsData {
         task.execute(cacheFilePath);
     }
 
+
+    private void clearCache(File cacheFile) {
+        cacheFile.delete();
+        radioPreferences.removeCacheFileEntry();
+    }
+
     /**
      * This method must be called in every class which wants to fetch news items else
      * an IllegalArgumentExeption will be thrown at runtime
      *
-     * @param newsFetchEventListener
+     * @param newsFetchEventListener the listener which will propagate the news fetching events
      */
     public void setNewsFetchEventListener(NewsFetchEventListener newsFetchEventListener) {
         this.newsFetchEventListener = newsFetchEventListener;
@@ -259,29 +282,4 @@ public class NewsData {
         void onError(VolleyError error);
     }
 
-    private class NewsCache {
-        private DateTime fetchTime;
-        private List<News> newsItems;
-
-        public NewsCache(DateTime fetchTime, List<News> newsItems) {
-            this.fetchTime = fetchTime;
-            this.newsItems = newsItems;
-        }
-
-        public DateTime getFetchTime() {
-            return fetchTime;
-        }
-
-        public void setFetchTime(DateTime fetchTime) {
-            this.fetchTime = fetchTime;
-        }
-
-        public List<News> getNewsItems() {
-            return newsItems;
-        }
-
-        public void setNewsItems(List<News> newsItems) {
-            this.newsItems = newsItems;
-        }
-    }
 }
