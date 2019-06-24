@@ -49,24 +49,12 @@ public class News implements Parcelable {
         return headline;
     }
 
-    public void setHeadline(String headline) {
-        this.headline = headline;
-    }
-
     public DateTime getDate() {
         return date;
     }
 
-    public void setDate(DateTime date) {
-        this.date = date;
-    }
-
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public String getContent() {
