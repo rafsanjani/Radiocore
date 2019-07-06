@@ -1,11 +1,9 @@
 package com.foreverrafs.starfm.fragment;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,7 +52,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @BindView(R.id.content_no_network)
     View contentNoConnection;
 
-    private NewsAdapter newsAdapter, cachedAdapter;
+    private NewsAdapter mNewsAdapter, mNewsAdapterCached;
 
 
     @Nullable
@@ -71,6 +68,9 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
+
+        mNewsAdapter = new NewsAdapter();
+        recyclerView.setAdapter(mNewsAdapter);
 
         getNewsData();
 
@@ -88,7 +88,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        if (newsAdapter == null) {
+        if (mNewsAdapter == null) {
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
@@ -100,32 +100,38 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void getNewsData() {
         if (getActivity() == null)
             return;
-
-        if (newsAdapter != null) {
-            if (newsAdapter.getItemCount() != 0)
-                cachedAdapter = newsAdapter;
-        }
+//
+//        if (mNewsAdapter != null) {
+//            if (mNewsAdapter.getItemCount() != 0)
+//                mNewsAdapterCached = mNewsAdapter;
+//        }
 
         NewsData newsData = new NewsData(getContext());
 
-        newsData.setNewsFetchEventListener(new NewsData.NewsFetchEventListener() {
+        newsData.setTaskDelegate(new NewsData.TaskDelegate() {
             @Override
-            public void onNewsFetched(List<News> fetchedNewsItems) {
-                swipeRefreshLayout.setVisibility(View.VISIBLE);
-
-                newsAdapter = new NewsAdapter(fetchedNewsItems);
-
+            public void onAllNewsFetched(List<News> fetchedNewsItems) {
                 setUpNewsItemClickListener();
 
-                recyclerView.setAdapter(newsAdapter);
+                mNewsAdapter = new NewsAdapter(fetchedNewsItems, NewsAdapter.AnimationType.BOTTOM_UP, 150);
+                recyclerView.setAdapter(mNewsAdapter);
+
+                //lets keep a copy of the adapter in case fetching goes awry on next try
+                mNewsAdapterCached = (NewsAdapter) recyclerView.getAdapter();
 
                 progressBar.setVisibility(View.GONE);
 
+
+            }
+
+            @Override
+            public void onNewsItemFetched(News newsItem) {
+                contentNoConnection.setVisibility(View.INVISIBLE);
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
+                swipeRefreshLayout.setVisibility(View.VISIBLE);
 
-                contentNoConnection.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -144,13 +150,13 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 contentNoConnection.setVisibility(View.VISIBLE);
 
-                if (cachedAdapter == null)
+                if (mNewsAdapterCached == null)
                     return;
 
                 new Handler().postDelayed(() -> {
-                    newsAdapter = cachedAdapter;
+                    mNewsAdapter = mNewsAdapterCached;
                     setUpNewsItemClickListener();
-                    recyclerView.setAdapter(newsAdapter);
+                    recyclerView.setAdapter(mNewsAdapter);
 
                 }, 3000);
             }
@@ -160,29 +166,17 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void setUpNewsItemClickListener() {
-        if (newsAdapter == null) {
+        if (mNewsAdapter == null) {
             Log.e(DEBUG_TAG, "News adapter is null, unable to set listeners");
             return;
         }
 
-        newsAdapter.setOnNewsItemClickListener((position, newsItem, newsImageView, headline) -> {
+        mNewsAdapter.setOnNewsItemClickListener((position, newsItem, newsImageView, headline) -> {
             Intent intent = new Intent(getContext(), NewsDetailActivity.class);
             intent.putExtra(NEWS_ITEM_EXTRA, newsItem);
-            intent.putExtra(IMAGE_TRANSITION_NAME_EXTRA, ViewCompat.getTransitionName(newsImageView));
 
-            //view transition pairs
-            Pair<View, String> imageViewPair = Pair.create(newsImageView, newsImageView.getTransitionName());
+            startActivity(intent);
 
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                        imageViewPair);
-                //todo: Fix using a scene transition causes the UI to hang, resulting in undesired behaviour.
-                startActivity(intent/*, options.toBundle()*/);
-
-            } else {
-                startActivity(intent);
-            }
         });
     }
 }

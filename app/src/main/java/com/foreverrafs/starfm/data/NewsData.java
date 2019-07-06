@@ -34,26 +34,25 @@ import java.util.List;
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 
 public class NewsData {
-    private final Context context;
-    private final String url = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
-    private List<News> newsList;
-    private NewsFetchEventListener newsFetchEventListener;
-    // private String cacheFilePath;
+    private final Context mContext;
+    //    private final String NEWS_URL = "https://ghanamotion.com/wp-json/wp/v2/posts?_embed&categories=35";
+    private final String NEWS_URL = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
+    private List<News> mNewsList;
+    private TaskDelegate mTaskDelegate;
 
-    private RadioPreferences radioPreferences;
+    private RadioPreferences mRadioPreferences;
 
-    public NewsData(Context context) {
-        this.context = context;
-        newsList = new ArrayList<>();
+    public NewsData(Context mContext) {
+        this.mContext = mContext;
+        mNewsList = new ArrayList<>();
 
-        radioPreferences = new RadioPreferences(context);
-
+        mRadioPreferences = new RadioPreferences(mContext);
 
     }
 
 
     public void fetchNews() {
-        String cacheFilePath = radioPreferences.getCacheFileName();
+        String cacheFilePath = mRadioPreferences.getCacheFileName();
 
         if (cacheFilePath == null) {
             Log.i(DEBUG_TAG, "Location of cache is not known. Possible because this is the first run or cache is corrupted. Loading from online");
@@ -78,13 +77,13 @@ public class NewsData {
      * Fetch news Items from an online source
      */
     private void loadFromOnline() {
-        if (newsFetchEventListener == null) {
-            throw new IllegalArgumentException("NewsFetchEventListener must be supplied and cannot be null");
+        if (mTaskDelegate == null) {
+            throw new IllegalArgumentException("TaskDelegate must be supplied and cannot be null");
         }
 
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, NEWS_URL,
                 response -> {
                     try {
                         JSONArray newsArray = new JSONArray(response);
@@ -111,16 +110,18 @@ public class NewsData {
                             } catch (Exception e) {
                                 Log.e(DEBUG_TAG, e.getMessage());
                             }
+                            final News newsItem = new News(title, date, image, content);
 
-                            newsList.add(new News(title, date, image/*images.get(i)*/, content));
+                            mTaskDelegate.onNewsItemFetched(newsItem);
+                            mNewsList.add(newsItem);
                         }
-                        newsFetchEventListener.onNewsFetched(newsList);
-                        saveToCache(newsList);
+                        mTaskDelegate.onAllNewsFetched(mNewsList);
+                        saveToCache(mNewsList);
 
                     } catch (JSONException e) {
-                        Toast.makeText(context, "JSON Exception", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "JSON Exception", Toast.LENGTH_SHORT).show();
                     }
-                }, error -> newsFetchEventListener.onError(error));
+                }, error -> mTaskDelegate.onError(error));
 
         queue.add(stringRequest);
     }
@@ -129,12 +130,12 @@ public class NewsData {
      * Fetch news Items from in-memory. Only meant for debugging
      */
     private void fetchNewsFromLocalStore() {
-        if (newsFetchEventListener == null) {
-            throw new IllegalArgumentException("NewsFetchEventListener must be supplied and cannot be null");
+        if (mTaskDelegate == null) {
+            throw new IllegalArgumentException("TaskDelegate must be supplied and cannot be null");
         }
 
         //try reading from the cache if the file has previously been created
-        String cacheFilePath = radioPreferences.getCacheFileName();
+        String cacheFilePath = mRadioPreferences.getCacheFileName();
         if (cacheFilePath != null) {
             Log.i(DEBUG_TAG, "News cache hit. Trying to read from Cache");
             loadFromCache(cacheFilePath);
@@ -151,7 +152,7 @@ public class NewsData {
             newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide"));
             newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide"));
 
-            newsFetchEventListener.onNewsFetched(newsItems);
+            mTaskDelegate.onAllNewsFetched(newsItems);
             saveToCache(newsItems);
 
         } catch (Exception e) {
@@ -176,13 +177,13 @@ public class NewsData {
                 String newsCacheJson = gson.toJson(newsCache);
 
                 try {
-                    File file = File.createTempFile(fileName, ".json", context.getCacheDir());
+                    File file = File.createTempFile(fileName, ".json", mContext.getCacheDir());
 
                     FileOutputStream fileOutputStream = new FileOutputStream(file);
                     fileOutputStream.write(newsCacheJson.getBytes());
                     fileOutputStream.close();
 
-                    radioPreferences.setCacheFileName(file.getAbsolutePath());
+                    mRadioPreferences.setCacheFileName(file.getAbsolutePath());
 
                 } catch (IOException exception) {
                     Log.e(DEBUG_TAG, exception.getMessage());
@@ -201,7 +202,7 @@ public class NewsData {
             protected List<News> doInBackground(String... strings) {
                 String cacheFilePath = strings[0];
 
-                final int defaultCacheExpiryHours = Integer.parseInt(radioPreferences.getCacheExpiryHours());
+                final int defaultCacheExpiryHours = Integer.parseInt(mRadioPreferences.getCacheExpiryHours());
                 final File cacheFile = new File(cacheFilePath);
 
                 try {
@@ -245,12 +246,15 @@ public class NewsData {
             }
 
             @Override
-            protected void onPostExecute(List<News> news) {
-                if (news == null) {
-                    newsFetchEventListener.onError(new CacheFetchError("Error reading message from cache"));
+            protected void onPostExecute(List<News> newsItems) {
+                if (newsItems == null) {
+                    mTaskDelegate.onError(new CacheFetchError("Error reading message from cache"));
                     return;
                 }
-                newsFetchEventListener.onNewsFetched(news);
+                for (News newsItem : newsItems) {
+                    mTaskDelegate.onNewsItemFetched(newsItem);
+                }
+                mTaskDelegate.onAllNewsFetched(newsItems);
             }
         };
 
@@ -260,24 +264,26 @@ public class NewsData {
 
     private void clearCache(File cacheFile) {
         cacheFile.delete();
-        radioPreferences.removeCacheFileEntry();
+        mRadioPreferences.removeCacheFileEntry();
     }
 
     /**
      * This method must be called in every class which wants to fetch news items else
      * an IllegalArgumentExeption will be thrown at runtime
      *
-     * @param newsFetchEventListener the listener which will propagate the news fetching events
+     * @param mTaskDelegate the listener which will propagate the news fetching events
      */
-    public void setNewsFetchEventListener(NewsFetchEventListener newsFetchEventListener) {
-        this.newsFetchEventListener = newsFetchEventListener;
+    public void setTaskDelegate(TaskDelegate mTaskDelegate) {
+        this.mTaskDelegate = mTaskDelegate;
     }
 
     /**
      * Implement to register News Fetch events and propagate them accordingly
      */
-    public interface NewsFetchEventListener {
-        void onNewsFetched(List<News> newsList);
+    public interface TaskDelegate {
+        void onAllNewsFetched(List<News> newsItems);
+
+        void onNewsItemFetched(News newsItem);
 
         void onError(VolleyError error);
     }

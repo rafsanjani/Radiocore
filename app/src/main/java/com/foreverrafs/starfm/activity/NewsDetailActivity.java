@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.ViewCompat;
 
 import com.foreverrafs.starfm.R;
 import com.foreverrafs.starfm.fragment.NewsFragment;
@@ -21,18 +20,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class NewsDetailActivity extends AppCompatActivity {
-    @BindView(R.id.content)
+    @BindView(R.id.text_content)
     TextView textContent;
 
-    @BindView(R.id.headline)
+    @BindView(R.id.text_headline)
     TextView textHeadline;
 
-    @BindView(R.id.date)
+    @BindView(R.id.text_date)
     TextView textDate;
 
     @BindView(R.id.image)
     ImageView imageView;
-    //
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -44,21 +43,20 @@ public class NewsDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Star FM News");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        News newsItem = null;
+
         if (getIntent() != null) {
-            newsItem = getIntent().getParcelableExtra(NewsFragment.NEWS_ITEM_EXTRA);
-            ViewCompat.setTransitionName(imageView, getIntent().getStringExtra(NewsFragment.IMAGE_TRANSITION_NAME_EXTRA));
+            News newsItem = getIntent().getParcelableExtra(NewsFragment.NEWS_ITEM_EXTRA);
+
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy");
+            String datePretty = newsItem.getDate().toString(fmt);
+
+            textHeadline.setText(Html.fromHtml(newsItem.getHeadline()));
+            textDate.setText(datePretty);
+            textContent.setText(Html.fromHtml(newsItem.getContent()));
+            Picasso.get().load(newsItem.getImage()).into(imageView);
         }
-
-        textContent.setText(Html.fromHtml(newsItem.getContent()));
-        textHeadline.setText(Html.fromHtml(newsItem.getHeadline()));
-
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM d, yyyy");
-        String datePretty = newsItem.getDate().toString(fmt);
-
-        textDate.setText("Published on " + datePretty);
-
-        Picasso.get().load(newsItem.getImage()).into(imageView);
     }
 }

@@ -117,6 +117,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         }
     }
 
+
     private boolean getAudioFocus() {
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -227,12 +228,11 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         return START_NOT_STICKY;
     }
 
+
     private void cleanShutDown() {
         // stopPlayback();
         Log.i(DEBUG_TAG, "Performing stream status cleanup");
         radioPreferences.setCleanShutdown(true);
-        //radioPreferences.setStatus(STATUS_STOPPED);
-        // sendResult(AudioStreamingState.STATUS_STOPPED);
     }
 
     private boolean isCleanShutdown() {

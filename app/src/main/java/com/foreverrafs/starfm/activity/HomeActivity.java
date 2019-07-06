@@ -57,6 +57,8 @@ import org.joda.time.Seconds;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -72,6 +74,7 @@ import static com.foreverrafs.starfm.util.Tools.animateButtonDrawable;
 
 public class HomeActivity extends AppCompatActivity {
     private final int PERMISSION_RECORD_AUDIO = 6900;
+    private final String TAG = DEBUG_TAG;
     ///////////////////////////////////////////////////////////////////////////////////////////////
     BroadcastReceiver audioServiceBroadcastReceiver;
     //let's assume nothing is playing when application starts
@@ -125,7 +128,9 @@ public class HomeActivity extends AppCompatActivity {
 
 
     //Radio settings
-    RadioPreferences radioPreferences;
+    private RadioPreferences radioPreferences;
+
+    //bottom sheet
     private BottomSheetBehavior sheetBehavior;
 
     @Override
@@ -158,7 +163,7 @@ public class HomeActivity extends AppCompatActivity {
     private void setUpCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
-            Log.i(DEBUG_TAG, "Enabled cloud crash reporting");
+            Log.i(TAG, "setUpCrashlytics: Enabled");
         }
     }
 
@@ -205,7 +210,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 if (tab.getPosition() != 0)
-                    tab.getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
+                    Objects.requireNonNull(tab.getIcon()).setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
             }
 
             @Override
@@ -336,6 +341,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        Log.i(TAG, "onStop: ");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(audioServiceBroadcastReceiver);
         super.onStop();
     }
@@ -345,11 +351,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (visualizer != null)
             visualizer.release();
-        Log.i(DEBUG_TAG, "shutting down main application");
+        Log.d(TAG, "onDestroy: ");
     }
 
     @OnClick({R.id.smallPlay, R.id.mediacontrol_play})
     public void onPlay() {
+        Log.i(TAG, "onPlay: " + audioStreamingState.name());
         if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
             pausePlayback();
         } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
@@ -386,7 +393,7 @@ public class HomeActivity extends AppCompatActivity {
             if (audioSessionId != -1)
                 visualizer.setAudioSessionId(audioSessionId);
         } catch (Exception exception) {
-            Log.e(DEBUG_TAG, exception.getMessage());
+            Log.e(TAG, "setUpAudioVisualizer: " + exception.getMessage());
         }
 
     }
@@ -402,7 +409,7 @@ public class HomeActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 setUpAudioVisualizer();
             else
-                Log.i(DEBUG_TAG, "Permission to record audio denied. Visualizer cannot be initialized");
+                Log.i(TAG, "onRequestPermissionsResult: Denied. Unable to initialize visualizer");
         }
     }
 
@@ -483,8 +490,6 @@ public class HomeActivity extends AppCompatActivity {
     private void onAudioStreamingStateReceived(@NonNull AudioStreamingState streamingState) {
         switch (streamingState) {
             case STATUS_PLAYING:
-                //  Log.i(DEBUG_TAG, "Media Playing");
-
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
 
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
@@ -496,10 +501,8 @@ public class HomeActivity extends AppCompatActivity {
                 startUpdateStreamProgress();
                 textSwitcherNetworkStatus.setText(getString(R.string.live_online));
                 ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.green_200));
-                //  textSwitcherNetworkStatus.setTextColor(getResources().getColor(R.color.green_200));
                 break;
             case STATUS_STOPPED:
-                //Log.i(DEBUG_TAG, "Media Stopped");
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_pause_play));
                 animateButtonDrawable(smallPlay, getResources().getDrawable(R.drawable.avd_pause_play_small));
 
@@ -517,7 +520,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(@NonNull ViewPager viewPager) {
         SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
         viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
@@ -525,6 +528,13 @@ public class HomeActivity extends AppCompatActivity {
 
         viewPager.setAdapter(viewPagerAdapter);
     }
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume: ");
+        super.onResume();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

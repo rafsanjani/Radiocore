@@ -3,11 +3,7 @@ package com.foreverrafs.starfm.util;
 // Created by Emperor95 on 3/5/2019.
 
 public class Constants {
-    public static final String DEBUG_TAG = "com.radiocore";
-
-
-    //PERMISSION CONSTANTS
-//    public static final int PERMISSION_RECORD_AUDIO = 9999;
+    public static final String DEBUG_TAG = "com.radiocore.app";
 
 
     public static final String STREAM_RESULT = "com.radiocore.service.AudioStreamingService.STREAM_RESULT";
@@ -17,7 +13,6 @@ public class Constants {
     public static final String ACTION_PLAY = "com.radiocore.PLAY";
     public static final String ACTION_STOP = "com.radiocore.STOP";
     public static final String ACTION_PAUSE = "com.radiocore.PAUSE";
-
 
     //PLAYER STATES
     public static final String STATUS_PLAYING = "STATUS_PLAYING";

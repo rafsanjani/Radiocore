@@ -14,6 +14,8 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.lang.ref.WeakReference;
+
 import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
 import static com.google.android.exoplayer2.Player.STATE_BUFFERING;
 import static com.google.android.exoplayer2.Player.STATE_ENDED;
@@ -21,7 +23,8 @@ import static com.google.android.exoplayer2.Player.STATE_IDLE;
 import static com.google.android.exoplayer2.Player.STATE_READY;
 
 public class StreamPlayer implements Player.EventListener {
-    private static StreamPlayer instance;
+    private static final String TAG = DEBUG_TAG;
+    private static WeakReference<StreamPlayer> instance;
     private MediaSource mediaSource;
     private SimpleExoPlayer exoPlayer;
     private boolean isPlaying;
@@ -38,8 +41,8 @@ public class StreamPlayer implements Player.EventListener {
     public static StreamPlayer getInstance(Context context) {
         synchronized (StreamPlayer.class) {
             if (instance == null)
-                instance = new StreamPlayer(context);
-            return instance;
+                instance = new WeakReference<>(new StreamPlayer(context));
+            return instance.get();
         }
     }
 
@@ -76,7 +79,7 @@ public class StreamPlayer implements Player.EventListener {
      *
      * @return PlaybackState which is a representation of the current state of the media object
      */
-    public PlaybackState getPlaybackState() {
+    private PlaybackState getPlaybackState() {
         return playbackState;
     }
 
@@ -98,14 +101,13 @@ public class StreamPlayer implements Player.EventListener {
     }
 
     public void pause() {
-        if (isPlaying) {
-            exoPlayer.setPlayWhenReady(false);
-            setPlaybackState(PlaybackState.PAUSED);
-        }
+        //  if (isPlaying) {
+        exoPlayer.setPlayWhenReady(false);
+        //setPlaybackState(PlaybackState.PAUSED);
+        //}
     }
 
     public void stop() {
-        setPlaybackState(PlaybackState.STOPPED);
         exoPlayer.stop();
     }
 
@@ -126,7 +128,6 @@ public class StreamPlayer implements Player.EventListener {
             exoPlayer.prepare(mediaSource);
 
         exoPlayer.setPlayWhenReady(true);
-        setPlaybackState(PlaybackState.PLAYING);
     }
 
 
@@ -149,25 +150,26 @@ public class StreamPlayer implements Player.EventListener {
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         switch (playbackState) {
             case STATE_READY:
-                Log.i(DEBUG_TAG, "Player state changed to : Ready");
+                Log.d(TAG, "onPlayerStateChanged: Ready");
                 break;
 
             case STATE_ENDED:
-                Log.i(DEBUG_TAG, "Player state changed to : Ended");
+                Log.d(TAG, "onPlayerStateChanged: Ended");
                 break;
 
             case STATE_BUFFERING:
-                Log.i(DEBUG_TAG, "Player state changed to : Buffering");
+                Log.d(TAG, "onPlayerStateChanged: Buffering...");
                 break;
             case STATE_IDLE:
-                Log.i(DEBUG_TAG, "Player state changed to : Idle");
+                Log.d(TAG, "onPlayerStateChanged: Idle");
         }
 
         if (playWhenReady && playbackState == Player.STATE_READY) {
             // Active playback.
-            setPlaybackState(PlaybackState.PLAYING);
-            isPlaying = true;
             listener.onPlay();
+            isPlaying = true;
+            setPlaybackState(PlaybackState.PLAYING);
+            Log.d(TAG, "onPlayerStateChanged: Playing...");
         } else if (playWhenReady) {
             // Not playing because playback ended, the player is buffering, stopped or
             // failed. Check playbackState and player.getPlaybackError for details.
@@ -175,13 +177,14 @@ public class StreamPlayer implements Player.EventListener {
             isPlaying = false;
             listener.onStop();
             if (playbackState == Player.STATE_BUFFERING)
-                Log.i(DEBUG_TAG, "Buffering...");
+                Log.d(TAG, "onPlayerStateChanged: Buffering...");
 
         } else {
             // Paused by app.
             isPlaying = false;
             setPlaybackState(PlaybackState.PAUSED);
             listener.onPause();
+            Log.d(TAG, "onPlayerStateChanged: Paused");
         }
     }
 

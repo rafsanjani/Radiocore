@@ -7,12 +7,13 @@
     android:layout_height="match_parent"
     android:background="@color/grey_10"
     android:fitsSystemWindows="true"
-    tools:context=".activity.HomeActivity">
+    tools:mContext=".activity.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:background="@color/blue_grey_500"
         android:theme="@style/AppTheme.AppBarOverlay">
 
