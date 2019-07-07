@@ -1,16 +1,19 @@
-package com.foreverrafs.starfm.activity;
+package com.foreverrafs.radiocore.activity;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.foreverrafs.starfm.R;
-import com.foreverrafs.starfm.fragment.NewsFragment;
-import com.foreverrafs.starfm.model.News;
+import com.foreverrafs.radiocore.R;
+import com.foreverrafs.radiocore.fragment.NewsFragment;
+import com.foreverrafs.radiocore.model.News;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.format.DateTimeFormat;
@@ -33,7 +36,11 @@ public class NewsDetailActivity extends AppCompatActivity {
     ImageView imageView;
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
+
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +49,10 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Star FM News");
+        setSupportActionBar(mToolbar);
+        mCollapsingToolbarLayout.setTitleEnabled(false);
+        mToolbar.setTitle("RadioCore News");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -59,4 +68,14 @@ public class NewsDetailActivity extends AppCompatActivity {
             Picasso.get().load(newsItem.getImage()).into(imageView);
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+
+        return true;
+    }
+
 }

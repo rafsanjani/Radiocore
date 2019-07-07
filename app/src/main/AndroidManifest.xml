@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.foreverrafs.starfm">
+    package="com.foreverrafs.radiocore">
 
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,16 +24,16 @@
 
 
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="com.foreverrafs.radiocore.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.NewsDetailActivity"
-            android:label="@string/star_news"
+            android:name="com.foreverrafs.radiocore.activity.NewsDetailActivity"
+            android:label="@string/activity_news_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.SplashActivity"
+            android:name="com.foreverrafs.radiocore.activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
@@ -43,16 +43,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.HomeActivity"
+            android:name="com.foreverrafs.radiocore.activity.HomeActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.foreverrafs.radiocore.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".service.AudioStreamingService" />
+        <service android:name="com.foreverrafs.radiocore.service.AudioStreamingService" />
     </application>
 
 

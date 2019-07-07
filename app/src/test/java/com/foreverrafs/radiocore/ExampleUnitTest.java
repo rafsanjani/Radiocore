@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm;
+package com.foreverrafs.radiocore;
 
 import org.junit.Test;
 

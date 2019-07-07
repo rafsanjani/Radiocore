@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.adapter;
+package com.foreverrafs.radiocore.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.activity;
+package com.foreverrafs.radiocore.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.foreverrafs.starfm.R;
+import com.foreverrafs.radiocore.R;
 
 /**
  * We just use this class to show a fake progress for 1/8th of a second and just proceeds to HomeActivity and dismiss it

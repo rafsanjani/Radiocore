@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.data;
+package com.foreverrafs.radiocore.data;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,9 +11,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.foreverrafs.starfm.model.News;
-import com.foreverrafs.starfm.model.NewsCache;
-import com.foreverrafs.starfm.util.RadioPreferences;
+import com.foreverrafs.radiocore.model.News;
+import com.foreverrafs.radiocore.model.NewsCache;
+import com.foreverrafs.radiocore.util.RadioPreferences;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
@@ -31,7 +31,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
+import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 
 public class NewsData {
     private final Context mContext;

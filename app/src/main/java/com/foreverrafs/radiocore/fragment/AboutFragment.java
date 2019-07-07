@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.fragment;
+package com.foreverrafs.radiocore.fragment;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.foreverrafs.starfm.R;
+import com.foreverrafs.radiocore.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

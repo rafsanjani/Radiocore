@@ -187,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:singleLine="true"
-                android:text="@string/buffering"
+                android:text="@string/state_buffering"
                 android:textColor="@color/pink_600"
                 android:textSize="17sp" />
 
@@ -196,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:singleLine="true"
-                android:text="@string/buffering"
+                android:text="@string/state_buffering"
                 android:textColor="@color/green_200"
                 android:textSize="17sp" />
         </TextSwitcher>

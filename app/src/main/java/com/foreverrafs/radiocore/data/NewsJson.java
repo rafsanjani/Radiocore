@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.data;
+package com.foreverrafs.radiocore.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

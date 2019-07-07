@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.activity;
+package com.foreverrafs.radiocore.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -36,17 +36,17 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.crashlytics.android.Crashlytics;
-import com.foreverrafs.starfm.BuildConfig;
-import com.foreverrafs.starfm.R;
-import com.foreverrafs.starfm.StreamPlayer;
-import com.foreverrafs.starfm.adapter.SectionsPagerAdapter;
-import com.foreverrafs.starfm.fragment.AboutFragment;
-import com.foreverrafs.starfm.fragment.HomeFragment;
-import com.foreverrafs.starfm.fragment.NewsFragment;
-import com.foreverrafs.starfm.service.AudioStreamingService;
-import com.foreverrafs.starfm.service.AudioStreamingService.AudioStreamingState;
-import com.foreverrafs.starfm.util.RadioPreferences;
-import com.foreverrafs.starfm.util.Tools;
+import com.foreverrafs.radiocore.BuildConfig;
+import com.foreverrafs.radiocore.R;
+import com.foreverrafs.radiocore.StreamPlayer;
+import com.foreverrafs.radiocore.adapter.SectionsPagerAdapter;
+import com.foreverrafs.radiocore.fragment.AboutFragment;
+import com.foreverrafs.radiocore.fragment.HomeFragment;
+import com.foreverrafs.radiocore.fragment.NewsFragment;
+import com.foreverrafs.radiocore.service.AudioStreamingService;
+import com.foreverrafs.radiocore.service.AudioStreamingService.AudioStreamingState;
+import com.foreverrafs.radiocore.util.RadioPreferences;
+import com.foreverrafs.radiocore.util.Tools;
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -64,13 +64,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
 
-import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
-import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
-import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
-import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.STREAMING_STATUS;
-import static com.foreverrafs.starfm.util.Constants.STREAM_RESULT;
-import static com.foreverrafs.starfm.util.Tools.animateButtonDrawable;
+import static com.foreverrafs.radiocore.util.Constants.ACTION_PAUSE;
+import static com.foreverrafs.radiocore.util.Constants.ACTION_PLAY;
+import static com.foreverrafs.radiocore.util.Constants.ACTION_STOP;
+import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
+import static com.foreverrafs.radiocore.util.Constants.STREAMING_STATUS;
+import static com.foreverrafs.radiocore.util.Constants.STREAM_RESULT;
+import static com.foreverrafs.radiocore.util.Tools.animateButtonDrawable;
 
 public class HomeActivity extends AppCompatActivity {
     private final int PERMISSION_RECORD_AUDIO = 6900;
@@ -341,9 +341,9 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        super.onStop();
         Log.i(TAG, "onStop: ");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(audioServiceBroadcastReceiver);
-        super.onStop();
     }
 
     @Override
@@ -499,7 +499,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress();
-                textSwitcherNetworkStatus.setText(getString(R.string.live_online));
+                textSwitcherNetworkStatus.setText(getString(R.string.state_live));
                 ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.green_200));
                 break;
             case STATUS_STOPPED:
@@ -508,11 +508,11 @@ public class HomeActivity extends AppCompatActivity {
 
                 textSwitcherNetworkStatus.getRootView();
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
-                textSwitcherNetworkStatus.setText(getString(R.string.stopped));
+                textSwitcherNetworkStatus.setText(getString(R.string.state_stopped));
                 ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.pink_600));
                 break;
             case STATUS_LOADING:
-                textSwitcherNetworkStatus.setText(getString(R.string.buffering));
+                textSwitcherNetworkStatus.setText(getString(R.string.state_buffering));
                 ((TextView) textSwitcherNetworkStatus.getCurrentView()).setTextColor(getResources().getColor(R.color.pink_600));
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar);
                 break;

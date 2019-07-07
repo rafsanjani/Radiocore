@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm;
+package com.foreverrafs.radiocore;
 
 import android.content.Context;
 import android.net.Uri;
@@ -16,7 +16,7 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.lang.ref.WeakReference;
 
-import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
+import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 import static com.google.android.exoplayer2.Player.STATE_BUFFERING;
 import static com.google.android.exoplayer2.Player.STATE_ENDED;
 import static com.google.android.exoplayer2.Player.STATE_IDLE;
@@ -101,10 +101,7 @@ public class StreamPlayer implements Player.EventListener {
     }
 
     public void pause() {
-        //  if (isPlaying) {
         exoPlayer.setPlayWhenReady(false);
-        //setPlaybackState(PlaybackState.PAUSED);
-        //}
     }
 
     public void stop() {

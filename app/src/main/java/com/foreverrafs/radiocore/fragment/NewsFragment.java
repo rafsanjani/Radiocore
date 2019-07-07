@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.fragment;
+package com.foreverrafs.radiocore.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,11 +18,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.NetworkError;
 import com.android.volley.VolleyError;
-import com.foreverrafs.starfm.R;
-import com.foreverrafs.starfm.activity.NewsDetailActivity;
-import com.foreverrafs.starfm.adapter.NewsAdapter;
-import com.foreverrafs.starfm.data.NewsData;
-import com.foreverrafs.starfm.model.News;
+import com.foreverrafs.radiocore.R;
+import com.foreverrafs.radiocore.activity.NewsDetailActivity;
+import com.foreverrafs.radiocore.adapter.NewsAdapter;
+import com.foreverrafs.radiocore.data.NewsData;
+import com.foreverrafs.radiocore.model.News;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.droidsonroids.gif.GifImageView;
 
-import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
+import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 
 
 // Created by Emperor95 on 1/13/2019.
@@ -111,17 +111,15 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         newsData.setTaskDelegate(new NewsData.TaskDelegate() {
             @Override
             public void onAllNewsFetched(List<News> fetchedNewsItems) {
-                setUpNewsItemClickListener();
-
                 mNewsAdapter = new NewsAdapter(fetchedNewsItems, NewsAdapter.AnimationType.BOTTOM_UP, 150);
                 recyclerView.setAdapter(mNewsAdapter);
 
                 //lets keep a copy of the adapter in case fetching goes awry on next try
-                mNewsAdapterCached = (NewsAdapter) recyclerView.getAdapter();
+                mNewsAdapterCached = mNewsAdapter;
 
                 progressBar.setVisibility(View.GONE);
 
-
+                setUpNewsItemClickListener();
             }
 
             @Override

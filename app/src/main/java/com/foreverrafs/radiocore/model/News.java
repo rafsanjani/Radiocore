@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.model;
+package com.foreverrafs.radiocore.model;
 
 // Created by Emperor95 on 1/13/2019.
 
@@ -31,7 +31,7 @@ public class News implements Parcelable {
         this.content = content;
     }
 
-    @SuppressWarnings("WeakerAccess")
+
     public News(Parcel in) {
         headline = in.readString();
         content = in.readString();

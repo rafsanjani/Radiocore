@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.activity;
+package com.foreverrafs.radiocore.activity;
 
 import android.os.Bundle;
 
@@ -6,7 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.foreverrafs.starfm.R;
+import com.foreverrafs.radiocore.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

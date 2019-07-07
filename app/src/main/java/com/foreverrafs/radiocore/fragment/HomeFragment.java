@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.fragment;
+package com.foreverrafs.radiocore.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.foreverrafs.starfm.R;
+import com.foreverrafs.radiocore.R;
 
 
 // Created by Emperor95 on 1/13/2019.

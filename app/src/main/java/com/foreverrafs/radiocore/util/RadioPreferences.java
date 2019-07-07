@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.util;
+package com.foreverrafs.radiocore.util;
 
 // Created by Emperor95 on 11/19/2018.
 
@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
+import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
+import static com.foreverrafs.radiocore.util.Constants.STATUS_PLAYING;
 
 public class RadioPreferences {
     public static final String CACHE_NOT_FOUND = "com.foreverrafs.radiocore.not_found";
@@ -21,13 +21,12 @@ public class RadioPreferences {
     private static final String CLEAN_SHUT_DOWN = "com.foreverrafs.radiocore.clean_shut_down";
     ///////////////SETTINGS VARIABLES
     private SharedPreferences settings;
-    private Context context;
 
     ////////////////END OF SETTINGS VARIABLES
 
 
     public RadioPreferences(Context context) {
-        this.context = context;
+
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
 

@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.util;
+package com.foreverrafs.radiocore.util;
 
 // Created by Emperor95 on 3/5/2019.
 

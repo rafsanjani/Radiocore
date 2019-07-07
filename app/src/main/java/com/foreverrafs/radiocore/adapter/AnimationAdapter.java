@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.adapter;
+package com.foreverrafs.radiocore.adapter;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;

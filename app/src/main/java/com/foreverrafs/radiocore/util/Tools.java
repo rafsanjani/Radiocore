@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.util;
+package com.foreverrafs.radiocore.util;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -30,7 +30,7 @@ import androidx.annotation.DrawableRes;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import com.foreverrafs.starfm.R;
+import com.foreverrafs.radiocore.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;

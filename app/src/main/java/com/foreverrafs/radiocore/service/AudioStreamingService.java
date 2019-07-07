@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.service;
+package com.foreverrafs.radiocore.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,22 +16,22 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.foreverrafs.starfm.R;
-import com.foreverrafs.starfm.StreamPlayer;
-import com.foreverrafs.starfm.activity.HomeActivity;
-import com.foreverrafs.starfm.util.Constants;
-import com.foreverrafs.starfm.util.RadioPreferences;
+import com.foreverrafs.radiocore.R;
+import com.foreverrafs.radiocore.StreamPlayer;
+import com.foreverrafs.radiocore.activity.HomeActivity;
+import com.foreverrafs.radiocore.util.Constants;
+import com.foreverrafs.radiocore.util.RadioPreferences;
 
-import static com.foreverrafs.starfm.util.Constants.ACTION_PAUSE;
-import static com.foreverrafs.starfm.util.Constants.ACTION_PLAY;
-import static com.foreverrafs.starfm.util.Constants.ACTION_STOP;
-import static com.foreverrafs.starfm.util.Constants.DEBUG_TAG;
-import static com.foreverrafs.starfm.util.Constants.STATUS_LOADING;
-import static com.foreverrafs.starfm.util.Constants.STATUS_PLAYING;
-import static com.foreverrafs.starfm.util.Constants.STATUS_STOPPED;
-import static com.foreverrafs.starfm.util.Constants.STREAMING_STATUS;
-import static com.foreverrafs.starfm.util.Constants.STREAM_RESULT;
-import static com.foreverrafs.starfm.util.Constants.STREAM_URL;
+import static com.foreverrafs.radiocore.util.Constants.ACTION_PAUSE;
+import static com.foreverrafs.radiocore.util.Constants.ACTION_PLAY;
+import static com.foreverrafs.radiocore.util.Constants.ACTION_STOP;
+import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
+import static com.foreverrafs.radiocore.util.Constants.STATUS_LOADING;
+import static com.foreverrafs.radiocore.util.Constants.STATUS_PLAYING;
+import static com.foreverrafs.radiocore.util.Constants.STATUS_STOPPED;
+import static com.foreverrafs.radiocore.util.Constants.STREAMING_STATUS;
+import static com.foreverrafs.radiocore.util.Constants.STREAM_RESULT;
+import static com.foreverrafs.radiocore.util.Constants.STREAM_URL;
 
 /***
  * Handle Audio playback
@@ -231,6 +231,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
 
     private void cleanShutDown() {
         // stopPlayback();
+        stopForeground(true);
         Log.i(DEBUG_TAG, "Performing stream status cleanup");
         radioPreferences.setCleanShutdown(true);
     }
@@ -248,7 +249,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
             StreamPlayer.getInstance(this).release();
         }
 
-        Log.i(DEBUG_TAG, "Service is destroyed");
+        Log.d(DEBUG_TAG, "onDestroy: Service Destroyed");
     }
 
     /**
@@ -286,7 +287,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
             case AudioManager.AUDIOFOCUS_LOSS:
                 synchronized (mFocusLock) {
                     mResumeOnFocusGain = false;
-                    pausePlayback();
+                    stopPlayback();
                 }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -298,6 +299,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
                 break;
         }
     }
+
 
     /**
      * Discrete states of the Audio Streaming Service

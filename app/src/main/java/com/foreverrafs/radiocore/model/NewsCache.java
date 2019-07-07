@@ -1,4 +1,4 @@
-package com.foreverrafs.starfm.model;
+package com.foreverrafs.radiocore.model;
 
 
 import org.joda.time.DateTime;
@@ -15,10 +15,16 @@ public class NewsCache {
     private DateTime fetchTime;
 
     /**
-     * The lis of News items which will be cached. These will be serialized into json as an array of news objects
+     * The list of News items which will be cached. These will be serialized into json as an array of news objects
      */
     private List<News> newsItems;
 
+    /**
+     * Parameterized constructor for a news Cache
+     *
+     * @param fetchTime The time this particular cache was created
+     * @param newsItems The list of news items to be cached in a particular point in time
+     */
     public NewsCache(DateTime fetchTime, List<News> newsItems) {
         this.fetchTime = fetchTime;
         this.newsItems = newsItems;

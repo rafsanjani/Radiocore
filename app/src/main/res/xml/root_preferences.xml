@@ -32,7 +32,7 @@
             android:icon="@drawable/ic_clock"
             android:key="com.foreverrafs.radiocore.streaming_timer"
             android:summary="Stop stream after %s"
-            android:title="@string/stream_timer" />
+            android:title="@string/pref_title_stream_timer" />
 
         <ListPreference
             android:entries="@array/settings_timer_entries"
@@ -40,6 +40,6 @@
             android:icon="@drawable/ic_news"
             android:key="com.foreverrafs.radiocore.cache_expiry_hours"
             android:summary="Fetch news every %s"
-            android:title="@string/news_timer" />
+            android:title="@string/pref_title_news_fetch_delay" />
     </PreferenceCategory>
 </PreferenceScreen>
