@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="GENERAL SETTINGS">
@@ -42,4 +42,4 @@
             android:summary="Fetch news every %s"
             android:title="@string/pref_title_news_fetch_delay" />
     </PreferenceCategory>
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

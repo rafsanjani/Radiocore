@@ -35,9 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:lines="3"
-            android:text="@string/news_custom_default_text"
+            android:text="@string/news_custom_category"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -48,14 +48,25 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
+            android:id="@+id/text_category"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/aldrich"
+            android:text="Regional"
+            android:textColor="@color/pink_A100"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/text_date"
+            app:layout_constraintEnd_toEndOf="@+id/text_headline" />
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="@string/news_custom_date"
             android:textSize="12sp"
             android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintStart_toStartOf="@+id/text_headline" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -10,11 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.foreverrafs.radiocore.R;
 import com.foreverrafs.radiocore.fragment.NewsFragment;
 import com.foreverrafs.radiocore.model.News;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.squareup.picasso.Picasso;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -31,6 +31,9 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.text_date)
     TextView textDate;
+
+    @BindView(R.id.text_category)
+    TextView textCategory;
 
     @BindView(R.id.image)
     ImageView imageView;
@@ -65,7 +68,11 @@ public class NewsDetailActivity extends AppCompatActivity {
             textHeadline.setText(Html.fromHtml(newsItem.getHeadline()));
             textDate.setText(datePretty);
             textContent.setText(Html.fromHtml(newsItem.getContent()));
-            Picasso.get().load(newsItem.getImage()).into(imageView);
+            textCategory.setText(newsItem.getCategory());
+
+            Glide.with(this)
+                    .load(newsItem.getImage())
+                    .into(imageView);
         }
     }
 

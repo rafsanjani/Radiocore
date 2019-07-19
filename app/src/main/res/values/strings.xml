@@ -6,15 +6,21 @@
     <string name="org_website">https://www.starfmatbonline.com/</string>
     <string name="org_name">RadioCore Online</string>
     <string name="live_radio_freq">Live Radio - 100.0FM</string>
+    <string name="website_and_value">Website: http://starfmatbonline.com/</string>
+    <string name="email_and_value">Email: starfmatebubu89.7@gmail.com</string>
+    <string name="phone_and_value">Phone: +2330205573828</string>
+
+    <!--Acivity Titles-->
+    <string name="activity_news_title">News</string>
+    <!--End of Activity Titles-->
+
     <!--End of Customizable String Entries-->
 
     <!--Menu Actions-->
     <string name="action_settings">Settings</string>
     <!--End of Menu Actions-->
 
-    <!--Acivity Titles-->
-    <string name="activity_news_title">News</string>
-    <!--End of Activity Titles-->
+
 
 
     <!--Custom News Item-->
@@ -81,6 +87,11 @@
     <string name="state_buffering">Buffering…</string>
     <string name="state_live">Live Online</string>
     <string name="state_stopped">Stopped</string>
+    <string name="news_custom_category">Sport</string>
+    <string name="next_button_desc">Next Button Desc</string>
+    <string name="desc_play_button">Play Button Desc</string>
+    <string name="desc_prev_button">Previous Button Desc</string>
+    <string name="timer_default">00:00:00</string>
     <!--End of Playback states-->
 
     <!--Preference entries and values-->

@@ -122,7 +122,7 @@
                 android:id="@+id/text_stream_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00:00"
+                android:text="@string/timer_default"
                 android:textColor="@color/white" />
 
             <TextView
@@ -130,7 +130,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="00:00:00"
+                android:text="@string/timer_default"
                 android:textColor="@color/white" />
 
         </RelativeLayout>
@@ -149,6 +149,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/desc_prev_button"
                 android:src="@drawable/ic_back" />
 
 
@@ -162,6 +163,7 @@
                 android:adjustViewBounds="true"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/avd_play_pause"
+                android:contentDescription="@string/desc_play_button"
                 android:tint="@color/white" />
 
 
@@ -170,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/next_button_desc"
                 android:src="@drawable/ic_next" />
 
         </LinearLayout>
@@ -219,6 +222,7 @@
             android:layout_marginBottom="@dimen/spacing_medium"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+            android:contentDescription="@string/desc_station_logo"
             android:src="@drawable/logo" />
 
         <ProgressBar
@@ -234,20 +238,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:text="Website: http://starfmatbonline.com/"
+            android:text="@string/website_and_value"
             android:textAlignment="center" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email: starfmatebubu89.7@gmail.com"
+            android:text="@string/email_and_value"
             android:textAlignment="center" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Phone: +2330205573828"
+            android:text="@string/phone_and_value"
             android:textAlignment="center" />
     </LinearLayout>
 </RelativeLayout>
