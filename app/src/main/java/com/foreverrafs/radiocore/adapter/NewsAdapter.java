@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.foreverrafs.radiocore.R;
 import com.foreverrafs.radiocore.model.News;
-import com.squareup.picasso.Picasso;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -77,8 +77,11 @@ public class NewsAdapter extends AnimationAdapter {
 
     public class NewsHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.date)
+        @BindView(R.id.text_date)
         TextView tvDate;
+
+        @BindView(R.id.text_category)
+        TextView tvCategory;
 
         @BindView(R.id.text_headline)
         TextView tvHeadline;
@@ -96,14 +99,22 @@ public class NewsAdapter extends AnimationAdapter {
 
             tvDate.setText(newsItem.getDate().toString(formatter));
             tvHeadline.setText(newsItem.getHeadline());
+            tvCategory.setText(newsItem.getCategory());
 
-
-            Picasso.get().
-                    load(newsItem.getImage())
+            Glide.with(itemView)
+                    .load(newsItem.getImage())
+                    .error(R.drawable.newsimage)
+                    .placeholder(R.drawable.newsimage)
+                    .centerCrop()
                     .into(image);
 
-            itemView.setOnClickListener(v -> listener.onNewsItemClicked(getAdapterPosition(), newsItem, image, tvHeadline));
+//            Picasso.get().
+////                    load(newsItem.getImage())
+////                    .error(R.drawable.newsimage)
+////                    .placeholder(R.drawable.newsimage)
+//                    .into(image);
 
+            itemView.setOnClickListener(v -> listener.onNewsItemClicked(getAdapterPosition(), newsItem, image, tvHeadline));
 
             setAnimation(itemView, getAdapterPosition());
         }

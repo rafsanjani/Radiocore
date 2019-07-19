@@ -23,12 +23,14 @@ public class News implements Parcelable {
     private String image;
     private String content;
     private DateTime date;
+    private String category;
 
-    public News(String headline, DateTime date, String image, String content) {
+    public News(String headline, DateTime date, String image, String content, String category) {
         this.headline = headline;
         this.date = date;
         this.image = image;
         this.content = content;
+        this.category = category;
     }
 
 
@@ -37,6 +39,7 @@ public class News implements Parcelable {
         content = in.readString();
         image = in.readString();
         String dateStr = in.readString();
+        category = in.readString();
 
         try {
             date = DateTime.parse(dateStr);
@@ -52,6 +55,15 @@ public class News implements Parcelable {
     public DateTime getDate() {
         return date;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
 
     public String getImage() {
         return image;
@@ -76,5 +88,6 @@ public class News implements Parcelable {
         dest.writeString(content);
         dest.writeString(image);
         dest.writeString(date.toString());
+        dest.writeString(category);
     }
 }

@@ -36,8 +36,10 @@ import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 public class NewsData {
     private final Context mContext;
     //    private final String NEWS_URL = "https://ghanamotion.com/wp-json/wp/v2/posts?_embed&categories=35";
-    private final String NEWS_URL = "https://www.newsghana.com.gh/wp-json/wp/v2/posts?_embed&categories=35";
+    private final String NEWS_URL = "https://newscentral.herokuapp.com/news";
+
     private List<News> mNewsList;
+
     private TaskDelegate mTaskDelegate;
 
     private RadioPreferences mRadioPreferences;
@@ -49,7 +51,6 @@ public class NewsData {
         mRadioPreferences = new RadioPreferences(mContext);
 
     }
-
 
     public void fetchNews() {
         String cacheFilePath = mRadioPreferences.getCacheFileName();
@@ -89,19 +90,15 @@ public class NewsData {
                         JSONArray newsArray = new JSONArray(response);
                         for (int i = 0; i < newsArray.length(); i++) {
                             JSONObject newsObject = newsArray.getJSONObject(i);
-                            String title = newsObject.getJSONObject("title").getString("rendered");
-                            String content = newsObject.getJSONObject("content").getString("rendered");
+                            String title = newsObject.getString("headline");
 
-                            String image = "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
+                            //replace all newline items with a paragraph
+                            String content = newsObject.getString("content").replace("\n", "<p>");
 
-                            if (!newsObject.getJSONObject("_embedded").isNull("wp:featuredmedia")) {
-                                image = newsObject.getJSONObject("_embedded")
-                                        .getJSONArray("wp:featuredmedia").getJSONObject(0)
-                                        .getString("source_url");
-                            }
+                            String image = newsObject.getString("imageUrl");
+                            String category = newsObject.getString("category");
+
                             String dateStr = newsObject.getString("date");
-                            dateStr = dateStr.substring(0, dateStr.indexOf("T"));
-
 
                             DateTime date = null;
 
@@ -110,7 +107,7 @@ public class NewsData {
                             } catch (Exception e) {
                                 Log.e(DEBUG_TAG, e.getMessage());
                             }
-                            final News newsItem = new News(title, date, image, content);
+                            final News newsItem = new News(title, date, image, content, category);
 
                             mTaskDelegate.onNewsItemFetched(newsItem);
                             mNewsList.add(newsItem);
@@ -147,10 +144,11 @@ public class NewsData {
         List<News> newsItems = new ArrayList<>();
 
         try {
-            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide"));
-            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide"));
-            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide"));
-            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide"));
+            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"));
+            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"));
+            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"));
+            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"));
+            newsItems.add(new News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"));
 
             mTaskDelegate.onAllNewsFetched(newsItems);
             saveToCache(newsItems);
@@ -261,7 +259,6 @@ public class NewsData {
         task.execute(cacheFilePath);
     }
 
-
     private void clearCache(File cacheFile) {
         cacheFile.delete();
         mRadioPreferences.removeCacheFileEntry();
@@ -287,5 +284,4 @@ public class NewsData {
 
         void onError(VolleyError error);
     }
-
 }
