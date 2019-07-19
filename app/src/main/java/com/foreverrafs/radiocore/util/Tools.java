@@ -30,8 +30,8 @@ import androidx.annotation.DrawableRes;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.foreverrafs.radiocore.R;
-import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,7 +104,7 @@ public class Tools {
 
     public static void displayImageOriginal(Context ctx, ImageView img, @DrawableRes int drawable) {
         try {
-            Picasso.get().load(drawable).into(img);
+            Glide.with(ctx).load(drawable).into(img);
         } catch (Exception e) {
         }
     }
@@ -207,11 +207,11 @@ public class Tools {
         }
     }
 
-//    public static void changeNavigateionIconColor(Toolbar toolbar, @ColorInt int color) {
-//        Drawable drawable = toolbar.getNavigationIcon();
-//        drawable.mutate();
-//        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-//    }
+    public static void changeNavigateionIconColor(Toolbar toolbar, @ColorInt int color) {
+        Drawable drawable = toolbar.getNavigationIcon();
+        drawable.mutate();
+        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+    }
 
     public static void changeMenuIconColor(Menu menu, @ColorInt int color) {
         for (int i = 0; i < menu.size(); i++) {
