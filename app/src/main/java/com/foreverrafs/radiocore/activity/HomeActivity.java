@@ -39,7 +39,7 @@ import com.crashlytics.android.Crashlytics;
 import com.foreverrafs.radiocore.BuildConfig;
 import com.foreverrafs.radiocore.R;
 import com.foreverrafs.radiocore.StreamPlayer;
-import com.foreverrafs.radiocore.adapter.SectionsPagerAdapter;
+import com.foreverrafs.radiocore.adapter.NewsPagerAdapter;
 import com.foreverrafs.radiocore.fragment.AboutFragment;
 import com.foreverrafs.radiocore.fragment.HomeFragment;
 import com.foreverrafs.radiocore.fragment.NewsFragment;
@@ -521,7 +521,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void setupViewPager(@NonNull ViewPager viewPager) {
-        SectionsPagerAdapter viewPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        NewsPagerAdapter viewPagerAdapter = new NewsPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
         viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 2
