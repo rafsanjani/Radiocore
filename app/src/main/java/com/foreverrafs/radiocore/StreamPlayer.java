@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.foreverrafs.radiocore.util.RadioPreferences;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -14,7 +15,16 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import org.joda.time.Period;
+import org.joda.time.Seconds;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 import static com.google.android.exoplayer2.Player.STATE_BUFFERING;
@@ -30,18 +40,22 @@ public class StreamPlayer implements Player.EventListener {
     private boolean isPlaying;
     private StreamStateChangesListener listener;
     private PlaybackState playbackState = PlaybackState.IDLE;
-    private Context context;
+    private WeakReference<Context> context;
+    private RadioPreferences mPreferences;
 
     private StreamPlayer(Context context) {
-        this.context = context;
+        this.context = new WeakReference<>(context);
         exoPlayer = ExoPlayerFactory.newSimpleInstance(context);
+        mPreferences = new RadioPreferences(context);
         exoPlayer.addListener(this);
     }
 
     public static StreamPlayer getInstance(Context context) {
         synchronized (StreamPlayer.class) {
-            if (instance == null)
+            if (instance == null) {
                 instance = new WeakReference<>(new StreamPlayer(context));
+                Log.d(TAG, "getInstance: Media Instance Created on  " + Thread.currentThread().getName());
+            }
             return instance.get();
         }
     }
@@ -52,7 +66,7 @@ public class StreamPlayer implements Player.EventListener {
      * @param uri
      */
     public void setStreamSource(Uri uri) {
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "RadioCore"));
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context.get(), Util.getUserAgent(context.get(), "RadioCore"));
         mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
     }
 
@@ -192,6 +206,55 @@ public class StreamPlayer implements Player.EventListener {
         listener.onError(error);
     }
 
+    private String[] getStreamDurationStrings() {
+        String[] durations = new String[2];
+        int streamTimer = Integer.parseInt(mPreferences.getStreamingTimer()) * 3600;
+
+        Seconds streamDurationHrs = Seconds.seconds(streamTimer);
+
+        //get the current stream position
+        Seconds currentPosition = Seconds.seconds((int) getCurrentPosition() / 1000);
+
+        //the total Stream duration
+        Period streamDurationPeriod = new Period(streamDurationHrs);
+
+        //the current position of the stream
+        Period currentPositionPeriod = new Period(currentPosition);
+
+        //the difference between the total duration and the current duration
+        Period diffPeriod = streamDurationPeriod.minus(currentPositionPeriod);
+
+
+        if (diffPeriod.getSeconds() == 0) {
+            stop();
+        }
+
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .printZeroAlways()
+                .minimumPrintedDigits(2)
+                .appendHours()
+                .appendSuffix(":")
+                .appendMinutes()
+                .appendSuffix(":")
+                .appendSeconds()
+                .toFormatter();
+
+        String totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard());
+        String streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard());
+
+        durations[0] = totalStreamStr;
+        durations[1] = streamProgressStr;
+
+        return durations;
+    }
+
+    public Observable<String[]> getStreamDurationStringsObservable() {
+        return Observable
+                .interval(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(aLong -> getStreamDurationStrings());
+    }
+
     /**
      * Distinct Media playback states
      */
@@ -202,6 +265,7 @@ public class StreamPlayer implements Player.EventListener {
         STOPPED,
         IDLE
     }
+
 
     public interface StreamStateChangesListener {
         void onPlay();

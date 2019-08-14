@@ -11,7 +11,7 @@
     <string name="phone_and_value">Phone: +2330205573828</string>
 
     <!--Acivity Titles-->
-    <string name="activity_news_title">News</string>
+    <string name="activity_news_title">RadioCore News</string>
     <!--End of Activity Titles-->
 
     <!--End of Customizable String Entries-->
@@ -19,8 +19,6 @@
     <!--Menu Actions-->
     <string name="action_settings">Settings</string>
     <!--End of Menu Actions-->
-
-
 
 
     <!--Custom News Item-->

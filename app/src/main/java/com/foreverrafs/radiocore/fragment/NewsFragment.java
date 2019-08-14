@@ -23,6 +23,7 @@ import com.foreverrafs.radiocore.activity.NewsDetailActivity;
 import com.foreverrafs.radiocore.adapter.NewsAdapter;
 import com.foreverrafs.radiocore.data.NewsData;
 import com.foreverrafs.radiocore.model.News;
+import com.foreverrafs.radiocore.util.Constants;
 
 import java.util.List;
 
@@ -37,9 +38,6 @@ import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 // Created by Emperor95 on 1/13/2019.
 
 public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    public static final String NEWS_ITEM_EXTRA = "com.foreverrafs.starfm.news_extra";
-    public static final String IMAGE_TRANSITION_NAME_EXTRA = "com.foreverrafs.starfm.newsfragment.image_transition_name_extra";
-
     @BindView(R.id.progress_loading)
     GifImageView progressBar;
 
@@ -75,6 +73,11 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         getNewsData();
 
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -169,9 +172,9 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             return;
         }
 
-        mNewsAdapter.setOnNewsItemClickListener((position, newsItem, newsImageView, headline) -> {
+        mNewsAdapter.setOnNewsItemClickListener((position) -> {
             Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-            intent.putExtra(NEWS_ITEM_EXTRA, newsItem);
+            intent.putExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, position);
 
             startActivity(intent);
 

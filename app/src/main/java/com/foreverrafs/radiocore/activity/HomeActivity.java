@@ -9,9 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +36,8 @@ import com.crashlytics.android.Crashlytics;
 import com.foreverrafs.radiocore.BuildConfig;
 import com.foreverrafs.radiocore.R;
 import com.foreverrafs.radiocore.StreamPlayer;
-import com.foreverrafs.radiocore.adapter.NewsPagerAdapter;
+import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter;
+import com.foreverrafs.radiocore.data.CustomObserver;
 import com.foreverrafs.radiocore.fragment.AboutFragment;
 import com.foreverrafs.radiocore.fragment.HomeFragment;
 import com.foreverrafs.radiocore.fragment.NewsFragment;
@@ -52,21 +50,17 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 
-import org.joda.time.Period;
-import org.joda.time.Seconds;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
-
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.fabric.sdk.android.Fabric;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 import static com.foreverrafs.radiocore.util.Constants.ACTION_PAUSE;
 import static com.foreverrafs.radiocore.util.Constants.ACTION_PLAY;
-import static com.foreverrafs.radiocore.util.Constants.ACTION_STOP;
 import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 import static com.foreverrafs.radiocore.util.Constants.STREAMING_STATUS;
 import static com.foreverrafs.radiocore.util.Constants.STREAM_RESULT;
@@ -79,85 +73,55 @@ public class HomeActivity extends AppCompatActivity {
     BroadcastReceiver audioServiceBroadcastReceiver;
     //let's assume nothing is playing when application starts
     AudioStreamingService.AudioStreamingState audioStreamingState = AudioStreamingState.STATUS_STOPPED;
-
     //Declare UI variables
     @BindView(R.id.bottom_sheet)
     RelativeLayout layoutBottomSheet;
-
     @BindView(R.id.bottomsheet_playback_items)
     LinearLayout bottomSheetPlaybackItems;
-
     @BindView(R.id.smallPlay)
     ImageButton smallPlay;
-
     @BindView(R.id.mediacontrol_play)
     ImageButton play;
-
     @BindView(R.id.view_pager)
     ViewPager viewPager;
-
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
-
     @BindView(R.id.seekbar_streamprogress)
     SeekBar seekBarProgress;
-
     @BindView(R.id.smallLogo)
     ImageView smallLogo;
-
     @BindView(R.id.smallProgressBar)
     ProgressBar smallProgressBar;
-
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
-
     @BindView(R.id.visualizer)
     BarVisualizer visualizer;
-
     @BindView(R.id.text_stream_duration)
     TextView textStreamDuration;
-
     @BindView(R.id.text_stream_progress)
     TextView textStreamProgress;
-
     @BindView(R.id.text_switcher_network_status)
     TextSwitcher textSwitcherNetworkStatus;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-
-    //Radio settings
-    private RadioPreferences radioPreferences;
-
     //bottom sheet
     private BottomSheetBehavior sheetBehavior;
+    private CompositeDisposable mCompositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        radioPreferences = new RadioPreferences(this);
-
         ButterKnife.bind(this);
 
-        enableStrictMode();
+        mCompositeDisposable = new CompositeDisposable();
+
         setUpCrashlytics();
         initializeViews();
         setUpInitialPlayerState();
         setUpAudioStreamingServiceReceiver();
-    }
-
-    private void enableStrictMode() {
-        if (BuildConfig.DEBUG) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build();
-
-            StrictMode.setThreadPolicy(policy);
-        }
     }
 
     private void setUpCrashlytics() {
@@ -263,57 +227,20 @@ public class HomeActivity extends AppCompatActivity {
      * Also checks if the stream timer is up which triggers a shutdown of the app
      */
     private void startUpdateStreamProgress() {
-        Handler mHandler = new Handler(Looper.getMainLooper());
+        Log.d(TAG, "startUpdateStreamProgress: ");
+        StreamPlayer.getInstance(this).getStreamDurationStringsObservable()
+                .subscribe(new CustomObserver<String[]>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mCompositeDisposable.add(d);
+                    }
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int streamTimer = Integer.parseInt(radioPreferences.getStreamingTimer()) * 3600;
-
-                seekBarProgress.setMax(streamTimer);
-
-                Seconds streamDurationHrs = Seconds.seconds(streamTimer);
-                Seconds currentPosition = Seconds.seconds((int) StreamPlayer.getInstance(getApplicationContext()).getCurrentPosition() / 1000);
-
-
-                //the total Stream duration
-                Period streamDurationPeriod = new Period(streamDurationHrs);
-
-                //the current position of the stream
-                Period currentPositionPeriod = new Period(currentPosition);
-
-                //the difference between the total duration and the current duration
-                Period diffPeriod = streamDurationPeriod.minus(currentPositionPeriod);
-
-
-                if (diffPeriod.getSeconds() == 0) {
-                    stopPlayback();
-                    finish();
-                }
-
-                PeriodFormatter formatter = new PeriodFormatterBuilder()
-                        .printZeroAlways()
-                        .minimumPrintedDigits(2)
-                        .appendHours()
-                        .appendSuffix(":")
-                        .appendMinutes()
-                        .appendSuffix(":")
-                        .appendSeconds()
-                        .toFormatter();
-
-                String totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard());
-                String streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard());
-
-                //display the total stream and the current stream for now
-                textStreamDuration.setText(totalStreamStr);
-                textStreamProgress.setText(streamProgressStr);
-
-                if (StreamPlayer.getInstance(getApplicationContext()) != null && seekBarProgress != null)
-                    seekBarProgress.setProgress(currentPosition.getSeconds());
-
-                mHandler.postDelayed(this, 1000);
-            }
-        });
+                    @Override
+                    public void onNext(String[] strings) {
+                        textStreamProgress.setText(strings[1]);
+                        textStreamDuration.setText(strings[0]);
+                    }
+                });
     }
 
     private void pausePlayback() {
@@ -322,28 +249,18 @@ public class HomeActivity extends AppCompatActivity {
         ContextCompat.startForegroundService(this, audioServiceIntent);
     }
 
-    private void stopPlayback() {
-        Intent audioServiceIntent = new Intent(HomeActivity.this, AudioStreamingService.class);
-        audioServiceIntent.setAction(ACTION_STOP);
-        ContextCompat.startForegroundService(this, audioServiceIntent);
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver((audioServiceBroadcastReceiver),
-                new IntentFilter(STREAM_RESULT)
-        );
-
-        if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
-            startUpdateStreamProgress();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Log.i(TAG, "onStop: ");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(audioServiceBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).
+                unregisterReceiver(audioServiceBroadcastReceiver);
     }
 
     @Override
@@ -351,6 +268,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         if (visualizer != null)
             visualizer.release();
+
+        mCompositeDisposable.clear();
+
         Log.d(TAG, "onDestroy: ");
     }
 
@@ -490,6 +410,7 @@ public class HomeActivity extends AppCompatActivity {
     private void onAudioStreamingStateReceived(@NonNull AudioStreamingState streamingState) {
         switch (streamingState) {
             case STATUS_PLAYING:
+                Log.d(TAG, "onAudioStreamingStateReceived: Playing");
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar);
 
                 animateButtonDrawable(play, getResources().getDrawable(R.drawable.avd_play_pause));
@@ -521,7 +442,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void setupViewPager(@NonNull ViewPager viewPager) {
-        NewsPagerAdapter viewPagerAdapter = new NewsPagerAdapter(getSupportFragmentManager());
+        HomeSectionsPagerAdapter viewPagerAdapter = new HomeSectionsPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new HomeFragment(), "Live");    // index 0
         viewPagerAdapter.addFragment(new NewsFragment(), "News");   // index 1
         viewPagerAdapter.addFragment(new AboutFragment(), "About");   // index 2
@@ -533,6 +454,12 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         Log.i(TAG, "onResume: ");
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver((audioServiceBroadcastReceiver),
+                new IntentFilter(STREAM_RESULT)
+        );
+
+//        if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
+//            startUpdateStreamProgress();
     }
 
 

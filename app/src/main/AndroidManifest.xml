@@ -28,6 +28,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.foreverrafs.radiocore.activity.NewsDetailActivity"
+
             android:label="@string/activity_news_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -71,11 +71,11 @@ public class NewsAdapter extends AnimationAdapter {
      * Propagate click events to the RecyclervView to which this adapter is attached.
      */
     public interface NewsItemClickListener {
-        void onNewsItemClicked(int position, News newsItem, ImageView newsImage, TextView headline);
+        void onNewsItemClicked(int position);
     }
 
 
-    public class NewsHolder extends RecyclerView.ViewHolder {
+    class NewsHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_date)
         TextView tvDate;
@@ -108,13 +108,9 @@ public class NewsAdapter extends AnimationAdapter {
                     .centerCrop()
                     .into(image);
 
-//            Picasso.get().
-////                    load(newsItem.getImage())
-////                    .error(R.drawable.newsimage)
-////                    .placeholder(R.drawable.newsimage)
-//                    .into(image);
+            image.setTransitionName(newsItem.getImage());
 
-            itemView.setOnClickListener(v -> listener.onNewsItemClicked(getAdapterPosition(), newsItem, image, tvHeadline));
+            itemView.setOnClickListener(v -> listener.onNewsItemClicked(getAdapterPosition()));
 
             setAnimation(itemView, getAdapterPosition());
         }

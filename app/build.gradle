@@ -70,6 +70,13 @@ dependencies {
 
     //for that fancy loading icon at the news tab
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+
+    //leakcanary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
+
+    //RxJava
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'

@@ -137,25 +137,6 @@ public class Tools {
         Resources r = c.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
-//
-//    public static GoogleMap configActivityMaps(GoogleMap googleMap) {
-//        // set map type
-//        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-//        // Enable / Disable zooming controls
-//        googleMap.getUiSettings().setZoomControlsEnabled(false);
-//
-//        // Enable / Disable Compass icon
-//        googleMap.getUiSettings().setCompassEnabled(true);
-//        // Enable / Disable Rotate gesture
-//        googleMap.getUiSettings().setRotateGesturesEnabled(true);
-//        // Enable / Disable zooming functionality
-//        googleMap.getUiSettings().setZoomGesturesEnabled(true);
-//
-//        googleMap.getUiSettings().setScrollGesturesEnabled(true);
-//        googleMap.getUiSettings().setMapToolbarEnabled(true);
-//
-//        return googleMap;
-//    }
 
     public static void copyToClipboard(Context context, String data) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -164,14 +145,6 @@ public class Tools {
         Toast.makeText(context, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
-//    public static void nestedScrollTo(final NestedScrollView nested, final View targetView) {
-//        nested.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                nested.scrollTo(500, targetView.getBottom());
-//            }
-//        });
-//    }
 
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;

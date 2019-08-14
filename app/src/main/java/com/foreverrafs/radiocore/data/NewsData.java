@@ -34,12 +34,9 @@ import java.util.List;
 import static com.foreverrafs.radiocore.util.Constants.DEBUG_TAG;
 
 public class NewsData {
+    public static List<News> mNewsList;
     private final Context mContext;
-    //    private final String NEWS_URL = "https://ghanamotion.com/wp-json/wp/v2/posts?_embed&categories=35";
     private final String NEWS_URL = "https://newscentral.herokuapp.com/news";
-
-    private List<News> mNewsList;
-
     private TaskDelegate mTaskDelegate;
 
     private RadioPreferences mRadioPreferences;
@@ -203,9 +200,11 @@ public class NewsData {
                 final int defaultCacheExpiryHours = Integer.parseInt(mRadioPreferences.getCacheExpiryHours());
                 final File cacheFile = new File(cacheFilePath);
 
+
                 try {
                     FileInputStream fileInputStream = new FileInputStream(cacheFile);
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
                     String line = bufferedReader.readLine();
                     StringBuilder stringBuilder = new StringBuilder();
 
@@ -213,6 +212,9 @@ public class NewsData {
                         stringBuilder.append(line).append("\n");
                         line = bufferedReader.readLine();
                     }
+
+                    fileInputStream.close();
+                    bufferedReader.close();
 
                     String fileAsString = stringBuilder.toString();
                     Gson gson = NewsJson.getInstance();
@@ -245,6 +247,8 @@ public class NewsData {
 
             @Override
             protected void onPostExecute(List<News> newsItems) {
+                NewsData.mNewsList = newsItems;
+
                 if (newsItems == null) {
                     mTaskDelegate.onError(new CacheFetchError("Error reading message from cache"));
                     return;
@@ -255,7 +259,6 @@ public class NewsData {
                 mTaskDelegate.onAllNewsFetched(newsItems);
             }
         };
-
         task.execute(cacheFilePath);
     }
 

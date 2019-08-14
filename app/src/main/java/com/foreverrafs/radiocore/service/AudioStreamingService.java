@@ -205,7 +205,6 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
         //on some rare occasions, the state of the stream is indeterminate so we perform a cleanup before attempting to reload
         if (!isCleanShutdown())
             stopPlayback();
-        // cleanShutDown();
 
         createNotificationChannel();
 
@@ -253,7 +252,7 @@ public class AudioStreamingService extends Service implements AudioManager.OnAud
     }
 
     /**
-     * Send a result back to the Broadcast receiver of the calling activity, in this case (HomeActivity.java)
+     * Send a result back to the Broadcast receiver of the calling activity_news_item_detail_pager, in this case (HomeActivity.java)
      * The result is basically the state of the stream audio and is usually one of STATUS_LOADING, STATUS_STOPPED or STATUS_PLAYING
      *
      * @param message
