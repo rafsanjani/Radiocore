@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.data;
+package com.foreverrafs.radiocore.concurrency;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;

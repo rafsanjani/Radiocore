@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet"
+    android:id="@+id/layoutBottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
@@ -17,7 +17,7 @@
 
 
     <LinearLayout
-        android:id="@+id/bottomsheet_playback_items"
+        android:id="@+id/bottomSheetPlaybackItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -104,7 +104,7 @@
         android:orientation="vertical">
 
         <SeekBar
-            android:id="@+id/seekbar_streamprogress"
+            android:id="@+id/seekBarProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -119,7 +119,7 @@
             android:paddingEnd="15dp">
 
             <TextView
-                android:id="@+id/text_stream_progress"
+                android:id="@+id/textStreamProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/timer_default"
@@ -154,7 +154,7 @@
 
 
             <ImageButton
-                android:id="@+id/mediacontrol_play"
+                android:id="@+id/play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
@@ -179,7 +179,7 @@
 
 
         <TextSwitcher
-            android:id="@+id/text_switcher_network_status"
+            android:id="@+id/textSwitcherNetworkStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp">
@@ -211,7 +211,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/line"
-        android:layout_below="@id/bottomsheet_playback_items"
+        android:layout_below="@id/bottomSheetPlaybackItems"
         android:gravity="center"
         android:orientation="vertical">
 

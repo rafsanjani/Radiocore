@@ -8,32 +8,32 @@
 
 
     <include
-        android:id="@+id/content_no_network"
+        android:id="@+id/contentNoConnection"
         layout="@layout/content_no_connection"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="60dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/swipe_refresh_news"
-        app:layout_constraintStart_toStartOf="@+id/swipe_refresh_news"
-        app:layout_constraintTop_toTopOf="@+id/swipe_refresh_news"
+        app:layout_constraintEnd_toEndOf="@+id/swipeRefreshLayout"
+        app:layout_constraintStart_toStartOf="@+id/swipeRefreshLayout"
+        app:layout_constraintTop_toTopOf="@+id/swipeRefreshLayout"
         tools:visibility="visible" />
 
     <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/progress_loading"
+        android:id="@+id/progressBar"
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:layout_marginBottom="24dp"
         android:src="@drawable/loading"
-        app:layout_constraintBottom_toBottomOf="@+id/content_no_network"
-        app:layout_constraintEnd_toEndOf="@+id/content_no_network"
-        app:layout_constraintStart_toStartOf="@+id/content_no_network"
-        app:layout_constraintTop_toTopOf="@+id/swipe_refresh_news" />
+        app:layout_constraintBottom_toBottomOf="@+id/contentNoConnection"
+        app:layout_constraintEnd_toEndOf="@+id/contentNoConnection"
+        app:layout_constraintStart_toStartOf="@+id/contentNoConnection"
+        app:layout_constraintTop_toTopOf="@+id/swipeRefreshLayout" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_news"
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -48,8 +48,9 @@
         tools:visibility="invisible">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_newslist"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

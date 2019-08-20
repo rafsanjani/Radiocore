@@ -27,7 +27,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
@@ -40,7 +40,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_mxlarge"
         android:background="@drawable/bottom_sheet_shadow"
-        app:layout_anchor="@+id/bottom_sheet" />
+        app:layout_anchor="@+id/layoutBottomSheet" />
 
     <!-- Adding bottom sheet after main content -->
     <include layout="@layout/bottom_sheet" />

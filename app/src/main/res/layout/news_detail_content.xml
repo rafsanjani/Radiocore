@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="4dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp"
-    android:layout_margin="4dp"
     app:cardUseCompatPadding="true"
     tools:context=".activity.NewsDetailActivity">
 
@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/text_headline"
+            android:id="@+id/tvHeadline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -37,8 +37,8 @@
             android:layout_marginEnd="8dp"
             android:text="Category:"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/text_category"
-            app:layout_constraintTop_toTopOf="@+id/text_date" />
+            app:layout_constraintEnd_toStartOf="@+id/tvCategory"
+            app:layout_constraintTop_toTopOf="@+id/tvDate" />
 
         <TextView
             android:id="@+id/text_publishedon"
@@ -46,13 +46,13 @@
             android:layout_height="wrap_content"
             android:text="Published:"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/text_date"
+            app:layout_constraintEnd_toStartOf="@+id/tvDate"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/text_headline"
-            app:layout_constraintTop_toTopOf="@+id/text_date" />
+            app:layout_constraintStart_toStartOf="@+id/tvHeadline"
+            app:layout_constraintTop_toTopOf="@+id/tvDate" />
 
         <TextView
-            android:id="@+id/text_category"
+            android:id="@+id/tvCategory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
@@ -60,31 +60,31 @@
             android:text="@string/news_custom_category"
             android:textColor="@color/pink_A100"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/text_headline"
+            app:layout_constraintEnd_toEndOf="@+id/tvHeadline"
             app:layout_constraintTop_toTopOf="@+id/text_category_label" />
 
         <TextView
-            android:id="@+id/text_date"
+            android:id="@+id/tvDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:justificationMode="inter_word"
             android:text="@string/news_custom_date"
             android:textStyle="bold|italic"
             app:layout_constraintStart_toEndOf="@+id/text_publishedon"
-            app:layout_constraintTop_toBottomOf="@+id/text_headline" />
+            app:layout_constraintTop_toBottomOf="@+id/tvHeadline" />
 
         <TextView
-            android:id="@+id/text_content"
+            android:id="@+id/tvContent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-condensed"
+            android:justificationMode="inter_word"
             android:lineSpacingExtra="6sp"
             android:text="@string/news_custom_content"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/text_category"
+            app:layout_constraintEnd_toEndOf="@+id/tvCategory"
             app:layout_constraintStart_toStartOf="@+id/text_publishedon"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -96,7 +96,7 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_category" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCategory" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

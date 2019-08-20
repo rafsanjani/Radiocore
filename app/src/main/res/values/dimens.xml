@@ -25,5 +25,6 @@
     <dimen name="card_corner_radius">6dp</dimen>
     <dimen name="bottomsheet_peek_height">65dp</dimen>
     <dimen name="logo_small_size">20dp</dimen>
+    <dimen name="btn_rounded_radius">20dp</dimen>
 
 </resources>
