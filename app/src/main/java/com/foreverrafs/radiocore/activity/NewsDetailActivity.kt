@@ -3,7 +3,6 @@ package com.foreverrafs.radiocore.activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import butterknife.ButterKnife
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.NewsPagerAdapter
 import com.foreverrafs.radiocore.util.Constants
@@ -16,8 +15,6 @@ class NewsDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_item_detail_pager)
-
-        ButterKnife.bind(this)
 
         getIncomingIntent()
 

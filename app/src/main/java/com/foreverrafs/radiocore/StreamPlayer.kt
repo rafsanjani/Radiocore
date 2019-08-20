@@ -6,7 +6,6 @@ import android.util.Log
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -21,38 +20,45 @@ import org.joda.time.format.PeriodFormatterBuilder
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-class StreamPlayer private constructor(context: Context) : Player.EventListener {
+class StreamPlayer private constructor(context: Context) : EventListener {
+
+    companion object {
+        private val TAG = "StreamPlayer"
+        private var instance: WeakReference<StreamPlayer>? = null
+
+        fun getInstance(context: Context): StreamPlayer? {
+            synchronized(StreamPlayer::class.java) {
+                if (instance == null) {
+                    instance = WeakReference(StreamPlayer(context))
+                    Log.d(TAG, "getInstance: Media Instance Created on  " + Thread.currentThread().name)
+                }
+                return instance?.get()
+            }
+        }
+    }
+
     private var mediaSource: MediaSource? = null
-    private val exoPlayer: SimpleExoPlayer?
+    private val exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context)
+
     /**
      * Checks whether the media object is currently playing a media. This is usually true when there is active playback
      *
      * @return True when there is active playback and false otherwise
      */
     var isPlaying: Boolean = false
-        private set
-    private var listener: StreamStateChangesListener? = null
-    /**
-     * Gets the state of the current media player object
-     *
-     * @return PlaybackState which is a representation of the current state of the media object
-     */
-    /**
-     * Sets the state of the media player object
-     *
-     * @param state one of PlaybackState.PLAYING, PlaybackState.STOPPED, PlaybackState.PAUSED, PlaybackState.IDLE
-     * and PlaybackState.BUFFERING
-     */
+
+    private lateinit var listener: StreamStateChangesListener
+
     private var playbackState = PlaybackState.IDLE
-    private val context: WeakReference<Context>
-    private val mPreferences: RadioPreferences
+    private val context: WeakReference<Context> = WeakReference(context)
+    private val mPreferences: RadioPreferences = RadioPreferences(context)
 
     val audioSessionId: Int
-        get() = exoPlayer?.audioSessionId ?: -1
+        get() = exoPlayer.audioSessionId
 
 
-    val currentPosition: Long
-        get() = exoPlayer!!.currentPosition
+    private val currentPosition: Long
+        get() = exoPlayer.currentPosition
 
     private//get the current stream position
     //the total Stream duration
@@ -97,13 +103,10 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
         get() = Observable
                 .interval(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map { aLong -> streamDurationStrings }
+                .map { streamDurationStrings }
 
     init {
-        this.context = WeakReference(context)
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(context)
-        mPreferences = RadioPreferences(context)
-        exoPlayer!!.addListener(this)
+        exoPlayer.addListener(this)
     }
 
     /**
@@ -129,15 +132,15 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
      * Release resources held by the media player back to the system
      */
     fun release() {
-        exoPlayer!!.release()
+        exoPlayer.release()
     }
 
     fun pause() {
-        exoPlayer!!.playWhenReady = false
+        exoPlayer.playWhenReady = false
     }
 
     fun stop() {
-        exoPlayer!!.stop()
+        exoPlayer.stop()
     }
 
     /**
@@ -147,9 +150,9 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
      */
     fun play() {
         if ((playbackState == PlaybackState.IDLE || playbackState == PlaybackState.STOPPED) && !isPlaying)
-            exoPlayer!!.prepare(mediaSource)
+            exoPlayer.prepare(mediaSource)
 
-        exoPlayer!!.playWhenReady = true
+        exoPlayer.playWhenReady = true
     }
 
     override fun onLoadingChanged(isLoading: Boolean) {
@@ -157,7 +160,7 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
 
         Log.i(TAG, "Media " + if (isLoading) "Loading..." else "Loaded!")
         if (isLoading) {
-            listener!!.onBuffering()
+            listener.onBuffering()
             playbackState = PlaybackState.BUFFERING
         }
     }
@@ -174,14 +177,14 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
 
         if (playWhenReady && playbackState == STATE_READY) {
             // Active playback.
-            listener!!.onPlay()
+            listener.onPlay()
             isPlaying = true
             Log.d(TAG, "onPlayerStateChanged: Playing...")
         } else if (playWhenReady) {
             // Not playing because playback ended, the player is buffering, stopped or
             // failed. Check playbackState and player.getPlaybackError for details.
             isPlaying = false
-            listener!!.onStop()
+            listener.onStop()
             if (playbackState == STATE_BUFFERING)
                 Log.d(TAG, "onPlayerStateChanged: Buffering...")
 
@@ -189,7 +192,7 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
             // Paused by app.
             isPlaying = false
             //playbackState = PlaybackState.PAUSED
-            listener!!.onPause()
+            listener.onPause()
             Log.d(TAG, "onPlayerStateChanged: Paused")
         }
     }
@@ -197,7 +200,7 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
     override fun onPlayerError(error: ExoPlaybackException?) {
         isPlaying = false
         playbackState = PlaybackState.IDLE
-        listener!!.onError(error)
+        listener.onError(error)
     }
 
     /**
@@ -211,7 +214,6 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
         IDLE
     }
 
-
     interface StreamStateChangesListener {
         fun onPlay()
 
@@ -222,20 +224,5 @@ class StreamPlayer private constructor(context: Context) : Player.EventListener 
         fun onPause()
 
         fun onError(exception: Exception?)
-    }
-
-    companion object {
-        private val TAG = "StreamPlayer"
-        private var instance: WeakReference<StreamPlayer>? = null
-
-        fun getInstance(context: Context): StreamPlayer? {
-            synchronized(StreamPlayer::class.java) {
-                if (instance == null) {
-                    instance = WeakReference(StreamPlayer(context))
-                    Log.d(TAG, "getInstance: Media Instance Created on  " + Thread.currentThread().name)
-                }
-                return instance!!.get()
-            }
-        }
     }
 }

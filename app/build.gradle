@@ -54,10 +54,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
-    //butterknife for view ifnjections
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-
     //JodaTime for date and time operations
     implementation 'joda-time:joda-time:2.10.3'
 
@@ -74,7 +70,6 @@ dependencies {
     //google exoplayer for audio rendering
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
     implementation 'com.google.android.exoplayer:exoplayer-dash:2.10.0'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.10.0'
 
     //for that fancy loading icon at the news tab
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
