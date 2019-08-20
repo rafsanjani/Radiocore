@@ -10,26 +10,41 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import butterknife.ButterKnife
-import butterknife.OnClick
 import com.foreverrafs.radiocore.R
+import kotlinx.android.synthetic.main.fragment_about.*
 
 
 // Created by Emperor95 on 1/13/2019.
 
-class AboutFragment : Fragment() {
+class AboutFragment : Fragment(), View.OnClickListener {
+    override fun onClick(clickedView: View?) {
+        when (clickedView?.id) {
+            R.id.tvEmail, R.id.tvMobile, R.id.tvPhone -> {
+                val view = clickedView as TextView
+                onContactInfoClicked(view)
+            }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            R.id.imageWhatsapp -> onWhatsappIconClicked()
+        }
 
-        val rootView = inflater.inflate(R.layout.fragment_about, container, false)
-
-        ButterKnife.bind(this, rootView)
-
-        return rootView
     }
 
-    @OnClick(R.id.text_email, R.id.text_mobile, R.id.text_phone1)
-    fun onContactInfoClicked(view: TextView) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_about, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initClickListeneners()
+    }
+
+    private fun initClickListeneners() {
+        tvEmail.setOnClickListener(this)
+        tvMobile.setOnClickListener(this)
+        tvPhone.setOnClickListener(this)
+        imageWhatsapp.setOnClickListener(this)
+    }
+
+    private fun onContactInfoClicked(view: TextView) {
         val actionIntent: Intent
         val contact = view.text.toString()
 
@@ -49,8 +64,7 @@ class AboutFragment : Fragment() {
 
     }
 
-    @OnClick(R.id.image_whatsapp)
-    fun onWhatsappIconClicked() {
+    private fun onWhatsappIconClicked() {
         val whatsappIntent = Intent(Intent.ACTION_SEND)
         whatsappIntent.type = "text/plain"
         whatsappIntent.setPackage("com.whatsapp")

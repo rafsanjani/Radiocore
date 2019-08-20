@@ -118,7 +118,7 @@
                         app:srcCompat="@drawable/ic_email" />
 
                     <TextView
-                        android:id="@+id/text_mobile"
+                        android:id="@+id/tvMobile"
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -128,11 +128,11 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/textView9"
-                        app:layout_constraintStart_toStartOf="@+id/text_email"
-                        app:layout_constraintTop_toBottomOf="@+id/text_email" />
+                        app:layout_constraintStart_toStartOf="@+id/tvEmail"
+                        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
 
                     <TextView
-                        android:id="@+id/text_phone1"
+                        android:id="@+id/tvPhone"
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -141,11 +141,11 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/textView7"
-                        app:layout_constraintStart_toStartOf="@+id/text_mobile" />
+                        app:layout_constraintStart_toStartOf="@+id/tvMobile" />
 
 
                     <TextView
-                        android:id="@+id/text_email"
+                        android:id="@+id/tvEmail"
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -249,7 +249,7 @@
                     android:tint="@color/blue_900" />
 
                 <ImageView
-                    android:id="@+id/image_whatsapp"
+                    android:id="@+id/imageWhatsapp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/desc_whatsapp_icon"
