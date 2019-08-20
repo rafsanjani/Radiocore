@@ -4,4 +4,4 @@
     android:id="@+id/viewPager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:mContext=".activity.NewsDetailActivity"></androidx.viewpager.widget.ViewPager>
+    tools:mContext=".activity.NewsDetailActivity" />

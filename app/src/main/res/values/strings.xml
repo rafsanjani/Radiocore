@@ -3,12 +3,14 @@
     <!--Customizable String Entries. Change these values as appropriate-->
     <string name="app_name">RadioCore 100.0 FM</string>
     <string name="station_online">RadioCore Online</string>
-    <string name="org_website">https://www.starfmatbonline.com/</string>
+    <string name="org_website">https://www.foreverrafs.com/radiocore</string>
+    <string name="org_email">info@radiocore.com</string>
+    <string name="org_phone">+233554314080</string>
     <string name="org_name">RadioCore Online</string>
     <string name="live_radio_freq">Live Radio - 100.0FM</string>
-    <string name="website_and_value">Website: http://starfmatbonline.com/</string>
-    <string name="email_and_value">Email: starfmatebubu89.7@gmail.com</string>
-    <string name="phone_and_value">Phone: +2330205573828</string>
+    <string name="website_and_value">Website: https://www.foreverafs.com/radiocore</string>
+    <string name="email_and_value">Email: info@radiocore.com</string>
+    <string name="phone_and_value">Phone: +233554314080</string>
 
     <!--Acivity Titles-->
     <string name="activity_news_title">RadioCore News</string>
@@ -36,10 +38,11 @@
 
 
     <string name="mission_statement">
-        Our mission is to become the most listened to FM station in Bono East and beyond that promotes Socio-economic and
-        cultural development and to also inform, educate, entertain and market products and services of our
-        target group and fulfill our responsibilities to the stakeholders through a team of dedicated,
-        experienced and highly motivated professionals.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta lor
+        em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
+        ac habitasse platea dictumst. Suspendisse volutpat blandit ultrices. Sed eget velit id sa
+        pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
+        dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
     </string>
 
 
@@ -90,6 +93,10 @@
     <string name="desc_play_button">Play Button Desc</string>
     <string name="desc_prev_button">Previous Button Desc</string>
     <string name="timer_default">00:00:00</string>
+    <string name="label_email">Email:</string>
+    <string name="label_phone">Phone:</string>
+    <string name="label_mobile">Mobile:</string>
+    <string name="footer_copyright">Copyright \u00A9, RadioCore </string>
     <!--End of Playback states-->
 
     <!--Preference entries and values-->

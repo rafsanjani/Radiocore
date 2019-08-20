@@ -76,6 +76,7 @@ class NewsAdapter : AnimationAdapter {
                     .into(itemView.image)
 
             itemView.setOnClickListener { listener?.onNewsItemClicked(adapterPosition) }
+            setAnimation(itemView, adapterPosition)
         }
     }
 }

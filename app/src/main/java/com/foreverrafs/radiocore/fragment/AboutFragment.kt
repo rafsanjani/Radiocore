@@ -28,7 +28,7 @@ class AboutFragment : Fragment() {
         return rootView
     }
 
-    @OnClick(R.id.text_email, R.id.text_mobile, R.id.text_phone1, R.id.text_phone2)
+    @OnClick(R.id.text_email, R.id.text_mobile, R.id.text_phone1)
     fun onContactInfoClicked(view: TextView) {
         val actionIntent: Intent
         val contact = view.text.toString()

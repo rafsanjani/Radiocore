@@ -31,6 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:justificationMode="inter_word"
                     android:text="@string/mission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90"
@@ -102,9 +103,8 @@
                         android:id="@+id/imageView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="22dp"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/imageView"
                         app:layout_constraintTop_toBottomOf="@+id/imageView"
                         app:srcCompat="@drawable/ic_phone" />
 
@@ -112,7 +112,6 @@
                         android:id="@+id/imageView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -125,7 +124,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:fontFamily="sans-serif-medium"
-                        android:text="+233205573828"
+                        android:text="@string/org_phone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/textView9"
                         app:layout_constraintStart_toStartOf="@+id/text_email"
                         app:layout_constraintTop_toBottomOf="@+id/text_email" />
@@ -136,19 +137,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
-                        android:text="+233544446800"
+                        android:text="@string/org_phone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/textView7"
                         app:layout_constraintStart_toStartOf="@+id/text_mobile" />
 
-                    <TextView
-                        android:id="@+id/text_phone2"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="+233243179781"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView8"
-                        app:layout_constraintStart_toStartOf="@+id/text_phone1" />
 
                     <TextView
                         android:id="@+id/text_email"
@@ -158,7 +152,9 @@
                         android:layout_marginTop="12dp"
                         android:layout_marginEnd="8dp"
                         android:fontFamily="sans-serif-medium"
-                        android:text="starfm897atb@gmail.com"
+                        android:text="@string/org_email"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/grey_60"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -167,9 +163,11 @@
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="8dp"
                         android:fontFamily="sans-serif-medium"
-                        android:text="Email:"
+                        android:text="@string/label_email"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView"
                         app:layout_constraintStart_toEndOf="@+id/imageView" />
 
@@ -177,20 +175,9 @@
                         android:id="@+id/imageView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="18dp"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/imageView3"
                         app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                        app:srcCompat="@drawable/ic_mobile" />
-
-                    <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="24dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView2"
                         app:srcCompat="@drawable/ic_mobile" />
 
                     <TextView
@@ -199,7 +186,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
-                        android:text="Phone:"
+                        android:text="@string/label_phone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
                         app:layout_constraintStart_toStartOf="@+id/textView9" />
 
@@ -209,19 +198,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
-                        android:text="Mobile:"
+                        android:text="@string/label_mobile"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@color/grey_60"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                         app:layout_constraintStart_toStartOf="@+id/textView6" />
 
-                    <TextView
-                        android:id="@+id/textView8"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Phone:"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                        app:layout_constraintStart_toStartOf="@+id/textView7" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <Space
