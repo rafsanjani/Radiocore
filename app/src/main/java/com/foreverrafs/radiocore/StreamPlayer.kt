@@ -154,10 +154,18 @@ class StreamPlayer private constructor(context: Context) : EventListener {
      * which prepares the media controller for playback using the specified media source
      */
     fun play() {
-        if ((playbackState == PlaybackState.IDLE || playbackState == PlaybackState.STOPPED) && !isPlaying)
-            exoPlayer.prepare(mediaSource)
+        when (playbackState) {
+            PlaybackState.IDLE, PlaybackState.STOPPED -> {
+                exoPlayer.prepare(mediaSource)
+            }
+            PlaybackState.PAUSED -> exoPlayer.playWhenReady = true
+            PlaybackState.BUFFERING -> exoPlayer.playWhenReady = true
+            else -> TODO()
+        }
 
-        exoPlayer.playWhenReady = true
+//        if ((playbackState == PlaybackState.IDLE || playbackState == PlaybackState.STOPPED) && !isPlaying)
+//            exoPlayer.prepare(mediaSource)
+//
     }
 
     override fun onLoadingChanged(isLoading: Boolean) {
