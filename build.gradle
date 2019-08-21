@@ -6,9 +6,8 @@ buildscript {
         google()
         jcenter()
 
-        maven {
-            url 'https://maven.fabric.io/public'
-        }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         ext.kotlinVersion = '1.3.41'
