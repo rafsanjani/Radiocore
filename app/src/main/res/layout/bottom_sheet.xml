@@ -179,7 +179,7 @@
 
 
         <TextSwitcher
-            android:id="@+id/textSwitcherNetworkStatus"
+            android:id="@+id/textSwitcherPlayerState"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp">

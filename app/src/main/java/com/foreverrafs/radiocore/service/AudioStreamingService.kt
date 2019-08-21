@@ -96,9 +96,9 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
                 }
 
                 override fun onPause() {
-                    sendResult(AudioStreamingState.STATUS_STOPPED)
+                    sendResult(AudioStreamingState.STATUS_PAUSED)
                     radioPreferences?.status = Constants.STATUS_STOPPED
-                    stopForeground(true)
+//                    stopForeground(true)
                 }
 
             })
@@ -137,24 +137,25 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
     private fun createNotification(): Notification {
         val contentIntent = Intent(this, HomeActivity::class.java)
         val pauseIntent = Intent(this, AudioStreamingService::class.java)
-        pauseIntent.action = Constants.ACTION_STOP
+        val stopIntent = Intent(this, AudioStreamingService::class.java)
 
-        val contentPendingIntent = PendingIntent.getActivity(this, 5,
-                contentIntent, 0)
+        pauseIntent.action = Constants.ACTION_PAUSE
+        stopIntent.action = Constants.ACTION_STOP
 
-
-        val pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0)
+        val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
+        val pausePendingIntent = PendingIntent.getService(this, 6, pauseIntent, 0)
+        val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
 
 
         val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Online Radio")
                 .addAction(R.drawable.ic_pause_notification, "Pause", pausePendingIntent)
+                .addAction(R.drawable.ic_stop_notification, "Stop", stopPendingIntent)
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0))
                 .setContentText(notificationText)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(contentPendingIntent)
-
 
         return builder.build()
     }
@@ -197,7 +198,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
 
 
     private fun cleanShutDown() {
-        // stopPlayback();
         stopForeground(true)
         Log.i(TAG, "Performing stream status cleanup")
         radioPreferences?.cleanShutdown = true
@@ -270,6 +270,7 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
     enum class AudioStreamingState {
         STATUS_PLAYING,
         STATUS_STOPPED,
-        STATUS_LOADING
+        STATUS_LOADING,
+        STATUS_PAUSED
     }
 }

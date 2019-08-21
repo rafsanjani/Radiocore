@@ -49,11 +49,18 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         when (view?.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
                 Log.i(TAG, "onPlay: " + audioStreamingState.name)
-                if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-                    pausePlayback()
-                } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED) {
-                    startPlayback()
+                when (audioStreamingState) {
+                    AudioStreamingState.STATUS_PLAYING -> pausePlayback()
+                    AudioStreamingState.STATUS_PAUSED,
+                    AudioStreamingState.STATUS_STOPPED -> startPlayback()
+                    AudioStreamingState.STATUS_LOADING -> TODO()
                 }
+//                if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
+//                    pausePlayback()
+//                } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED
+//                        || audioStreamingState == AudioStreamingState.STATUS_PAUSED) {
+//                    startPlayback()
+//                }
 
             }
         }
@@ -151,7 +158,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         audioServiceBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 val receivedState = intent.getStringExtra(Constants.STREAMING_STATUS)
-                audioStreamingState = AudioStreamingState.valueOf(receivedState)
+                audioStreamingState = AudioStreamingState.valueOf(receivedState!!)
                 onAudioStreamingStateReceived(audioStreamingState)
             }
         }
@@ -173,12 +180,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         onAudioStreamingStateReceived(audioStreamingState)
     }
 
-    private fun startPlayback() {
-        val audioServiceIntent = Intent(this@HomeActivity, AudioStreamingService::class.java)
-        audioServiceIntent.action = Constants.ACTION_PLAY
-        ContextCompat.startForegroundService(this, audioServiceIntent)
-    }
-
     /**
      * Update the stream progress seekbar and timer accordingly.
      * Also checks if the stream timer is up which triggers a shutdown of the app
@@ -198,8 +199,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 })
     }
 
+    private fun startPlayback() {
+        val audioServiceIntent = Intent(this, AudioStreamingService::class.java)
+        audioServiceIntent.action = Constants.ACTION_PLAY
+        ContextCompat.startForegroundService(this, audioServiceIntent)
+    }
+
     private fun pausePlayback() {
-        val audioServiceIntent = Intent(this@HomeActivity, AudioStreamingService::class.java)
+        val audioServiceIntent = Intent(this, AudioStreamingService::class.java)
         audioServiceIntent.action = Constants.ACTION_PAUSE
         ContextCompat.startForegroundService(this, audioServiceIntent)
     }
@@ -217,8 +224,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         visualizer?.release()
 
         mCompositeDisposable?.clear()
-
-        Log.d(TAG, "onDestroy: ")
     }
 
 
@@ -227,13 +232,12 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * Note: All view Initializing must be performed in this module or it's submodules
      */
     private fun initializeViews() {
-
         val textAnimationIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left)
 
         val textAnimationOut = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right)
 
-        textSwitcherNetworkStatus.inAnimation = textAnimationIn
-        textSwitcherNetworkStatus.outAnimation = textAnimationOut
+        textSwitcherPlayerState.inAnimation = textAnimationIn
+        textSwitcherPlayerState.outAnimation = textAnimationOut
 
         initializeTabComponents()
         initializeToolbar()
@@ -260,7 +264,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_RECORD_AUDIO) {
-            if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 setUpAudioVisualizer()
             else
                 Log.i(TAG, "onRequestPermissionsResult: Denied. Unable to initialize visualizer")
@@ -316,8 +320,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * Explicitly collapse the bottom sheet
      */
     fun collapseBottomSheet() {
-        if (sheetBehavior!!.state != BottomSheetBehavior.STATE_COLLAPSED)
-            sheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (sheetBehavior?.state != BottomSheetBehavior.STATE_COLLAPSED)
+            sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     /**
@@ -337,25 +341,32 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
                 intiializeAudioVisualizer()
 
-
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
-                textSwitcherNetworkStatus?.setText(getString(R.string.state_live))
-                (textSwitcherNetworkStatus?.currentView as TextView).setTextColor(resources.getColor(R.color.green_200))
+                textSwitcherPlayerState?.setText(getString(R.string.state_live))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.green_200))
             }
             AudioStreamingState.STATUS_STOPPED -> {
                 animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_pause_play))
                 animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_pause_play_small))
 
-
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
-                textSwitcherNetworkStatus.setText(getString(R.string.state_stopped))
-                (textSwitcherNetworkStatus.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
+                textSwitcherPlayerState.setText(getString(R.string.state_stopped))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
-                textSwitcherNetworkStatus.setText(getString(R.string.state_buffering))
-                (textSwitcherNetworkStatus.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
+                textSwitcherPlayerState.setText(getString(R.string.state_buffering))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.pink_200))
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar)
+            }
+
+            AudioStreamingState.STATUS_PAUSED -> {
+                animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_pause_play))
+                animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_pause_play_small))
+
+                textSwitcherPlayerState.setText(getString(R.string.state_paused))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.yellow_400))
+                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
             }
         }
     }

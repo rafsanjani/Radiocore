@@ -88,6 +88,9 @@
     <string name="state_buffering">Buffering…</string>
     <string name="state_live">Live Online</string>
     <string name="state_stopped">Stopped</string>
+    <string name="state_paused">Paused</string>
+    <!--End of Playback states-->
+
     <string name="news_custom_category">Sport</string>
     <string name="next_button_desc">Next Button Desc</string>
     <string name="desc_play_button">Play Button Desc</string>
@@ -97,7 +100,6 @@
     <string name="label_phone">Phone:</string>
     <string name="label_mobile">Mobile:</string>
     <string name="footer_copyright">Copyright \u00A9, RadioCore </string>
-    <!--End of Playback states-->
 
     <!--Preference entries and values-->
     <string-array name="settings_timer_entries">
