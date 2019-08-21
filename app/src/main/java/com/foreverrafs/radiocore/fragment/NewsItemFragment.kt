@@ -33,6 +33,7 @@ class NewsItemFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        image.transitionName = mNewsItem?.imageUrl
         val fmt = DateTimeFormat.forPattern("MMMM d, yyyy")
         val datePretty = mNewsItem!!.date!!.toString(fmt)
 
@@ -42,8 +43,9 @@ class NewsItemFragment : Fragment() {
         tvCategory.text = mNewsItem?.category
 
         Glide.with(this)
-                .load(mNewsItem?.image)
+                .load(mNewsItem?.imageUrl)
                 .into(image!!)
+
     }
 
     companion object {

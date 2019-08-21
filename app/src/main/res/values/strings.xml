@@ -46,7 +46,7 @@
     </string>
 
 
-    <!--image content descriptions-->
+    <!--imageUrl content descriptions-->
     <string name="desc_small_play_button">play button on bottom sheet</string>
     <string name="desc_image_no_internet">No Internet image</string>
     <string name="desc_swipe_up_handle">swipe up handle</string>
@@ -54,7 +54,7 @@
     <string name="desc_station_logo">FM Station Logo</string>
     <string name="desc_news_image">News Image</string>
 
-    <!--End of image content descriptions-->
+    <!--End of imageUrl content descriptions-->
 
     <string name="retry">RETRY</string>
     <string name="home_banner_image">home banner image</string>

@@ -85,7 +85,7 @@ class NewsData(private val mContext: Context) {
                             try {
                                 date = DateTime.parse(dateStr)
                             } catch (e: Exception) {
-                                Log.e(TAG, e.message)
+                                Log.e(TAG, e.message!!)
                             }
 
                             val newsItem = News(title, date, image, content, category)
@@ -125,17 +125,17 @@ class NewsData(private val mContext: Context) {
         val newsItems = ArrayList<News>()
 
         try {
-            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
-            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
-            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
-            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
-            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://image.shutterstock.com/image-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
+            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://imageUrl.shutterstock.com/imageUrl-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
+            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://imageUrl.shutterstock.com/imageUrl-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
+            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://imageUrl.shutterstock.com/imageUrl-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
+            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://imageUrl.shutterstock.com/imageUrl-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
+            newsItems.add(News("The man is dead", DateTime.parse("2019-12-31"), "https://imageUrl.shutterstock.com/imageUrl-vector/breaking-news-vector-illustration-background-450w-725898868.jpg", "The man has committed suicide", "random"))
 
             mTaskDelegate!!.onAllNewsFetched(newsItems)
             saveToCache(newsItems)
 
         } catch (e: Exception) {
-            Log.i(TAG, e.message)
+            Log.i(TAG, e.message!!)
         }
 
     }
@@ -224,7 +224,7 @@ class NewsData(private val mContext: Context) {
                 } catch (e: IOException) {
                     cacheFile.delete()
                     e.printStackTrace()
-                    Log.e(TAG, e.message)
+                    Log.e(TAG, e.message!!)
                 }
                 return null
 
@@ -263,8 +263,6 @@ class NewsData(private val mContext: Context) {
      */
     interface TaskDelegate {
         fun onAllNewsFetched(newsItems: List<News>?)
-
-        // fun onNewsItemFetched(newsItem: News)
 
         fun onError(error: VolleyError)
     }

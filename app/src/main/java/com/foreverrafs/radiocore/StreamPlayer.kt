@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.joda.time.Period
 import org.joda.time.Seconds
 import org.joda.time.format.PeriodFormatterBuilder
@@ -23,22 +24,26 @@ import java.util.concurrent.TimeUnit
 class StreamPlayer private constructor(context: Context) : EventListener {
 
     companion object {
-        private val TAG = "StreamPlayer"
+        private const val TAG = "StreamPlayer"
         private var instance: WeakReference<StreamPlayer>? = null
 
-        fun getInstance(context: Context): StreamPlayer? {
+        fun getInstance(context: Context): StreamPlayer {
             synchronized(StreamPlayer::class.java) {
                 if (instance == null) {
                     instance = WeakReference(StreamPlayer(context))
                     Log.d(TAG, "getInstance: Media Instance Created on  " + Thread.currentThread().name)
                 }
-                return instance?.get()
+                return instance?.get()!!
             }
         }
     }
 
     private var mediaSource: MediaSource? = null
     private val exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context)
+
+    init {
+        exoPlayer.addListener(this)
+    }
 
     /**
      * Checks whether the media object is currently playing a media. This is usually true when there is active playback
@@ -60,11 +65,12 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     private val currentPosition: Long
         get() = exoPlayer.currentPosition
 
-    private//get the current stream position
-    //the total Stream duration
-    //the current position of the stream
-    //the difference between the total duration and the current duration
-    val streamDurationStrings: Array<String?>
+    /**
+     * Gets the position of the playback and the total stream timer duration formatted nicely and presented as two strings
+     * The first string contains the total stream duration, the second string contains the elapsed stream duration
+     * An example output will be: 00:00:01 for playback duration and 05:00:00 (5 hours) for stream timer duration
+     */
+    private val streamDurationStrings: Array<String?>
         get() {
             val durations = arrayOfNulls<String>(2)
             val streamTimer = Integer.parseInt(mPreferences.streamingTimer!!) * 3600
@@ -99,25 +105,24 @@ class StreamPlayer private constructor(context: Context) : EventListener {
             return durations
         }
 
-    val streamDurationStringsObservable: Observable<Array<out String?>>?
+    /**
+     * Get an observable from [streamDurationStrings]
+     */
+    @Suppress("unused")
+    val streamDurationStringsObservable: Observable<Array<out String?>>
         get() = Observable
                 .interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { streamDurationStrings }
 
-    init {
-        exoPlayer.addListener(this)
-    }
 
-    /**
-     * Sets the Uri of the audio stream source.
-     *
-     * @param uri
-     */
-    fun setStreamSource(uri: Uri) {
-        val dataSourceFactory = DefaultDataSourceFactory(context.get(), Util.getUserAgent(context.get(), "RadioCore"))
-        mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-    }
+    var streamSource: Uri? = null
+        set(value) {
+            val dataSourceFactory = DefaultDataSourceFactory(context.get(), Util.getUserAgent(context.get(), "RadioCore"))
+            mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(value)
+        }
+
 
     /**
      * Attaches a listener to the media object which propagates media events back to the context class.
@@ -158,7 +163,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     override fun onLoadingChanged(isLoading: Boolean) {
         isPlaying = false
 
-        Log.i(TAG, "Media " + if (isLoading) "Loading..." else "Loaded!")
+        Log.i(TAG, "Media" + if (isLoading) "Loading..." else "Loaded!")
         if (isLoading) {
             listener.onBuffering()
             playbackState = PlaybackState.BUFFERING
@@ -191,7 +196,6 @@ class StreamPlayer private constructor(context: Context) : EventListener {
         } else {
             // Paused by app.
             isPlaying = false
-            //playbackState = PlaybackState.PAUSED
             listener.onPause()
             Log.d(TAG, "onPlayerStateChanged: Paused")
         }
@@ -206,6 +210,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     /**
      * Distinct Media playback states
      */
+    @Suppress("unused")
     enum class PlaybackState {
         PLAYING,
         PAUSED,

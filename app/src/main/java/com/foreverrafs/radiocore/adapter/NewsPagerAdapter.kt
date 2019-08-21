@@ -16,6 +16,6 @@ class NewsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHA
     }
 
     override fun getCount(): Int {
-        return NewsData.mNewsList!!.size
+        return NewsData.mNewsList?.size!!
     }
 }

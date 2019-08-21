@@ -1,5 +1,6 @@
 package com.foreverrafs.radiocore.fragment
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -7,7 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.NetworkError
@@ -96,7 +97,6 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 Log.e(TAG, error.toString())
                 if (error is NetworkError) {
                     val message = "Network Error::Are you online?"
-                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     Log.i(TAG, message)
                 }
                 progressBar.visibility = View.INVISIBLE
@@ -128,12 +128,13 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             return
         }
 
-        mNewsAdapter!!.setOnNewsItemClickListener(object : NewsItemClickListener {
-            override fun onNewsItemClicked(position: Int) {
+        mNewsAdapter?.setOnNewsItemClickListener(object : NewsItemClickListener {
+            override fun onNewsItemClicked(position: Int, image: ImageView) {
                 val intent = Intent(context, NewsDetailActivity::class.java)
                 intent.putExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, position)
+                val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
 
-                startActivity(intent)
+                startActivity(intent/*, options.toBundle()*/)
             }
         })
     }

@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 class News : Parcelable {
     var headline: String? = null
         private set
-    var image: String? = null
+    var imageUrl: String? = null
         private set
     var content: String? = null
     var date: DateTime? = null
@@ -20,7 +20,7 @@ class News : Parcelable {
     constructor(headline: String, date: DateTime?, image: String, content: String, category: String) {
         this.headline = headline
         this.date = date
-        this.image = image
+        this.imageUrl = image
         this.content = content
         this.category = category
     }
@@ -29,7 +29,8 @@ class News : Parcelable {
     constructor(`in`: Parcel) {
         headline = `in`.readString()
         content = `in`.readString()
-        image = `in`.readString()
+        imageUrl = `in`.readString()
+
         val dateStr = `in`.readString()
         category = `in`.readString()
 
@@ -48,8 +49,8 @@ class News : Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(headline)
         dest.writeString(content)
-        dest.writeString(image)
-        dest.writeString(date!!.toString())
+        dest.writeString(imageUrl)
+        dest.writeString(date?.toString())
         dest.writeString(category)
     }
 

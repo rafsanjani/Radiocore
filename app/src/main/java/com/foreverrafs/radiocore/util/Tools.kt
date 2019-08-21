@@ -256,14 +256,14 @@ object Tools {
     fun toggleViewsVisibility(flag: Int, vararg views: ProgressBar?) {
         for (view in views) {
             if (flag == View.VISIBLE || flag == View.INVISIBLE || flag == View.GONE)
-                view!!.visibility = flag
+                view?.visibility = flag
         }
     }
 
     /**
-     * Morph a target Button's image property from it's present one to the drawable specified by toDrawable
+     * Morph a target Button's imageUrl property from it's present one to the drawable specified by toDrawable
      *
-     * @param target     the imageButton whose image property is to be animated
+     * @param target     the imageButton whose imageUrl property is to be animated
      * @param toDrawable the drawable which will be used for the morphing
      */
     fun animateButtonDrawable(target: ImageButton, toDrawable: Drawable) {

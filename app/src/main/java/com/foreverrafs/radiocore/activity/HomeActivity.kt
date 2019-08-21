@@ -25,6 +25,7 @@ import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.StreamPlayer
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
+import com.foreverrafs.radiocore.concurrency.CustomObserver
 import com.foreverrafs.radiocore.fragment.AboutFragment
 import com.foreverrafs.radiocore.fragment.HomeFragment
 import com.foreverrafs.radiocore.fragment.NewsFragment
@@ -39,13 +40,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import io.fabric.sdk.android.Fabric
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.smallPlay, R.id.play -> {
+            R.id.btnSmallPlay, R.id.btnPlay -> {
                 Log.i(TAG, "onPlay: " + audioStreamingState.name)
                 if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
                     pausePlayback()
@@ -61,7 +63,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private val TAG = "HomeActivity"
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    internal lateinit var audioServiceBroadcastReceiver: BroadcastReceiver
+    private lateinit var audioServiceBroadcastReceiver: BroadcastReceiver
     //let's assume nothing is playing when application starts
     internal var audioStreamingState: AudioStreamingState = AudioStreamingState.STATUS_STOPPED
     //Declare UI variables
@@ -75,8 +77,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        smallPlay.setOnClickListener(this)
-        play.setOnClickListener(this)
+        btnSmallPlay.setOnClickListener(this)
+        btnPlay.setOnClickListener(this)
 
         mCompositeDisposable = CompositeDisposable()
 
@@ -182,18 +184,18 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * Also checks if the stream timer is up which triggers a shutdown of the app
      */
     private fun startUpdateStreamProgress() {
-//        Log.d(TAG, "startUpdateStreamProgress: ")
-//        StreamPlayer.getInstance(this)?.streamDurationStringsObservable
-//                .subscribe(object : CustomObserver<Array<String>>() {
-//                    override fun onSubscribe(d: Disposable) {
-//                        mCompositeDisposable!!.add(d)
-//                    }
-//
-//                    override fun onNext(strings: Array<String>) {
-//                        textStreamProgress!!.text = strings[1]
-//                        textStreamDuration!!.text = strings[0]
-//                    }
-//                })
+        Log.d(TAG, "startUpdateStreamProgress: ")
+        StreamPlayer.getInstance(this).streamDurationStringsObservable
+                .subscribe(object : CustomObserver<Array<out String?>>() {
+                    override fun onSubscribe(d: Disposable) {
+                        mCompositeDisposable?.add(d)
+                    }
+
+                    override fun onNext(strings: Array<out String?>) {
+                        textStreamProgress?.text = strings[1]
+                        textStreamDuration?.text = strings[0]
+                    }
+                })
     }
 
     private fun pausePlayback() {
@@ -211,10 +213,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (visualizer != null)
-            visualizer!!.release()
 
-        mCompositeDisposable!!.clear()
+        visualizer?.release()
+
+        mCompositeDisposable?.clear()
 
         Log.d(TAG, "onDestroy: ")
     }
@@ -241,10 +243,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setUpAudioVisualizer() {
-        val audioSessionId = StreamPlayer.getInstance(applicationContext)?.audioSessionId
+        val audioSessionId = StreamPlayer.getInstance(applicationContext).audioSessionId
         try {
             if (audioSessionId != -1)
-                visualizer!!.setAudioSessionId(audioSessionId!!)
+                visualizer?.setAudioSessionId(audioSessionId)
         } catch (exception: Exception) {
             Log.e(TAG, "setUpAudioVisualizer: " + exception.message)
         }
@@ -269,7 +271,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * bottom sheet state change listener
      * We are transitioning between collapsed and settled states, well that is what we are interested in, isn't it?
      */
-    fun initializeBottomSheet() {
+    private fun initializeBottomSheet() {
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet!!)
 
         sheetBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -311,17 +313,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     * Expand or collapse the bottom sheet based on it's current state
-     */
-    fun toggleBottomSheet() {
-        if (sheetBehavior!!.state != BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior!!.setState(BottomSheetBehavior.STATE_EXPANDED)
-        } else {
-            sheetBehavior!!.setState(BottomSheetBehavior.STATE_COLLAPSED)
-        }
-    }
-
-    /**
      * Explicitly collapse the bottom sheet
      */
     fun collapseBottomSheet() {
@@ -341,28 +332,29 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 Log.d(TAG, "onAudioStreamingStateReceived: Playing")
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
 
-                animateButtonDrawable(play!!, resources.getDrawable(R.drawable.avd_play_pause))
-                animateButtonDrawable(smallPlay!!, resources.getDrawable(R.drawable.avd_play_pause_small))
+                animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_play_pause))
+                animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_play_pause_small))
 
                 intiializeAudioVisualizer()
 
+
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
-                textSwitcherNetworkStatus!!.setText(getString(R.string.state_live))
-                (textSwitcherNetworkStatus!!.currentView as TextView).setTextColor(resources.getColor(R.color.green_200))
+                textSwitcherNetworkStatus?.setText(getString(R.string.state_live))
+                (textSwitcherNetworkStatus?.currentView as TextView).setTextColor(resources.getColor(R.color.green_200))
             }
             AudioStreamingState.STATUS_STOPPED -> {
-                animateButtonDrawable(play!!, resources.getDrawable(R.drawable.avd_pause_play))
-                animateButtonDrawable(smallPlay!!, resources.getDrawable(R.drawable.avd_pause_play_small))
+                animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_pause_play))
+                animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_pause_play_small))
 
-                textSwitcherNetworkStatus!!.rootView
+
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
-                textSwitcherNetworkStatus!!.setText(getString(R.string.state_stopped))
-                (textSwitcherNetworkStatus!!.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
+                textSwitcherNetworkStatus.setText(getString(R.string.state_stopped))
+                (textSwitcherNetworkStatus.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
-                textSwitcherNetworkStatus!!.setText(getString(R.string.state_buffering))
-                (textSwitcherNetworkStatus!!.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
+                textSwitcherNetworkStatus.setText(getString(R.string.state_buffering))
+                (textSwitcherNetworkStatus.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar)
             }
         }

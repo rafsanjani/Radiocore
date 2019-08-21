@@ -5,6 +5,7 @@ package com.foreverrafs.radiocore.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.foreverrafs.radiocore.R
@@ -55,7 +56,7 @@ class NewsAdapter : AnimationAdapter {
      * Propagate click events to the RecyclervView to which this adapter is attached.
      */
     interface NewsItemClickListener {
-        fun onNewsItemClicked(position: Int)
+        fun onNewsItemClicked(position: Int, image: ImageView)
     }
 
 
@@ -69,13 +70,15 @@ class NewsAdapter : AnimationAdapter {
 
 
             Glide.with(itemView)
-                    .load(newsItem.image)
+                    .load(newsItem.imageUrl)
                     .error(R.drawable.newsimage)
                     .placeholder(R.drawable.newsimage)
                     .centerCrop()
                     .into(itemView.image)
 
-            itemView.setOnClickListener { listener?.onNewsItemClicked(adapterPosition) }
+            itemView.image.transitionName = newsItem.imageUrl
+
+            itemView.setOnClickListener { listener?.onNewsItemClicked(adapterPosition, itemView.image) }
             setAnimation(itemView, adapterPosition)
         }
     }

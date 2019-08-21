@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.activity_home.*
 class NewsDetailActivity : AppCompatActivity() {
     private var mNewsPosition: Int = 0
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_item_detail_pager)
@@ -22,11 +21,11 @@ class NewsDetailActivity : AppCompatActivity() {
         viewPager.offscreenPageLimit = 1
         viewPager.adapter = newsPagerAdapter
         viewPager.currentItem = mNewsPosition
+
     }
 
-
     private fun getIncomingIntent() {
-        mNewsPosition = intent!!.getIntExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, 0)
+        mNewsPosition = intent?.getIntExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, 0)!!
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
