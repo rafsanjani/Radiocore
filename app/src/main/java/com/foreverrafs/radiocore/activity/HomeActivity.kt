@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -53,7 +52,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                     AudioStreamingState.STATUS_PLAYING -> pausePlayback()
                     AudioStreamingState.STATUS_PAUSED,
                     AudioStreamingState.STATUS_STOPPED -> startPlayback()
-                    AudioStreamingState.STATUS_LOADING -> TODO()
+                    AudioStreamingState.STATUS_LOADING -> Log.d(TAG, "Loading")
                 }
 //                if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
 //                    pausePlayback()
@@ -128,20 +127,20 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         tabLayout.getTabAt(2)!!.setIcon(R.drawable.ic_about)
 
         // set icon color pre-selected
-        tabLayout.getTabAt(0)!!.icon!!.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
-        tabLayout.getTabAt(1)!!.icon!!.setColorFilter(resources.getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN)
-        tabLayout.getTabAt(2)!!.icon!!.setColorFilter(resources.getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN)
+        tabLayout.getTabAt(0)!!.icon!!.setTint(Color.RED)
+        tabLayout.getTabAt(1)!!.icon!!.setTint(ContextCompat.getColor(this, R.color.grey_20))
+        tabLayout.getTabAt(2)!!.icon!!.setTint(ContextCompat.getColor(this, R.color.grey_20))
 
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 collapseBottomSheet()
                 if (tab.position != 0)
-                    tab.icon!!.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+                    tab.icon!!.setTint(Color.WHITE)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 if (tab.position != 0)
-                    tab.icon!!.setColorFilter(resources.getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN)
+                    tab.icon!!.setTint(ContextCompat.getColor(applicationContext, R.color.grey_20))
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -173,9 +172,16 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
         audioStreamingState = AudioStreamingState.valueOf(radioPreferences.status!!)
 
-        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this) || radioPreferences.isAutoPlayOnStart/* ||
-                radioPreferences.getStatus().equals(STATUS_STOPPED)*/)
-            startPlayback()
+        audioStreamingState = if (StreamPlayer.getInstance(this).playBackState == StreamPlayer.PlaybackState.PLAYING)
+            AudioStreamingState.STATUS_PLAYING
+        else
+            AudioStreamingState.STATUS_STOPPED
+
+
+        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this))
+            if (radioPreferences.isAutoPlayOnStart &&
+                    audioStreamingState != AudioStreamingState.STATUS_PLAYING)
+                startPlayback()
 
         onAudioStreamingStateReceived(audioStreamingState)
     }
@@ -228,7 +234,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
 
     /**
-     * Initialize all views by findViewById or @Bind when using ButterKnife
+     * Initialize all views by findViewById or @Bind when using ButterKnife.
      * Note: All view Initializing must be performed in this module or it's submodules
      */
     private fun initializeViews() {
@@ -336,36 +342,37 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 Log.d(TAG, "onAudioStreamingStateReceived: Playing")
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
 
-                animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_play_pause))
-                animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_play_pause_small))
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause_small)!!)
 
                 intiializeAudioVisualizer()
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
                 textSwitcherPlayerState?.setText(getString(R.string.state_live))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.green_200))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.green_200))
             }
             AudioStreamingState.STATUS_STOPPED -> {
-                animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_pause_play))
-                animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_pause_play_small))
+                Log.d(TAG, "onAudioStreamingStateReceived: STOPPED")
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(applicationContext, R.drawable.avd_pause_play)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
 
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
                 textSwitcherPlayerState.setText(getString(R.string.state_stopped))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.pink_600))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.pink_200))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_200))
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar)
             }
 
             AudioStreamingState.STATUS_PAUSED -> {
-                animateButtonDrawable(btnPlay, resources.getDrawable(R.drawable.avd_pause_play))
-                animateButtonDrawable(btnSmallPlay, resources.getDrawable(R.drawable.avd_pause_play_small))
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
 
                 textSwitcherPlayerState.setText(getString(R.string.state_paused))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(resources.getColor(R.color.yellow_400))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.yellow_400))
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
             }
         }
