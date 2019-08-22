@@ -110,7 +110,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.title = getString(R.string.app_name)
-            Tools.setSystemBarColor(this)
 
         }
     }
