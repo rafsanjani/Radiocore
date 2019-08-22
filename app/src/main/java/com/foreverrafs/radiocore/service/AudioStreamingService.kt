@@ -3,18 +3,21 @@ package com.foreverrafs.radiocore.service
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.foreverrafs.radiocore.R
-import com.foreverrafs.radiocore.StreamPlayer
 import com.foreverrafs.radiocore.activity.HomeActivity
+import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.util.RadioPreferences
 
@@ -34,22 +37,38 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
     private var mRadioPreferences: RadioPreferences? = null
     private var mNotificationText = "Empty" //this will be set when context is created
     private var streamNotification: Notification? = null
-    private var mAudioManager: AudioManager? = null
+    private lateinit var mAudioManager: AudioManager
+    private lateinit var mFocusRequest: AudioFocusRequest
     private var mResumeOnFocusGain: Boolean = false
 
 
-    private val audioFocus: Boolean
+    private val playbackAuthorized: Boolean
+        @RequiresApi(Build.VERSION_CODES.O)
         get() {
-            mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-            synchronized(mFocusLock) {
-                val audioFocusReqCode = mAudioManager?.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
-                if (audioFocusReqCode == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
-                    return false
-                }
+            mFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                setAudioAttributes(AudioAttributes.Builder().run {
+                    setUsage(AudioAttributes.USAGE_GAME)
+                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    build()
+                })
+                setOnAudioFocusChangeListener(this@AudioStreamingService).build()
             }
 
-            return true
+            var playbackNowAuthorized: Boolean
+            val res = mAudioManager.requestAudioFocus(mFocusRequest)
+            synchronized(mFocusLock) {
+                playbackNowAuthorized = when (res) {
+                    AudioManager.AUDIOFOCUS_REQUEST_FAILED -> false
+                    AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
+                        true
+                    }
+                    AudioManager.AUDIOFOCUS_REQUEST_DELAYED -> {
+                        false
+                    }
+                    else -> false
+                }
+            }
+            return playbackNowAuthorized
         }
 
     override fun onCreate() {
@@ -58,11 +77,10 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         streamNotification = createNotification()
         mRadioPreferences = RadioPreferences(this)
         mBroadcastManager = LocalBroadcastManager.getInstance(this)
+        mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        if (!audioFocus) {
-            Log.i(TAG, "Couldn't gain audio focus:::::Exiting")
-            return
-        }
+        if (playbackAuthorized)
+            Log.i(TAG, "Audio playback authorized")
 
 
         try {
@@ -73,31 +91,25 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
                 override fun onError(exception: Exception?) {
                     Toast.makeText(applicationContext, "Error loading stream!", Toast.LENGTH_SHORT).show()
                     sendResult(AudioStreamingState.STATUS_STOPPED)
-                    mRadioPreferences?.status = Constants.STATUS_STOPPED
                     stopForeground(true)
                 }
 
                 override fun onPlay() {
                     sendResult(AudioStreamingState.STATUS_PLAYING)
-                    mRadioPreferences?.status = Constants.STATUS_PLAYING
                     startForeground(5, streamNotification)
                 }
 
                 override fun onBuffering() {
                     sendResult(AudioStreamingState.STATUS_LOADING)
-                    mRadioPreferences?.status = Constants.STATUS_LOADING
                 }
 
                 override fun onStop() {
                     sendResult(AudioStreamingState.STATUS_STOPPED)
-                    mRadioPreferences?.status = Constants.STATUS_STOPPED
                     stopForeground(true)
                 }
 
                 override fun onPause() {
                     sendResult(AudioStreamingState.STATUS_PAUSED)
-                    mRadioPreferences?.status = Constants.STATUS_STOPPED
-//                    stopForeground(true)
                 }
 
             })
@@ -138,16 +150,16 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         val contentIntent = Intent(this, HomeActivity::class.java)
         val playIntent = Intent(this, AudioStreamingService::class.java)
         val stopIntent = Intent(this, AudioStreamingService::class.java)
-        val pauseIntent = Intent(this, AudioStreamingService::class.java)
+//        val pauseIntent = Intent(this, AudioStreamingService::class.java)
 
 
         stopIntent.action = Constants.ACTION_STOP
         playIntent.action = Constants.ACTION_PLAY
 
         val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
-        val pausePendingIntent = PendingIntent.getService(this, 6, pauseIntent, 0)
+//        val pausePendingIntent = PendingIntent.getService(this, 6, pauseIntent, 0)
         val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
-        val playPendingIntent = PendingIntent.getService(this, 8, playIntent, 0)
+//        val playPendingIntent = PendingIntent.getService(this, 8, playIntent, 0)
 
 
         val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
@@ -208,8 +220,9 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
 
     override fun onDestroy() {
         super.onDestroy()
-        mRadioPreferences?.status = Constants.STATUS_STOPPED
-        mAudioManager?.abandonAudioFocus(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mAudioManager.abandonAudioFocusRequest(mFocusRequest)
+        }
         StreamPlayer.getInstance(this).release()
 
         Log.d(TAG, "onDestroy: Service Destroyed")
@@ -223,8 +236,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
      */
     fun sendResult(message: AudioStreamingState?) {
         val intent = Intent(Constants.STREAM_RESULT)
-        //if (message != null)
-        //Perform backwards conversion to AudioStreamingState in it's receivers
         intent.putExtra(Constants.STREAMING_STATUS, message.toString())
 
         mBroadcastManager?.sendBroadcast(intent)
@@ -249,12 +260,13 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
                     Log.d(TAG, "OnAudioFocusChange: Focus Gained...Unable to resume playback")
                 }
 
-            AudioManager.AUDIOFOCUS_LOSS ->
+            AudioManager.AUDIOFOCUS_LOSS -> {
                 synchronized(mFocusLock) {
-                    mResumeOnFocusGain = false
-                    stopPlayback()
+                    mResumeOnFocusGain = true
                     Log.d(TAG, "OnAudioFocusChange: Focus Lost completely...stopping playback")
                 }
+                pausePlayback()
+            }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
                 synchronized(mFocusLock) {
                     val canResume = StreamPlayer.getInstance(this).playBackState == StreamPlayer.PlaybackState.PLAYING
@@ -274,6 +286,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         STATUS_PLAYING,
         STATUS_STOPPED,
         STATUS_LOADING,
-        STATUS_PAUSED
+        STATUS_PAUSED,
     }
 }

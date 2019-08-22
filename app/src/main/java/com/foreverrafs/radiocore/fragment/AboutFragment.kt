@@ -70,7 +70,7 @@ class AboutFragment : Fragment(), View.OnClickListener {
         whatsappIntent.setPackage("com.whatsapp")
 
         val packageUrl = "https://play.google.com/store/apps/details?id=" + context!!.packageName
-        val message = "Install *Star FM*  App and listen to your favorite radio station online anywhere. Download it " +
+        val message = "Install ${getString(R.string.app_name)}  App and listen to your favorite radio station online anywhere. Download it " +
                 "from *" + packageUrl + "*"
         whatsappIntent.putExtra(Intent.EXTRA_TEXT, message)
 

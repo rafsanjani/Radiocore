@@ -100,6 +100,7 @@
     <string name="label_phone">Phone:</string>
     <string name="label_mobile">Mobile:</string>
     <string name="footer_copyright">Copyright \u00A9, RadioCore </string>
+    <string name="desc_small_logo">small logo desc</string>
 
     <!--Preference entries and values-->
     <string-array name="settings_timer_entries">

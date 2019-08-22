@@ -22,15 +22,16 @@ import androidx.viewpager.widget.ViewPager
 import com.crashlytics.android.Crashlytics
 import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
-import com.foreverrafs.radiocore.StreamPlayer
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
 import com.foreverrafs.radiocore.concurrency.CustomObserver
 import com.foreverrafs.radiocore.fragment.AboutFragment
 import com.foreverrafs.radiocore.fragment.HomeFragment
 import com.foreverrafs.radiocore.fragment.NewsFragment
+import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.service.AudioStreamingService
 import com.foreverrafs.radiocore.service.AudioStreamingService.AudioStreamingState
 import com.foreverrafs.radiocore.util.Constants
+import com.foreverrafs.radiocore.util.Constants.STREAM_RESULT
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
@@ -42,24 +43,19 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
+import org.joda.time.Seconds
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
-                Log.i(TAG, "onPlay: " + audioStreamingState.name)
-                when (audioStreamingState) {
+                Log.i(TAG, "onPlay: " + mAudioStreamingState.name)
+                when (mAudioStreamingState) {
                     AudioStreamingState.STATUS_PLAYING -> pausePlayback()
                     AudioStreamingState.STATUS_PAUSED,
                     AudioStreamingState.STATUS_STOPPED -> startPlayback()
                     AudioStreamingState.STATUS_LOADING -> Log.d(TAG, "Loading")
                 }
-//                if (audioStreamingState == AudioStreamingState.STATUS_PLAYING) {
-//                    pausePlayback()
-//                } else if (audioStreamingState == AudioStreamingState.STATUS_STOPPED
-//                        || audioStreamingState == AudioStreamingState.STATUS_PAUSED) {
-//                    startPlayback()
-//                }
 
             }
         }
@@ -69,15 +65,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private val TAG = "HomeActivity"
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private lateinit var audioServiceBroadcastReceiver: BroadcastReceiver
+    private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
     //let's assume nothing is playing when application starts
-    internal var audioStreamingState: AudioStreamingState = AudioStreamingState.STATUS_STOPPED
-    //Declare UI variables
+    private var mAudioStreamingState: AudioStreamingState = AudioStreamingState.STATUS_STOPPED
 
 
-    //bottom sheet
-    private var sheetBehavior: BottomSheetBehavior<*>? = null
+    private var mSheetBehaviour: BottomSheetBehavior<*>? = null
     private var mCompositeDisposable: CompositeDisposable? = null
+    private lateinit var mStreamPlayer: StreamPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,11 +82,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         btnPlay.setOnClickListener(this)
 
         mCompositeDisposable = CompositeDisposable()
+        mStreamPlayer = StreamPlayer.getInstance(this)
 
         setUpCrashlytics()
         initializeViews()
         setUpInitialPlayerState()
         setUpAudioStreamingServiceReceiver()
+
     }
 
     private fun setUpCrashlytics() {
@@ -154,11 +151,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * resolve the player state accordingly
      */
     private fun setUpAudioStreamingServiceReceiver() {
-        audioServiceBroadcastReceiver = object : BroadcastReceiver() {
+        mAudioServiceBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val receivedState = intent.getStringExtra(Constants.STREAMING_STATUS)
-                audioStreamingState = AudioStreamingState.valueOf(receivedState!!)
-                onAudioStreamingStateReceived(audioStreamingState)
+                Log.d(TAG, "audioBroadCastReceived:" + intent.action)
+                if (intent.action == STREAM_RESULT)
+                    onAudioStreamingStateReceived(intent)
+//                else if (intent.action == STREAM_META_DATA)
+//                    onStreamMetaDataReceived(intent)
             }
         }
     }
@@ -170,20 +169,19 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private fun setUpInitialPlayerState() {
         val radioPreferences = RadioPreferences(this)
 
-        audioStreamingState = AudioStreamingState.valueOf(radioPreferences.status!!)
-
-        audioStreamingState = if (StreamPlayer.getInstance(this).playBackState == StreamPlayer.PlaybackState.PLAYING)
+        mAudioStreamingState = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
             AudioStreamingState.STATUS_PLAYING
         else
             AudioStreamingState.STATUS_STOPPED
 
 
-        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this))
+        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this)) {
             if (radioPreferences.isAutoPlayOnStart &&
-                    audioStreamingState != AudioStreamingState.STATUS_PLAYING)
+                    mAudioStreamingState != AudioStreamingState.STATUS_PLAYING)
                 startPlayback()
 
-        onAudioStreamingStateReceived(audioStreamingState)
+            return
+        }
     }
 
     /**
@@ -192,13 +190,18 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun startUpdateStreamProgress() {
         Log.d(TAG, "startUpdateStreamProgress: ")
-        StreamPlayer.getInstance(this).streamDurationStringsObservable
+        mStreamPlayer.streamDurationStringsObservable
                 .subscribe(object : CustomObserver<Array<out String?>>() {
                     override fun onSubscribe(d: Disposable) {
                         mCompositeDisposable?.add(d)
                     }
 
                     override fun onNext(strings: Array<out String?>) {
+                        val streamTimer = Integer.parseInt(RadioPreferences(this@HomeActivity).streamingTimer!!) * 3600
+                        val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
+                        seekBarProgress.max = streamTimer
+                        seekBarProgress.progress = currentPosition.seconds
+
                         textStreamProgress?.text = strings[1]
                         textStreamDuration?.text = strings[0]
                     }
@@ -221,13 +224,12 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onStop() {
         super.onStop()
         Log.i(TAG, "onStop: ")
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(audioServiceBroadcastReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mAudioServiceBroadcastReceiver)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        visualizer?.release()
+        visualizer.release()
 
         mCompositeDisposable?.clear()
     }
@@ -244,10 +246,13 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
         textSwitcherPlayerState.inAnimation = textAnimationIn
         textSwitcherPlayerState.outAnimation = textAnimationOut
+        textSwitcherPlayerState.setCurrentText("Hello")
 
         initializeTabComponents()
         initializeToolbar()
         initializeBottomSheet()
+
+
 
         seekBarProgress.isEnabled = false
     }
@@ -282,9 +287,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * We are transitioning between collapsed and settled states, well that is what we are interested in, isn't it?
      */
     private fun initializeBottomSheet() {
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet!!)
+        mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet!!)
 
-        sheetBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        mSheetBehaviour!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 val appBarLayout = findViewById<AppBarLayout>(R.id.appbar)
 
@@ -326,22 +331,24 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * Explicitly collapse the bottom sheet
      */
     fun collapseBottomSheet() {
-        if (sheetBehavior?.state != BottomSheetBehavior.STATE_COLLAPSED)
-            sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (mSheetBehaviour?.state != BottomSheetBehavior.STATE_COLLAPSED)
+            mSheetBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     /**
      * Called when a broadcast is received from the AudioStreamingService so that the
      * UI can be resolved accordingly to correspond with the states
      *
-     * @param streamingState The state of the Streaming Service (STATUS_PAUSED, STATUS_PLAYING ETC)
+     * @param intent The intent received fromt he audio service (STATUS_PAUSED, STATUS_PLAYING ETC)
      */
-    private fun onAudioStreamingStateReceived(streamingState: AudioStreamingState) {
-        when (streamingState) {
+    private fun onAudioStreamingStateReceived(intent: Intent) {
+        val receivedState = intent.getStringExtra(Constants.STREAMING_STATUS)
+        mAudioStreamingState = AudioStreamingState.valueOf(receivedState!!)
+
+        when (mAudioStreamingState) {
             AudioStreamingState.STATUS_PLAYING -> {
                 Log.d(TAG, "onAudioStreamingStateReceived: Playing")
-                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
-
+                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause_small)!!)
 
@@ -357,14 +364,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(applicationContext, R.drawable.avd_pause_play)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
 
-                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
+                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 textSwitcherPlayerState.setText(getString(R.string.state_stopped))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_200))
-                Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar, progressBar)
+                Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
 
             AudioStreamingState.STATUS_PAUSED -> {
@@ -373,8 +380,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
                 textSwitcherPlayerState.setText(getString(R.string.state_paused))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.yellow_400))
-                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar, progressBar)
+                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
             }
+
         }
     }
 
@@ -391,12 +399,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onResume() {
         Log.i(TAG, "onResume: ")
         super.onResume()
-        LocalBroadcastManager.getInstance(this).registerReceiver(audioServiceBroadcastReceiver,
-                IntentFilter(Constants.STREAM_RESULT)
+        LocalBroadcastManager.getInstance(this).registerReceiver(mAudioServiceBroadcastReceiver,
+                IntentFilter(STREAM_RESULT)
         )
 
-        //        if (audioStreamingState == AudioStreamingState.STATUS_PLAYING)
-        //            startUpdateStreamProgress();
     }
 
 

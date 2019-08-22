@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         enableStrictMode()
 
 
-        //just show a progress bar for a few seconds and transition to the HomeActivity
         Handler().postDelayed({
             startActivity(Intent(this, HomeActivity::class.java))
             finish()

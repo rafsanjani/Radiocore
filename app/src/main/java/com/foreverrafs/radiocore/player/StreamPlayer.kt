@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore
+package com.foreverrafs.radiocore.player
 
 import android.content.Context
 import android.net.Uri
@@ -28,6 +28,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     companion object {
         private const val TAG = "StreamPlayer"
         private var instance: WeakReference<StreamPlayer>? = null
+        private var mStreamMetadataListener: StreamMetadataListener? = null
 
         fun getInstance(context: Context): StreamPlayer {
             synchronized(StreamPlayer::class.java) {
@@ -49,10 +50,10 @@ class StreamPlayer private constructor(context: Context) : EventListener {
                         .build(), true
         )
         addMetadataOutput { metadata ->
-            for (n in 0 until metadata!!.length()) {
+            for (n in 0 until metadata.length()) {
                 when (val md = metadata[n]) {
                     is com.google.android.exoplayer2.metadata.icy.IcyInfo -> {
-                        Log.d(TAG, "metaDataOutput: ${md.title} URL: ${md.url}")
+                        mStreamMetadataListener?.onMetadataReceived(md.title!!)
                     }
                     else -> {
                         Log.d(TAG, "metaDataOutput: Other -  $md")
@@ -66,14 +67,11 @@ class StreamPlayer private constructor(context: Context) : EventListener {
         exoPlayer.addListener(this)
     }
 
-    /**
-     * Checks whether the media object is currently playing a media. This is usually true when there is active playback
-     *
-     * @return True when there is active playback and false otherwise
-     */
-    //  var isPlaying: Boolean = false
+    fun addMetadataListener(streamMetadataListener: StreamMetadataListener) {
+        mStreamMetadataListener = streamMetadataListener
+    }
 
-    private lateinit var listener: StreamStateChangesListener
+    private lateinit var mStreamStateChangesListener: StreamStateChangesListener
 
     private var mPlaybackState = PlaybackState.IDLE
     private val context: WeakReference<Context> = WeakReference(context)
@@ -83,11 +81,11 @@ class StreamPlayer private constructor(context: Context) : EventListener {
         get() = exoPlayer.audioSessionId
 
 
-    private val currentPosition: Long
+    val currentPosition: Long
         get() = exoPlayer.currentPosition
 
     /**
-     * Gets the position of the playback and the total stream timer duration formatted nicely and presented as two strings
+     * Gets the position of the playback and the total stream timer duration formatted and presented as two strings
      * The first string contains the total stream duration, the second string contains the time elapsed
      * An example output will be: 00:00:01 for elapsed and 05:00:00 (5 hours) for stream timer duration
      */
@@ -151,12 +149,12 @@ class StreamPlayer private constructor(context: Context) : EventListener {
 
 
     /**
-     * Attaches a listener to the media object which propagates media events back to the context class.
+     * Attaches a mStreamStateChangesListener to the media object which propagates media events back to the context class.
      *
      * @param listener StreamStateChangesListener which will be used to send events back to the context class
      */
     fun setPlayerStateChangesListener(listener: StreamStateChangesListener) {
-        this.listener = listener
+        this.mStreamStateChangesListener = listener
     }
 
     /**
@@ -189,16 +187,13 @@ class StreamPlayer private constructor(context: Context) : EventListener {
             else -> TODO()
         }
 
-//        if ((mPlaybackState == PlaybackState.IDLE || mPlaybackState == PlaybackState.STOPPED) && !isPlaying)
-//            exoPlayer.prepare(mediaSource)
-//
     }
 
     override fun onLoadingChanged(isLoading: Boolean) {
         Log.i(TAG, "Media" + if (isLoading) "Loading..." else "Loaded!")
         if (isLoading) {
             // isPlaying = false
-            listener.onBuffering()
+            mStreamStateChangesListener.onBuffering()
             mPlaybackState = PlaybackState.BUFFERING
         }
     }
@@ -215,7 +210,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
 
         if (playWhenReady && state == STATE_READY) {
             // Active playback.
-            listener.onPlay()
+            mStreamStateChangesListener.onPlay()
             //  isPlaying = true
             mPlaybackState = PlaybackState.PLAYING
             Log.d(TAG, "onPlayerStateChanged: Playing...")
@@ -224,7 +219,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
             // failed. Check mPlaybackState and player.getPlaybackError for details.
             // isPlaying = false
             mPlaybackState = PlaybackState.STOPPED
-            listener.onStop()
+            mStreamStateChangesListener.onStop()
             if (state == STATE_BUFFERING) {
                 Log.d(TAG, "onPlayerStateChanged: Buffering...")
                 mPlaybackState = PlaybackState.BUFFERING
@@ -233,7 +228,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
         } else {
             // Paused by app.
             // isPlaying = false
-            listener.onPause()
+            mStreamStateChangesListener.onPause()
             mPlaybackState = PlaybackState.PAUSED
             Log.d(TAG, "onPlayerStateChanged: Paused")
         }
@@ -242,7 +237,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     override fun onPlayerError(error: ExoPlaybackException?) {
         //isPlaying = false
         mPlaybackState = PlaybackState.IDLE
-        listener.onError(error)
+        mStreamStateChangesListener.onError(error)
     }
 
     /**
