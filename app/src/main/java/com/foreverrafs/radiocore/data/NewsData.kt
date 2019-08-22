@@ -90,10 +90,9 @@ class NewsData(private val mContext: Context) {
 
                             val newsItem = News(title, date, image, content, category)
 
-                            // mTaskDelegate!!.onNewsItemFetched(newsItem)
-                            mNewsList!!.add(newsItem)
+                            mNewsList?.add(newsItem)
                         }
-                        mTaskDelegate!!.onAllNewsFetched(mNewsList)
+                        mTaskDelegate?.onAllNewsFetched(mNewsList)
                         saveToCache(mNewsList)
 
                     } catch (e: JSONException) {
