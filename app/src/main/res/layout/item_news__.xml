@@ -2,12 +2,11 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
+    style="@style/CardStyle"
+    android:layout_margin="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardBackgroundColor="@color/lightGray"
-    app:cardCornerRadius="6dp"
-    app:cardElevation="4dp">
+    app:cardBackgroundColor="@color/grey_500">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -36,8 +35,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:text="@string/news_custom_headline"
             android:lines="3"
-            android:text="@string/news_custom_category"
+            android:textColor="@color/brown_900"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/aldrich"
             android:text="Regional"
-            android:textColor="@color/pink_A100"
+            android:textColor="@color/brown_600"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tvDate"
@@ -61,6 +61,7 @@
 
         <TextView
             android:id="@+id/tvDate"
+            android:textColor="@color/brown_50"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/news_custom_date"

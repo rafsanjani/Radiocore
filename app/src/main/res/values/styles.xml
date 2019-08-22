@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="android:windowContentTransitions">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -10,9 +10,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="CardStyle" parent="CardView.Light">
+    <style name="CardStyle" parent="CardView.Dark">
         <item name="cardElevation">@dimen/card_elevation</item>
-        <item name="cardBackgroundColor">@color/lightGray</item>
+        <item name="cardBackgroundColor">@color/grey_400</item>
         <item name="android:layout_margin">@dimen/card_margin</item>
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
