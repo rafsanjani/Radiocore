@@ -13,7 +13,7 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="@dimen/bottomsheet_peek_height"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:mContext=".activity.HomeActivity">
+    tools:context=".activity.HomeActivity">
 
     <ImageButton
         android:id="@+id/imageButton3"
@@ -208,14 +208,10 @@
             app:layout_constraintStart_toEndOf="@+id/btnSmallPlay"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.gauravk.audiovisualizer.visualizer.BarVisualizer
+        <com.chibde.visualizer.SquareBarVisualizer
             android:id="@+id/visualizer"
             android:layout_width="80dp"
             android:layout_height="50dp"
-            app:avColor="@color/orange_900"
-            app:avDensity="0.8"
-            app:avSpeed="fast"
-            app:avType="fill"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

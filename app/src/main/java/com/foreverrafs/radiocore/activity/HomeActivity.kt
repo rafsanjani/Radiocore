@@ -111,6 +111,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         if (supportActionBar != null) {
             supportActionBar!!.title = getString(R.string.app_name)
             Tools.setSystemBarColor(this)
+
         }
     }
 
@@ -260,8 +261,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private fun setUpAudioVisualizer() {
         val audioSessionId = StreamPlayer.getInstance(applicationContext).audioSessionId
         try {
-            if (audioSessionId != -1)
-                visualizer?.setAudioSessionId(audioSessionId)
+            if (audioSessionId != -1) {
+                visualizer.setPlayer(audioSessionId)
+                with(visualizer) {
+                    setDensity(0.8F)
+                    setGap(2)
+                    setColor(ContextCompat.getColor(this@HomeActivity, R.color.orange_900))
+                }
+            }
         } catch (exception: Exception) {
             Log.e(TAG, "setUpAudioVisualizer: " + exception.message)
         }
