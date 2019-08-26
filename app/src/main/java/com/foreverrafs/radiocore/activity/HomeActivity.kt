@@ -35,7 +35,6 @@ import com.foreverrafs.radiocore.util.Constants.STREAM_RESULT
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import io.fabric.sdk.android.Fabric
@@ -133,6 +132,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 collapseBottomSheet()
                 if (tab.position != 0)
                     tab.icon!!.setTint(Color.WHITE)
+                else
+                    appBarLayout.setExpanded(true, true)
+
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -297,8 +299,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
         mSheetBehaviour!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                val appBarLayout = findViewById<AppBarLayout>(R.id.appbar)
-
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     appBarLayout.setExpanded(false, true)
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
