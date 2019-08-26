@@ -1,7 +1,7 @@
 <resources>
 
     <!--Customizable String Entries. Change these values as appropriate-->
-    <string name="app_name">RadioCore 100.0 FM</string>
+    <string name="app_name">RadioCore 999.9 FM</string>
     <string name="station_online">RadioCore Online</string>
     <string name="org_website">https://www.foreverrafs.com/radiocore</string>
     <string name="org_email">info@radiocore.com</string>
