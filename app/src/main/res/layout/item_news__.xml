@@ -6,7 +6,7 @@
     android:layout_margin="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/grey_500">
+    app:cardBackgroundColor="@color/grey_400">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/aldrich"
-            android:text="Regional"
+            android:text="@string/news_custom_category"
             android:textColor="@color/brown_600"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/tvDate"
-            android:textColor="@color/brown_50"
+            android:textColor="@color/grey_900"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/news_custom_date"
