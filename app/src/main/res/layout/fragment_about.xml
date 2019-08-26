@@ -30,11 +30,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/brown_900"
                     android:gravity="center"
                     android:justificationMode="inter_word"
                     android:text="@string/mission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/grey_90"
                     app:fontFamily="sans-serif-medium" />
 
                 <ImageView
@@ -50,12 +50,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:layout_marginBottom="@dimen/spacing_mlarge"
                     android:lineSpacingExtra="@dimen/spacing_medium"
                     android:text="@string/mission_statement"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:fontFamily="sans-serif-light" />
+                    android:textColor="@color/grey_700" />
 
             </LinearLayout>
 
@@ -83,7 +82,7 @@
                     android:gravity="center"
                     android:text="@string/contact"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/grey_90"
+                    android:textColor="@color/brown_900"
                     app:fontFamily="sans-serif-medium" />
 
                 <ImageView
@@ -236,7 +235,7 @@
                     android:gravity="center"
                     android:text="@string/share"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/grey_90"
+                    android:textColor="@color/brown_900"
                     app:fontFamily="sans-serif-medium" />
 
                 <ImageView

@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/backgroundImage"
-        android:layout_width="200dp"
+        android:layout_width="300dp"
         android:layout_height="200dp"
         android:contentDescription="@string/desc_station_logo"
         android:scaleType="fitXY"

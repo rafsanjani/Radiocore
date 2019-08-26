@@ -123,7 +123,7 @@
 
     <ImageView
         android:id="@+id/imageCentralLogo"
-        android:layout_width="200dp"
+        android:layout_width="300dp"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="196dp"
@@ -147,13 +147,12 @@
 
         <ImageView
             android:id="@+id/smallLogo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginTop="2dp"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_small_logo"
-            android:src="@drawable/logo_small"
+            android:src="@mipmap/ic_launcher"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -175,7 +174,6 @@
             android:layout_width="@dimen/logo_small_size"
             android:layout_height="@dimen/logo_small_size"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="13dp"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back_small"
             app:layout_constraintBottom_toBottomOf="parent"

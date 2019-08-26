@@ -19,8 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
-import com.crashlytics.android.Crashlytics
-import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
 import com.foreverrafs.radiocore.concurrency.CustomObserver
@@ -37,7 +35,6 @@ import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
-import io.fabric.sdk.android.Fabric
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_home.*
@@ -83,19 +80,12 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         mCompositeDisposable = CompositeDisposable()
         mStreamPlayer = StreamPlayer.getInstance(this)
 
-        setUpCrashlytics()
         initializeViews()
         setUpInitialPlayerState()
         setUpAudioStreamingServiceReceiver()
 
     }
 
-    private fun setUpCrashlytics() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, Crashlytics())
-            Log.i(TAG, "setUpCrashlytics: Enabled")
-        }
-    }
 
     private fun intiializeAudioVisualizer() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -134,7 +124,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                     tab.icon!!.setTint(Color.WHITE)
                 else
                     appBarLayout.setExpanded(true, true)
-
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -148,21 +137,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    /**
-     * Listen for broadcast events from the Audio Streaming Service and use the information to
-     * resolve the player state accordingly
-     */
-    private fun setUpAudioStreamingServiceReceiver() {
-        mAudioServiceBroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                Log.d(TAG, "audioBroadCastReceived:" + intent.action)
-                if (intent.action == STREAM_RESULT)
-                    onAudioStreamingStateReceived(intent)
-//                else if (intent.action == STREAM_META_DATA)
-//                    onStreamMetaDataReceived(intent)
-            }
-        }
-    }
 
     /**
      * Check if Audio Streaming Service is running and change the AudioStreamingState accordingly
@@ -171,18 +145,33 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private fun setUpInitialPlayerState() {
         val radioPreferences = RadioPreferences(this)
 
-        mAudioStreamingState = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
-            AudioStreamingState.STATUS_PLAYING
-        else
-            AudioStreamingState.STATUS_STOPPED
+//        mAudioStreamingState = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
+//            AudioStreamingState.STATUS_PLAYING
+//        else
+//            AudioStreamingState.STATUS_STOPPED
 
+
+//        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this)) {
+//            if (radioPreferences.isAutoPlayOnStart &&
+//                    mAudioStreamingState != AudioStreamingState.STATUS_PLAYING)
+//                startPlayback()
+//
+//            return
+//        }
 
         if (!Tools.isServiceRunning(AudioStreamingService::class.java, this)) {
-            if (radioPreferences.isAutoPlayOnStart &&
-                    mAudioStreamingState != AudioStreamingState.STATUS_PLAYING)
+            if (radioPreferences.isAutoPlayOnStart)
                 startPlayback()
+        } else {
+            mAudioStreamingState = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
+                AudioStreamingState.STATUS_PLAYING
+            else
+                AudioStreamingState.STATUS_STOPPED
 
-            return
+            val intent = Intent(STREAM_RESULT)
+            intent.putExtra(Constants.STREAMING_STATUS, mAudioStreamingState.toString())
+            onAudioStreamingStateReceived(intent)
+
         }
     }
 
@@ -222,6 +211,12 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         ContextCompat.startForegroundService(this, audioServiceIntent)
     }
 
+    private fun stopPlayback() {
+        val audioServiceIntent = Intent(this, AudioStreamingService::class.java)
+        audioServiceIntent.action = Constants.ACTION_STOP
+        ContextCompat.startForegroundService(this, audioServiceIntent)
+    }
+
 
     override fun onStop() {
         super.onStop()
@@ -231,6 +226,11 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        if (mStreamPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING) {
+            stopPlayback()
+            Log.i(TAG, "onDestry: Stopping playback")
+        }
+
         visualizer.release()
 
         mCompositeDisposable?.clear()
@@ -342,6 +342,21 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
+     * Listen for broadcast events from the Audio Streaming Service and use the information to
+     * resolve the player state accordingly
+     */
+    private fun setUpAudioStreamingServiceReceiver() {
+        mAudioServiceBroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                Log.d(TAG, "audioBroadCastReceived:" + intent.action)
+                if (intent.action == STREAM_RESULT) {
+                    onAudioStreamingStateReceived(intent)
+                }
+            }
+        }
+    }
+
+    /**
      * Called when a broadcast is received from the AudioStreamingService so that the
      * UI can be resolved accordingly to correspond with the states
      *
@@ -375,12 +390,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
+                Log.d(TAG, "onAudioStreamingStateReceived: BUFFERING")
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_200))
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
 
             AudioStreamingState.STATUS_PAUSED -> {
+                Log.d(TAG, "onAudioStreamingStateReceived: PAUSED")
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
 
