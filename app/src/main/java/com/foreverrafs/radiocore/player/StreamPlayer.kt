@@ -10,6 +10,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player.*
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.metadata.MetadataOutput
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -41,6 +42,19 @@ class StreamPlayer private constructor(context: Context) : EventListener {
         }
     }
 
+    private var mMetaDataOutput = MetadataOutput { metadata ->
+        for (n in 0 until metadata.length()) {
+            when (val md = metadata[n]) {
+                is com.google.android.exoplayer2.metadata.icy.IcyInfo -> {
+                    mStreamMetadataListener?.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
+                }
+                else -> {
+                    Log.d(TAG, "metaDataOutput: Other -  $md")
+                }
+            }
+        }
+    }
+
     private var mediaSource: MediaSource? = null
     private val exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context).apply {
         setAudioAttributes(
@@ -49,26 +63,19 @@ class StreamPlayer private constructor(context: Context) : EventListener {
                         .setUsage(C.USAGE_MEDIA)
                         .build(), true
         )
-        addMetadataOutput { metadata ->
-            for (n in 0 until metadata.length()) {
-                when (val md = metadata[n]) {
-                    is com.google.android.exoplayer2.metadata.icy.IcyInfo -> {
-                        mStreamMetadataListener?.onMetadataReceived(md.title!!)
-                    }
-                    else -> {
-                        Log.d(TAG, "metaDataOutput: Other -  $md")
-                    }
-                }
-            }
-        }
+        addMetadataOutput(mMetaDataOutput)
     }
 
     init {
         exoPlayer.addListener(this)
     }
 
-    fun addMetadataListener(streamMetadataListener: StreamMetadataListener) {
-        mStreamMetadataListener = streamMetadataListener
+    fun addMetadataListener(streamMetadataListener: WeakReference<StreamMetadataListener>) {
+        mStreamMetadataListener = streamMetadataListener.get()
+    }
+
+    fun removeMetadataListener() {
+        exoPlayer.removeMetadataOutput(mMetaDataOutput)
     }
 
     private lateinit var mStreamStateChangesListener: StreamStateChangesListener
@@ -223,6 +230,7 @@ class StreamPlayer private constructor(context: Context) : EventListener {
             if (state == STATE_BUFFERING) {
                 Log.d(TAG, "onPlayerStateChanged: Buffering...")
                 mPlaybackState = PlaybackState.BUFFERING
+                mStreamStateChangesListener.onBuffering()
             }
 
         } else {

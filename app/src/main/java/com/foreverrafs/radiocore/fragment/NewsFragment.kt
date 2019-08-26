@@ -11,14 +11,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.volley.NetworkError
-import com.android.volley.VolleyError
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.activity.NewsDetailActivity
 import com.foreverrafs.radiocore.adapter.AnimationAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter.NewsItemClickListener
-import com.foreverrafs.radiocore.data.NewsData
+import com.foreverrafs.radiocore.concurrency.CustomObserver
+import com.foreverrafs.radiocore.data.NewsRepository
 import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.util.Constants
 import kotlinx.android.synthetic.main.content_no_connection.*
@@ -72,17 +71,18 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if (activity == null)
             return
 
-        val newsData = NewsData(context!!)
+        NewsRepository.loadFromOnline().subscribe(object : CustomObserver<List<News>>() {
+            override fun onNext(newsItems: List<News>) {
+                //keep a copy in our news repository for use by viewpaging fragments
+                NewsRepository.saveNewsItems(newsItems)
 
-        newsData.setTaskDelegate(object : NewsData.TaskDelegate {
-            override fun onAllNewsFetched(newsItems: List<News>?) {
-                val fetchedNewsItems: List<News>? = newsItems
+                Log.i(TAG, "${newsItems.size} news items fetched")
                 contentNoConnection.visibility = View.INVISIBLE
                 if (swipeRefreshLayout.isRefreshing) {
                     swipeRefreshLayout.isRefreshing = false
                 }
                 swipeRefreshLayout.visibility = View.VISIBLE
-                mNewsAdapter = NewsAdapter(fetchedNewsItems, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+                mNewsAdapter = NewsAdapter(newsItems, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
                 recyclerView.adapter = mNewsAdapter
 
                 //lets keep a copy of the adapter in case fetching goes awry on next try
@@ -93,12 +93,7 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 setUpNewsItemClickListener()
             }
 
-            override fun onError(error: VolleyError) {
-                Log.e(TAG, error.toString())
-                if (error is NetworkError) {
-                    val message = "Network Error::Are you online?"
-                    Log.i(TAG, message)
-                }
+            override fun onError(e: Throwable) {
                 progressBar.visibility = View.INVISIBLE
 
                 if (swipeRefreshLayout.isRefreshing) {
@@ -118,13 +113,11 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 }, 3000)
             }
         })
-
-        newsData.fetchNews()
     }
 
     private fun setUpNewsItemClickListener() {
         if (mNewsAdapter == null) {
-            Log.e(TAG, "News adapter is null, unable to set listeners")
+            Log.e(TAG, "setUpNewsItemClickListener: News adapter is null, unable to set listeners")
             return
         }
 

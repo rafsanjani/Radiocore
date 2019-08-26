@@ -1,5 +1,6 @@
 package com.foreverrafs.radiocore.data;
 
+import com.foreverrafs.radiocore.model.News;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
@@ -23,6 +24,8 @@ public class NewsJson {
                         new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .registerTypeAdapter(DateTime.class, (JsonDeserializer<DateTime>) (json, typeOfT, context) ->
                         ISODateTimeFormat.dateTime().parseDateTime(json.getAsString()))
+                .registerTypeAdapter(News.class, new Serializers.NewsSerializer())
+                .registerTypeAdapter(News.class, new Serializers.NewsDeserializer())
                 .create();
         return gson;
     }

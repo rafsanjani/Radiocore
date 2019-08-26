@@ -89,26 +89,31 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
 
             mMediaPlayer.setPlayerStateChangesListener(object : StreamPlayer.StreamStateChangesListener {
                 override fun onError(exception: Exception?) {
+                    Log.e(TAG, "setPlayerStatechangesListener: Error Loading Stream ${exception?.message}")
                     Toast.makeText(applicationContext, "Error loading stream!", Toast.LENGTH_SHORT).show()
                     sendResult(AudioStreamingState.STATUS_STOPPED)
                     stopForeground(true)
                 }
 
                 override fun onPlay() {
+                    Log.e(TAG, "setPlayerStatechangesListener: OnPlay")
                     sendResult(AudioStreamingState.STATUS_PLAYING)
                     startForeground(5, streamNotification)
                 }
 
                 override fun onBuffering() {
+                    Log.e(TAG, "setPlayerStatechangesListener: OnBuffering")
                     sendResult(AudioStreamingState.STATUS_LOADING)
                 }
 
                 override fun onStop() {
+                    Log.e(TAG, "setPlayerStateChangesListener: OnStop")
                     sendResult(AudioStreamingState.STATUS_STOPPED)
                     stopForeground(true)
                 }
 
                 override fun onPause() {
+                    Log.e(TAG, "setPlayerStateChangesListener: OnPause")
                     sendResult(AudioStreamingState.STATUS_PAUSED)
                 }
 
