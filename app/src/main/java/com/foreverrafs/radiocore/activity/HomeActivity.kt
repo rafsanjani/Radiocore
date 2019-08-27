@@ -21,7 +21,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
-import com.foreverrafs.radiocore.concurrency.CustomObserver
+import com.foreverrafs.radiocore.concurrency.SimpleObserver
 import com.foreverrafs.radiocore.fragment.AboutFragment
 import com.foreverrafs.radiocore.fragment.HomeFragment
 import com.foreverrafs.radiocore.fragment.NewsFragment
@@ -182,7 +182,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private fun startUpdateStreamProgress() {
         Log.d(TAG, "startUpdateStreamProgress: ")
         mStreamPlayer.streamDurationStringsObservable
-                .subscribe(object : CustomObserver<Array<out String?>>() {
+                .subscribe(object : SimpleObserver<Array<out String?>>() {
                     override fun onSubscribe(d: Disposable) {
                         mCompositeDisposable?.add(d)
                     }

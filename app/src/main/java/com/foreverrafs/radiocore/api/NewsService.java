@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.data;
+package com.foreverrafs.radiocore.api;
 
 import com.foreverrafs.radiocore.model.News;
 

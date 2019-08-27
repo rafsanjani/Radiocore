@@ -10,7 +10,7 @@ import com.google.gson.JsonSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
-public class NewsJson {
+public class NewsGson {
 
     private static Gson gson = null;
 

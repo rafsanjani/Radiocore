@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.foreverrafs.radiocore.R
-import com.foreverrafs.radiocore.data.NewsRepository
+import com.foreverrafs.radiocore.data.NewsDataManager
 import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.util.Constants
 import kotlinx.android.synthetic.main.fragment_news_item_detail.*
@@ -51,7 +51,7 @@ class NewsItemFragment : Fragment() {
     companion object {
 
         fun getInstance(position: Int): NewsItemFragment {
-            val newsItemAtPosition = NewsRepository.getNewsItems()!![position]
+            val newsItemAtPosition = NewsDataManager.RadioCoreNews[position]
 
             val fragmentNewsItem = NewsItemFragment()
             val argument = Bundle()

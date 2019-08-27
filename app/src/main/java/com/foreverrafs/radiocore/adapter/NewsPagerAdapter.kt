@@ -3,7 +3,7 @@ package com.foreverrafs.radiocore.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.foreverrafs.radiocore.data.NewsRepository
+import com.foreverrafs.radiocore.data.NewsDataManager
 import com.foreverrafs.radiocore.fragment.NewsItemFragment
 
 /**
@@ -16,6 +16,6 @@ class NewsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHA
     }
 
     override fun getCount(): Int {
-        return NewsRepository.getNewsItems()!!.size
+        return NewsDataManager.RadioCoreNews.size
     }
 }

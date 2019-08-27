@@ -16,10 +16,12 @@ import com.foreverrafs.radiocore.activity.NewsDetailActivity
 import com.foreverrafs.radiocore.adapter.AnimationAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter.NewsItemClickListener
-import com.foreverrafs.radiocore.concurrency.CustomObserver
-import com.foreverrafs.radiocore.data.NewsRepository
+import com.foreverrafs.radiocore.concurrency.SimpleObserver
+import com.foreverrafs.radiocore.data.NewsService
 import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.util.Constants
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news.*
 
@@ -30,6 +32,7 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private val TAG = "NewsFragment"
     private var mNewsAdapter: NewsAdapter? = null
     private var mNewsAdapterCached: NewsAdapter? = null
+    private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,7 +48,6 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         recyclerView.adapter = mNewsAdapter
 
         getNewsData()
-
 
         buttonRetry.setOnClickListener {
             run {
@@ -71,48 +73,55 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if (activity == null)
             return
 
-        NewsRepository.loadFromOnline().subscribe(object : CustomObserver<List<News>>() {
-            override fun onNext(newsItems: List<News>) {
-                //keep a copy in our news repository for use by viewpaging fragments
-                NewsRepository.saveNewsItems(newsItems)
+        val newsRepository = NewsService(context!!)
 
-                Log.i(TAG, "${newsItems.size} news items fetched")
-                contentNoConnection.visibility = View.INVISIBLE
-                if (swipeRefreshLayout.isRefreshing) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-                swipeRefreshLayout.visibility = View.VISIBLE
-                mNewsAdapter = NewsAdapter(newsItems, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
-                recyclerView.adapter = mNewsAdapter
+        newsRepository.fetchNews()
+                .subscribe(object : SimpleObserver<List<News>>() {
+                    override fun onSubscribe(d: Disposable) {
+                        mCompositeDisposable.add(d)
+                    }
 
-                //lets keep a copy of the adapter in case fetching goes awry on next try
-                mNewsAdapterCached = mNewsAdapter
+                    override fun onNext(newsItems: List<News>) {
+                        //keep a copy in our news repository for use by viewpaging fragments
+                        newsRepository.saveNewsItems(newsItems)
 
-                progressBar!!.visibility = View.GONE
+                        Log.i(TAG, "${newsItems.size} news items fetched")
+                        contentNoConnection.visibility = View.INVISIBLE
+                        if (swipeRefreshLayout.isRefreshing) {
+                            swipeRefreshLayout.isRefreshing = false
+                        }
+                        swipeRefreshLayout.visibility = View.VISIBLE
+                        mNewsAdapter = NewsAdapter(newsItems, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+                        recyclerView.adapter = mNewsAdapter
 
-                setUpNewsItemClickListener()
-            }
+                        //lets keep a copy of the adapter in case fetching goes awry on next try
+                        mNewsAdapterCached = mNewsAdapter
 
-            override fun onError(e: Throwable) {
-                progressBar.visibility = View.INVISIBLE
+                        progressBar!!.visibility = View.GONE
 
-                if (swipeRefreshLayout.isRefreshing) {
-                    swipeRefreshLayout.isRefreshing = false
-                }
+                        setUpNewsItemClickListener()
+                    }
 
-                contentNoConnection.visibility = View.VISIBLE
+                    override fun onError(e: Throwable) {
+                        progressBar.visibility = View.INVISIBLE
 
-                if (mNewsAdapterCached == null)
-                    return
+                        if (swipeRefreshLayout.isRefreshing) {
+                            swipeRefreshLayout.isRefreshing = false
+                        }
 
-                Handler().postDelayed({
-                    mNewsAdapter = mNewsAdapterCached
-                    setUpNewsItemClickListener()
-                    recyclerView.adapter = mNewsAdapter
+                        contentNoConnection.visibility = View.VISIBLE
 
-                }, 3000)
-            }
-        })
+                        if (mNewsAdapterCached == null)
+                            return
+
+                        Handler().postDelayed({
+                            mNewsAdapter = mNewsAdapterCached
+                            setUpNewsItemClickListener()
+                            recyclerView.adapter = mNewsAdapter
+
+                        }, 3000)
+                    }
+                })
     }
 
     private fun setUpNewsItemClickListener() {
@@ -130,6 +139,11 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 startActivity(intent/*, options.toBundle()*/)
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mCompositeDisposable.clear()
     }
 
 }

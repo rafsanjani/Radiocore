@@ -6,7 +6,7 @@ import io.reactivex.disposables.Disposable;
 /**
  * Created by Rafsanjani on 8/8/2019
  */
-public class CustomObserver<T> implements Observer<T> {
+public class SimpleObserver<T> implements Observer<T> {
     @Override
     public void onSubscribe(Disposable d) {
 

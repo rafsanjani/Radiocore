@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.util.Log
+import org.joda.time.DateTime
 
 class RadioPreferences(context: Context) {
     private val settings: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -58,6 +59,15 @@ class RadioPreferences(context: Context) {
         }
 
     /**
+     * Gets and sets the time when the last news cache was saved.
+     */
+    var cacheStorageTime: DateTime?
+        get() = DateTime.parse(settings.getString(CACHE_STORAGE_TIME, CACHE_NOT_FOUND))
+        set(storageTime) {
+            settings.edit().putString(CACHE_STORAGE_TIME, storageTime.toString()).apply()
+        }
+
+    /**
      * Get the hours it takes for the news cache to expire.
      *
      * @return
@@ -88,6 +98,7 @@ class RadioPreferences(context: Context) {
     companion object {
         private const val TAG = "RadioPreferences"
         const val CACHE_NOT_FOUND = "com.foreverrafs.radiocore.not_found"
+        const val CACHE_STORAGE_TIME = "com.foreverrafs.radiocore.cache_storage_time"
         private const val AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start"
         private const val IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch"
         private const val CACHE_FILE_NAME = "com.foreverrafs.radiocore.cache_file_name"

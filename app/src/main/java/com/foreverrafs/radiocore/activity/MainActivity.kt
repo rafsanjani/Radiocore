@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.crashlytics.android.Crashlytics
 import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
+import com.foreverrafs.radiocore.data.NewsOpenHelper
+import com.foreverrafs.radiocore.data.NewsService
 import io.fabric.sdk.android.Fabric
 
 /**
@@ -16,8 +18,15 @@ import io.fabric.sdk.android.Fabric
  */
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
+    lateinit var mDbOpenHelper: NewsOpenHelper
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mDbOpenHelper = NewsOpenHelper(this)
+
+        NewsService(applicationContext).fetchNews()
+
+
         setContentView(R.layout.activity_main)
         enableStrictMode()
         setUpCrashlytics()
@@ -44,6 +53,11 @@ class MainActivity : AppCompatActivity() {
             Fabric.with(this, Crashlytics())
             Log.i(TAG, "setUpCrashlytics: Enabled")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mDbOpenHelper.close()
     }
 
 

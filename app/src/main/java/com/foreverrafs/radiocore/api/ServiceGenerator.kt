@@ -1,5 +1,6 @@
-package com.foreverrafs.radiocore.data
+package com.foreverrafs.radiocore.api
 
+import com.foreverrafs.radiocore.data.NewsGson
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,7 +12,7 @@ class ServiceGenerator {
         private val builder: Retrofit.Builder = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(NewsJson.getInstance()))
+                .addConverterFactory(GsonConverterFactory.create(NewsGson.getInstance()))
 
         private val retrofit: Retrofit = builder.build()
 

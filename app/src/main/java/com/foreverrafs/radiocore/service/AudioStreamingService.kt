@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -43,8 +42,10 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
 
 
     private val playbackAuthorized: Boolean
-        @RequiresApi(Build.VERSION_CODES.O)
         get() {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+                return false
+
             mFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
                 setAudioAttributes(AudioAttributes.Builder().run {
                     setUsage(AudioAttributes.USAGE_GAME)
@@ -53,6 +54,7 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
                 })
                 setOnAudioFocusChangeListener(this@AudioStreamingService).build()
             }
+
 
             var playbackNowAuthorized: Boolean
             val res = mAudioManager.requestAudioFocus(mFocusRequest)
@@ -80,7 +82,7 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         if (playbackAuthorized)
-            Log.i(TAG, "Audio playback authorized")
+            Log.i(TAG, "Audio Focus gained on Android o+")
 
 
         try {
