@@ -2,11 +2,8 @@
 
     <!--Customizable String Entries. Change these values as appropriate-->
     <string name="app_name">RadioCore 999.9 FM</string>
-    <string name="station_online">RadioCore Online</string>
-    <string name="org_website">https://www.foreverrafs.com/radiocore</string>
     <string name="org_email">info@radiocore.com</string>
     <string name="org_phone">+233554314080</string>
-    <string name="org_name">RadioCore Online</string>
     <string name="live_radio_freq">Live Radio - 100.0FM</string>
     <string name="website_and_value">Website: https://www.foreverafs.com/radiocore</string>
     <string name="email_and_value">Email: info@radiocore.com</string>
@@ -25,7 +22,6 @@
 
     <!--Custom News Item-->
     <string name="news_custom_headline">I\'ll never abolish free education because it\'s good - Mahama</string>
-    <string name="news_custom_default_text">Avengers: Age of Ultron</string>
     <string name="news_custom_date">March 1, 2019</string>
     <string name="news_custom_content">
        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta lor
@@ -57,7 +53,6 @@
     <!--End of imageUrl content descriptions-->
 
     <string name="retry">RETRY</string>
-    <string name="home_banner_image">home banner image</string>
     <string name="title_activity_settings">Settings</string>
 
 
@@ -73,13 +68,10 @@
 
 
     <!--Preferences key Strings-->
-    <string name="auto_play_on_start_key">com.radiocore.settings.auto_play_on_start</string>
     <string name="auto_play_on_start">Autoplay on start</string>
-    <string name="stream_duration_key">com.radiocore.settings.stream_duration</string>
     <!--End of Preference key Strings-->
 
     <!--Preference Titles-->
-    <string name="pref_title_stream_duration">Stream Duration</string>
     <string name="pref_title_stream_timer">Radio Timer</string>
     <string name="pref_title_news_fetch_delay">News Fetch Delay</string>
     <!--End of Preference Titles-->
