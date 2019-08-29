@@ -1,10 +1,10 @@
 package com.foreverrafs.radiocore.fragment
 
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.foreverrafs.radiocore.R
@@ -37,9 +37,9 @@ class NewsItemFragment : Fragment() {
         val fmt = DateTimeFormat.forPattern("MMMM d, yyyy")
         val datePretty = mNewsItem!!.date!!.toString(fmt)
 
-        tvHeadline.text = Html.fromHtml(mNewsItem?.headline)
+        tvHeadline.text = HtmlCompat.fromHtml(mNewsItem?.headline!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         tvDate.text = datePretty
-        tvContent.text = Html.fromHtml(mNewsItem?.content)
+        tvContent.text = HtmlCompat.fromHtml(mNewsItem?.content!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         tvCategory.text = mNewsItem?.category
 
         Glide.with(this)
@@ -49,7 +49,6 @@ class NewsItemFragment : Fragment() {
     }
 
     companion object {
-
         fun getInstance(position: Int): NewsItemFragment {
             val newsItemAtPosition = NewsDataManager.RadioCoreNews[position]
 
