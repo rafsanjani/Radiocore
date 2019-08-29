@@ -45,7 +45,6 @@ class NewsItemFragment : Fragment() {
         Glide.with(this)
                 .load(mNewsItem?.imageUrl)
                 .into(image!!)
-
     }
 
     companion object {

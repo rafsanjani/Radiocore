@@ -50,7 +50,6 @@ dependencies {
 
 dependencies {
     //networking libraries
-    implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
@@ -64,7 +63,7 @@ dependencies {
     implementation 'com.chibde:audiovisualizer:2.2.0'
 
     //firebase for crashlytics analysis
-    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //google gson for storing news items as json
@@ -72,7 +71,6 @@ dependencies {
 
     //google exoplayer for audio rendering
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.10.0'
 
     //for that fancy loading icon at the news tab
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
