@@ -85,7 +85,7 @@ class NewsService(mContext: Context) {
             columns[4] = NewsInfo.COLUMN_NEWS_CATEGORY
 
             newsCursor = db.query(NewsInfo.TABLE_NAME, columns,
-                    null, null, null, null, NewsInfo.COLUMN_NEWS_HEADLINE)
+                    null, null, null, null, "${NewsInfo.COLUMN_NEWS_DATE} DESC")
 
             if (newsCursor.count == 0) {
                 newsCursor?.close()
