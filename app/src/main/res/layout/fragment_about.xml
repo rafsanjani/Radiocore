@@ -265,7 +265,6 @@
             android:id="@+id/tvFooterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioCore Build"
             android:textAlignment="center"
             android:textColor="@color/grey_700"
             android:textStyle="bold" />
