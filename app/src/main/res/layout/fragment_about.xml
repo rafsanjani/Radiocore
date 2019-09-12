@@ -12,8 +12,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!--You may add more cards for more sections-->
         <androidx.cardview.widget.CardView
-            style="@style/CardStyle"
+            style="@style/CardStyle.About"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
@@ -30,11 +31,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/brown_900"
                     android:gravity="center"
                     android:justificationMode="inter_word"
                     android:text="@string/mission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/brown_900"
                     app:fontFamily="sans-serif-medium" />
 
                 <ImageView
@@ -50,10 +51,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:layout_marginBottom="@dimen/spacing_mlarge"
                     android:lineSpacingExtra="@dimen/spacing_medium"
                     android:text="@string/mission_statement"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="@color/grey_700" />
 
             </LinearLayout>
@@ -62,7 +63,7 @@
 
 
         <androidx.cardview.widget.CardView
-            style="@style/CardStyle"
+            style="@style/CardStyle.About"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
@@ -215,7 +216,7 @@
 
 
         <androidx.cardview.widget.CardView
-            style="@style/CardStyle"
+            style="@style/CardStyle.About"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
@@ -260,9 +261,19 @@
                 android:layout_height="@dimen/spacing_mlarge" />
         </androidx.cardview.widget.CardView>
 
+        <TextView
+            android:id="@+id/tvFooterText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RadioCore Build"
+            android:textAlignment="center"
+            android:textColor="@color/grey_700"
+            android:textStyle="bold" />
+
+        <!--make provisions for the space consumed by appbar and bottomsheet peek height-->
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_xxxlarge" />
+            android:layout_height="@dimen/bottomsheet_peek_height" />
 
     </LinearLayout>
 
