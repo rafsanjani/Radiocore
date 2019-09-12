@@ -5,7 +5,6 @@ package com.foreverrafs.radiocore.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import android.util.Log
 import org.joda.time.DateTime
 
 class RadioPreferences(context: Context) {
@@ -38,7 +37,6 @@ class RadioPreferences(context: Context) {
      */
     val isAutoPlayOnStart: Boolean
         get() = settings.getBoolean(AUTOPLAY_ON_START, true)
-//        set(value) = settings.edit().putBoolean(AUTOPLAY_ON_START, value).apply()
 
     /**
      * Get the location of the cache file. This is only used internally by the app for storing cached
@@ -46,23 +44,19 @@ class RadioPreferences(context: Context) {
      *
      * @return
      */
-    /**
-     * Set's the name with which the cache file will be stored. This is usually the temporary
-     * storage location of the app with json extension appended to it.
-     *
-     */
-    var cacheFileName: String?
-        get() = settings.getString(CACHE_FILE_NAME, CACHE_NOT_FOUND)
-        set(fileName) {
-            settings.edit().putString(CACHE_FILE_NAME, fileName).apply()
-            Log.i(TAG, "Cache path saved. Path: $fileName")
-        }
+
 
     /**
      * Gets and sets the time when the last news cache was saved.
      */
     var cacheStorageTime: DateTime?
-        get() = DateTime.parse(settings.getString(CACHE_STORAGE_TIME, CACHE_NOT_FOUND))
+        get() {
+            //time will be null when there is no cache. we return a date in the past which will force us to fetch new content from online
+            val time: String? = settings.getString(CACHE_STORAGE_TIME, null)
+                    ?: return DateTime.parse("2019-01-01")
+
+            return DateTime.parse(time)
+        }
         set(storageTime) {
             settings.edit().putString(CACHE_STORAGE_TIME, storageTime.toString()).apply()
         }
@@ -87,21 +81,11 @@ class RadioPreferences(context: Context) {
         set(value) = settings.edit().putBoolean(CLEAN_SHUT_DOWN, value).apply()
 
 
-    /**
-     * Removes the cache file. This usually happens when the cache has expired and needs
-     * to be rebuilt anew
-     */
-    fun removeCacheFileEntry() {
-        settings.edit().remove(CACHE_FILE_NAME).apply()
-    }
-
     companion object {
         private const val TAG = "RadioPreferences"
-        const val CACHE_NOT_FOUND = "com.foreverrafs.radiocore.not_found"
         const val CACHE_STORAGE_TIME = "com.foreverrafs.radiocore.cache_storage_time"
         private const val AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start"
         private const val IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch"
-        private const val CACHE_FILE_NAME = "com.foreverrafs.radiocore.cache_file_name"
         private const val CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours"
         private const val STREAMING_TIMER = "com.foreverrafs.radiocore.streaming_timer"
         private const val CLEAN_SHUT_DOWN = "com.foreverrafs.radiocore.clean_shut_down"

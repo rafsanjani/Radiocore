@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.data;
+package com.foreverrafs.radiocore.util;
 
 import android.util.Log;
 
@@ -17,7 +17,7 @@ import java.lang.reflect.Type;
 
 public class Serializers {
 
-    static class NewsDeserializer implements JsonDeserializer<News> {
+    public static class NewsDeserializer implements JsonDeserializer<News> {
         @Override
         public News deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             String headline = ((JsonObject) json).get("headline").getAsString();
@@ -37,7 +37,7 @@ public class Serializers {
         }
     }
 
-    static class NewsSerializer implements JsonSerializer<News> {
+    public static class NewsSerializer implements JsonSerializer<News> {
 
         @Override
         public JsonElement serialize(News src, Type typeOfSrc, JsonSerializationContext context) {

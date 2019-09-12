@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.data;
+package com.foreverrafs.radiocore.util;
 
 import com.foreverrafs.radiocore.model.News;
 import com.google.gson.Gson;

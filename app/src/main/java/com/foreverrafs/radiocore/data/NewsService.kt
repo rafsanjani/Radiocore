@@ -13,12 +13,12 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.joda.time.DateTime
+import org.joda.time.Hours
 
 class NewsService(mContext: Context) {
     private val mRadioPreferences: RadioPreferences = RadioPreferences(mContext)
     private val mNewsOpenHelper: NewsOpenHelper = NewsOpenHelper(mContext)
 
-    //TODO: FIX NEWS REPOSITORY
     companion object {
         private val TAG = "NewsService"
     }
@@ -42,21 +42,35 @@ class NewsService(mContext: Context) {
 
 
     fun fetchNews(): Observable<List<News>> {
-        val newsItems = loadFromDatabase()
+        val expiryHours = Integer.parseInt(mRadioPreferences.cacheExpiryHours!!)
+        val fetchedDate = mRadioPreferences.cacheStorageTime
+        val elapsedHours = Hours.hoursBetween(fetchedDate, DateTime.now())
 
-        return if (newsItems != null && newsItems.isNotEmpty()) {
-            Observable
-                    .just(newsItems)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-        } else {
-            Log.i(TAG, "fetchNews: Error loading from local storage. Trying online...")
-            loadFromOnline()
+        if (elapsedHours.hours < expiryHours) {
+            val newsItems = loadFromDatabase()
+
+            return if (newsItems != null && newsItems.isNotEmpty()) {
+                Observable
+                        .just(newsItems)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+            } else {
+                Log.i(TAG, "fetchNews: Error loading from local storage. Trying online...")
+                loadFromOnline()
+            }
         }
+        Log.i(TAG, "fetchNews: Cache Expired. Trying online...")
+        return loadFromOnline()
+
     }
 
+    /***
+     * Loads news items from a local database if the expiry time has not elapsed
+     */
     private fun loadFromDatabase(): List<News>? {
         Log.i(TAG, "loadFromDatabase: Loading from local storage")
+
+
         val newsList = ArrayList<News>()
         var newsCursor: Cursor? = null
 
