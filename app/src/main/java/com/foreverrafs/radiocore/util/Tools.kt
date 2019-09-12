@@ -8,25 +8,11 @@ import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.ProgressBar
-import androidx.core.content.ContextCompat
-import com.foreverrafs.radiocore.R
 
 object Tools {
-
-    fun setSystemBarColor(act: Activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val window = act.window
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor = ContextCompat.getColor(act, R.color.colorPrimaryDark)
-        }
-    }
-
 
     fun rateAction(activity: Activity) {
         val uri = Uri.parse("market://details?id=" + activity.packageName)
