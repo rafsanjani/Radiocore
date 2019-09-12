@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
 import kotlinx.android.synthetic.main.fragment_about.*
 
@@ -34,6 +35,7 @@ class AboutFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        tvFooterText.text = getString(R.string.about_build_info, BuildConfig.VERSION_NAME)
         initClickListeneners()
     }
 
