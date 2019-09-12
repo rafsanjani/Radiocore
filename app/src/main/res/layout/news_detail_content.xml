@@ -85,7 +85,7 @@
             android:lineSpacingExtra="6sp"
             android:text="@string/news_custom_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/grey_40"
+            android:textColor="@color/grey_20"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/tvCategory"
             app:layout_constraintStart_toStartOf="@+id/text_publishedon"

@@ -123,7 +123,7 @@
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="196dp"
+        android:layout_marginTop="100dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/desc_station_logo"
         android:scaleType="fitXY"
