@@ -16,7 +16,7 @@ public final class NewsDatabaseContract {
         public static final String COLUMN_NEWS_IMAGEURL = "news_imageurl";
         public static final String COLUMN_NEWS_CATEGORY = "news_category";
 
-        public static final String SQL_CREATE_TABLE =
+        static final String SQL_CREATE_TABLE =
                 "CREATE TABLE " + TABLE_NAME + "(" +
                         _ID + " INTEGER PRIMARY KEY, " +
                         COLUMN_NEWS_HEADLINE + " TEXT NOT NULL, " +
