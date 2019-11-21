@@ -1,0 +1,60 @@
+package com.foreverrafs.radiocore.viewmodels
+
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import com.foreverrafs.radiocore.data.local.LocalNews
+import com.foreverrafs.radiocore.data.local.NewsDatabase
+import com.foreverrafs.radiocore.data.remote.RemoteNews
+import com.foreverrafs.radiocore.model.News
+import com.foreverrafs.radiocore.util.RadioPreferences
+import kotlinx.coroutines.Dispatchers
+import org.joda.time.DateTime
+import org.joda.time.Hours
+import timber.log.Timber
+
+class NewsViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val mPreferences: RadioPreferences
+    private var hoursBeforeExpire: Int
+    private var lastFetchedTime: DateTime
+    private val appContext: Context = application.applicationContext
+    private lateinit var news: LiveData<List<News>>
+
+    init {
+        mPreferences = RadioPreferences(appContext)
+        hoursBeforeExpire = mPreferences.cacheExpiryHours!!.toInt()
+        lastFetchedTime = mPreferences.cacheStorageTime!!
+    }
+
+    //The viewmodel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
+    fun getAllNews(): LiveData<List<News>> {
+        val elapsedHours = Hours.hoursBetween(lastFetchedTime, DateTime.now())
+
+        val isCacheValid = (hoursBeforeExpire - elapsedHours.hours) <= 0
+
+        val repository = if (isCacheValid) {
+            Timber.i("Cache Valid for ${hoursBeforeExpire - elapsedHours.hours} Hours: Loading from local...")
+            LocalNews(appContext)
+        } else {
+            Timber.i("Cache Expired: Loading from Remote...")
+            mPreferences.cacheStorageTime = DateTime.now()
+            RemoteNews()
+        }
+
+        return liveData(Dispatchers.IO) {
+            val data = repository.fetchNews()
+
+            //let's sync with local news if it's from online
+            if (repository is RemoteNews) {
+                repository.syncWithLocal(data, NewsDatabase.getInstance(appContext))
+                lastFetchedTime = DateTime.now()
+            }
+
+            emit(data)
+        }
+    }
+
+}

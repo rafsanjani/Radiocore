@@ -33,7 +33,7 @@ public class Serializers {
                 Log.i("Serializers", exception.getMessage());
             }
 
-            return new News(headline, date, imageUrl, content, category);
+            return new News(headline, content, date, category, imageUrl);
         }
     }
 

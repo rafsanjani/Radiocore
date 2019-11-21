@@ -8,7 +8,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.foreverrafs.radiocore.R
-import com.foreverrafs.radiocore.data.NewsDataManager
+import com.foreverrafs.radiocore.data.NewsRepository
 import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.util.Constants
 import kotlinx.android.synthetic.main.fragment_news_item_detail.*
@@ -35,7 +35,7 @@ class NewsItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         image.transitionName = mNewsItem?.imageUrl
         val fmt = DateTimeFormat.forPattern("MMMM d, yyyy")
-        val datePretty = mNewsItem!!.date!!.toString(fmt)
+        val datePretty = mNewsItem!!.date.toString(fmt)
 
         tvHeadline.text = HtmlCompat.fromHtml(mNewsItem?.headline!!, HtmlCompat.FROM_HTML_MODE_LEGACY)
         tvDate.text = datePretty
@@ -49,7 +49,7 @@ class NewsItemFragment : Fragment() {
 
     companion object {
         fun getInstance(position: Int): NewsItemFragment {
-            val newsItemAtPosition = NewsDataManager.RadioCoreNews[position]
+            val newsItemAtPosition = NewsRepository.getInstance().radioCoreNews[position]
 
             val fragmentNewsItem = NewsItemFragment()
             val argument = Bundle()

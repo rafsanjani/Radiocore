@@ -2,7 +2,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardStyle"
-    android:layout_margin="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -14,15 +13,11 @@
             android:id="@+id/image"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/desc_news_image"
             android:cropToPadding="false"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_newspaper"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,12 +26,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/news_custom_headline"
             android:lines="3"
-            android:textColor="@color/brown_900"
+            android:text="@string/news_custom_headline"
             android:textAllCaps="false"
+            android:textColor="@color/brown_900"
             android:textSize="16sp"
             android:textStyle="bold"
             android:typeface="sans"
@@ -59,13 +54,14 @@
 
         <TextView
             android:id="@+id/tvDate"
-            android:textColor="@color/grey_900"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:text="@string/news_custom_date"
+            android:textColor="@color/grey_900"
             android:textSize="12sp"
             android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="@+id/image"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvHeadline" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

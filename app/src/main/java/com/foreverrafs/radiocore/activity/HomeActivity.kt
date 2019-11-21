@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +16,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.foreverrafs.radiocore.R
@@ -34,7 +32,6 @@ import com.foreverrafs.radiocore.util.Constants.STREAM_RESULT
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
-import com.foreverrafs.radiocore.viewmodels.HomeActivityViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.disposables.CompositeDisposable
@@ -42,27 +39,25 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import org.joda.time.Seconds
+import timber.log.Timber
+
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
-    private val viewModel by lazy {
-        ViewModelProviders.of(this)[HomeActivityViewModel::class.java]
-    }
-
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
-                Log.i(TAG, "onPlay: " + mAudioStreamingState.name)
+                Timber.i("onPlay: ${mAudioStreamingState.name}")
+
                 when (mAudioStreamingState) {
                     AudioStreamingState.STATUS_PLAYING -> pausePlayback()
                     AudioStreamingState.STATUS_PAUSED,
                     AudioStreamingState.STATUS_STOPPED -> startPlayback()
-                    AudioStreamingState.STATUS_LOADING -> Log.d(TAG, "Loading")
+                    AudioStreamingState.STATUS_LOADING -> Timber.d("Loading")
                 }
             }
         }
     }
 
-    private val TAG = "HomeActivity"
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
@@ -104,7 +99,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.title = getString(R.string.app_name)
-
         }
     }
 
@@ -171,7 +165,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * Also checks if the stream timer is up which triggers a shutdown of the app
      */
     private fun startUpdateStreamProgress() {
-        Log.d(TAG, "startUpdateStreamProgress: ")
+        Timber.d("startUpdateStreamProgress: ")
         mStreamPlayer.streamDurationStringsObservable
                 .subscribe(object : SimpleObserver<Array<out String?>>() {
                     override fun onSubscribe(d: Disposable) {
@@ -211,7 +205,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onStop() {
         super.onStop()
-        Log.i(TAG, "onStop: ")
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mAudioServiceBroadcastReceiver)
     }
 
@@ -219,10 +212,10 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         super.onDestroy()
         if (mStreamPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING) {
             stopPlayback()
-            Log.i(TAG, "onDestry: Stopping playback")
         }
 
-        visualizer.release()
+        if (visualizer != null)
+            visualizer.release()
 
         mCompositeDisposable?.clear()
     }
@@ -262,7 +255,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         } catch (exception: Exception) {
-            Log.e(TAG, "setUpAudioVisualizer: " + exception.message)
+            Timber.e("setUpAudioVisualizer:${exception.message} ")
         }
 
     }
@@ -277,7 +270,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 setUpAudioVisualizer()
             else
-                Log.i(TAG, "onRequestPermissionsResult: Denied. Unable to initialize visualizer")
+                Timber.i("onRequestPermissionsResult: Denied. Unable to initialize visualizer")
         }
     }
 
@@ -339,7 +332,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private fun setUpAudioStreamingServiceReceiver() {
         mAudioServiceBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                Log.d(TAG, "audioBroadCastReceived:" + intent.action)
                 if (intent.action == STREAM_RESULT) {
                     onAudioStreamingStateReceived(intent)
                 }
@@ -359,7 +351,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
         when (mAudioStreamingState) {
             AudioStreamingState.STATUS_PLAYING -> {
-                Log.d(TAG, "onAudioStreamingStateReceived: Playing")
+                Timber.d("onAudioStreamingStateReceived: Playing")
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause_small)!!)
@@ -372,7 +364,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.green_200))
             }
             AudioStreamingState.STATUS_STOPPED -> {
-                Log.d(TAG, "onAudioStreamingStateReceived: STOPPED")
+                Timber.d("onAudioStreamingStateReceived: STOPPED")
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(applicationContext, R.drawable.avd_pause_play)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
 
@@ -381,14 +373,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
-                Log.d(TAG, "onAudioStreamingStateReceived: BUFFERING")
+                Timber.i("onAudioStreamingStateReceived: BUFFERING")
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_200))
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
 
             AudioStreamingState.STATUS_PAUSED -> {
-                Log.d(TAG, "onAudioStreamingStateReceived: PAUSED")
+                Timber.i("onAudioStreamingStateReceived: PAUSED")
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
 
@@ -411,7 +403,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onResume() {
-        Log.i(TAG, "onResume: ")
         super.onResume()
         LocalBroadcastManager.getInstance(this).registerReceiver(mAudioServiceBroadcastReceiver,
                 IntentFilter(STREAM_RESULT)

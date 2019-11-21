@@ -3,13 +3,15 @@ package com.foreverrafs.radiocore.player
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player.*
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.metadata.MetadataOutput
 import com.google.android.exoplayer2.source.MediaSource
@@ -25,10 +27,10 @@ import org.joda.time.format.PeriodFormatterBuilder
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-class StreamPlayer private constructor(context: Context) : EventListener {
+class StreamPlayer private constructor(context: Context) : EventListener, LifecycleObserver {
+    private val TAG = this::class.java.simpleName
 
     companion object {
-        private const val TAG = "StreamPlayer"
         private var instance: WeakReference<StreamPlayer>? = null
         private var mStreamMetadataListener: StreamMetadataListener? = null
 
@@ -36,7 +38,6 @@ class StreamPlayer private constructor(context: Context) : EventListener {
             synchronized(StreamPlayer::class.java) {
                 if (instance == null) {
                     instance = WeakReference(StreamPlayer(context))
-                    Log.d(TAG, "getInstance: Media Instance Created on  " + Thread.currentThread().name)
                 }
                 return instance?.get()!!
             }
@@ -57,22 +58,25 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     }
 
     private var mediaSource: MediaSource? = null
-    private val exoPlayer: SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context).apply {
-        setAudioAttributes(
-                AudioAttributes.Builder()
-                        .setContentType(C.CONTENT_TYPE_MUSIC)
-                        .setUsage(C.USAGE_MEDIA)
-                        .build(), true
-        )
-        addMetadataOutput(mMetaDataOutput)
+
+    private val exoPlayer by lazy {
+        ExoPlayerFactory.newSimpleInstance(context).apply {
+            setAudioAttributes(
+                    AudioAttributes.Builder()
+                            .setContentType(C.CONTENT_TYPE_MUSIC)
+                            .setUsage(C.USAGE_MEDIA)
+                            .build(), true
+            )
+            addMetadataOutput(mMetaDataOutput)
+        }
     }
 
     init {
         exoPlayer.addListener(this)
     }
 
-    fun addMetadataListener(streamMetadataListener: WeakReference<StreamMetadataListener>) {
-        mStreamMetadataListener = streamMetadataListener.get()
+    fun addMetadataListener(streamMetadataListener: StreamMetadataListener) {
+        mStreamMetadataListener = streamMetadataListener
     }
 
     fun removeMetadataListener() {
@@ -170,8 +174,14 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     /**
      * Release resources held by the media player back to the system
      */
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun release() {
+        removeMetadataOutput()
         exoPlayer.release()
+    }
+
+    fun removeMetadataOutput() {
+        exoPlayer.removeMetadataOutput(mMetaDataOutput)
     }
 
     fun pause() {
@@ -194,7 +204,8 @@ class StreamPlayer private constructor(context: Context) : EventListener {
                 exoPlayer.playWhenReady = true
             }
             PlaybackState.PAUSED, PlaybackState.BUFFERING -> exoPlayer.playWhenReady = true
-            else -> TODO()
+            else -> {
+            }
         }
 
     }
@@ -249,7 +260,6 @@ class StreamPlayer private constructor(context: Context) : EventListener {
     /**
      * Distinct Media playback states
      */
-    @Suppress("unused")
     enum class PlaybackState {
         PLAYING,
         PAUSED,

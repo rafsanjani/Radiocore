@@ -2,66 +2,28 @@ package com.foreverrafs.radiocore.model
 
 // Created by Emperor95 on 1/13/2019.
 
-import android.os.Parcel
 import android.os.Parcelable
-
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
 import org.joda.time.DateTime
 
-class News : Parcelable {
-    var headline: String? = null
-        private set
-    var imageUrl: String? = null
-        private set
-    var content: String? = null
-    var date: DateTime? = null
-        private set
-    var category: String? = null
-
-    constructor(headline: String, date: DateTime?, image: String, content: String, category: String) {
-        this.headline = headline
-        this.date = date
-        this.imageUrl = image
-        this.content = content
-        this.category = category
-    }
+@Parcelize
+@Entity(tableName = "news")
+data class News(
+        @ColumnInfo(name = "headline") var headline: String,
+        @ColumnInfo(name = "content") var content: String,
+        @ColumnInfo(name = "date") var date: DateTime,
+        @ColumnInfo(name = "category") var category: String,
+        @ColumnInfo(name = "imageUrl") var imageUrl: String
 
 
-    constructor(`in`: Parcel) {
-        headline = `in`.readString()
-        content = `in`.readString()
-        imageUrl = `in`.readString()
-
-        val dateStr = `in`.readString()
-        category = `in`.readString()
-
-        try {
-            date = DateTime.parse(dateStr)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    override fun describeContents(): Int {
-        return hashCode()
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(headline)
-        dest.writeString(content)
-        dest.writeString(imageUrl)
-        dest.writeString(date?.toString())
-        dest.writeString(category)
-    }
-
-
-    companion object CREATOR : Parcelable.Creator<News> {
-        override fun createFromParcel(parcel: Parcel): News {
-            return News(parcel)
-        }
-
-        override fun newArray(size: Int): Array<News?> {
-            return arrayOfNulls(size)
-        }
-    }
+) : Parcelable {
+        //our primary key definition
+        @PrimaryKey(autoGenerate = true)
+        @IgnoredOnParcel
+        @ColumnInfo(name = "id")
+        var id: Int = 0
 }

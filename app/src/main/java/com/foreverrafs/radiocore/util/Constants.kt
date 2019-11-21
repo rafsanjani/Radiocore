@@ -5,7 +5,6 @@ object Constants {
 
     const val STREAM_RESULT = "com.radiocore.service.AudioStreamingService.STREAM_RESULT"
     const val STREAMING_STATUS = "com.radiocore.service.AudioStreamingService.AUDIO_STREAMING_STATUS"
-    //    public static final String STREAM_URL = "http://node-21.zeno.fm/sm3w0cp642quv?rj-ttl=5&rj-token=AAABauNwQ3G4lfvWvkyhRuTJ0_mgLB2oK-fWV41JG42CMMK1VQPH8Q";
     const val STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3"
     const val ACTION_PLAY = "com.radiocore.PLAY"
     const val ACTION_STOP = "com.radiocore.STOP"

@@ -1,6 +1,9 @@
 package com.foreverrafs.radiocore.service
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
@@ -8,11 +11,11 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
-import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.activity.HomeActivity
@@ -24,10 +27,8 @@ import com.foreverrafs.radiocore.util.RadioPreferences
 /***
  * Handle Audio playback
  */
-class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener {
-    override fun onBind(p0: Intent?): IBinder? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChangeListener {
+
 
     private val TAG = "AudioStreamingService"
     private val mFocusLock = Any()
@@ -83,7 +84,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
 
         if (playbackAuthorized)
             Log.i(TAG, "Audio Focus gained on Android o+")
-
 
         try {
             mMediaPlayer = StreamPlayer.getInstance(this)
@@ -202,6 +202,7 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         //on some rare occasions, the state of the stream is indeterminate so we perform a cleanup before attempting to reload
         createNotificationChannel()
 
@@ -230,7 +231,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mAudioManager.abandonAudioFocusRequest(mFocusRequest)
         }
-        StreamPlayer.getInstance(this).release()
 
         Log.d(TAG, "onDestroy: Service Destroyed")
     }
