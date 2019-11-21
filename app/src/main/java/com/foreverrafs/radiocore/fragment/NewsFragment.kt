@@ -16,7 +16,6 @@ import com.foreverrafs.radiocore.activity.NewsDetailActivity
 import com.foreverrafs.radiocore.adapter.AnimationAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter.NewsItemClickListener
-import com.foreverrafs.radiocore.data.NewsRepository
 import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.viewmodels.NewsViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -58,8 +57,6 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel.getAllNews().observe(this,
                 Observer { newsList ->
                     if (!newsList.isNullOrEmpty()) {
-                        //keep this inside our repository
-                        NewsRepository.getInstance().radioCoreNews = newsList
 
                         swipeRefreshLayout.visibility = View.VISIBLE
                         contentNoConnection.visibility = View.INVISIBLE
@@ -80,6 +77,7 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     progressBar.visibility = View.INVISIBLE
                 })
     }
+
 
     private fun setUpNewsItemClickListener(adapter: NewsAdapter) {
         adapter.setOnNewsItemClickListener(object : NewsItemClickListener {

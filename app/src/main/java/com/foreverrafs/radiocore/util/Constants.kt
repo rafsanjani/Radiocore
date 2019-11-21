@@ -3,6 +3,7 @@ package com.foreverrafs.radiocore.util
 // Created by Emperor95 on 3/5/2019.
 object Constants {
 
+    const val PERSIST_WORK_NAME = "com.radiocore.work.persist_work_name"
     const val STREAM_RESULT = "com.radiocore.service.AudioStreamingService.STREAM_RESULT"
     const val STREAMING_STATUS = "com.radiocore.service.AudioStreamingService.AUDIO_STREAMING_STATUS"
     const val STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3"

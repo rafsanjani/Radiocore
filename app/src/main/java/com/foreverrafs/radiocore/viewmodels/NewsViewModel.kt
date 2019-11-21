@@ -5,11 +5,16 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.foreverrafs.radiocore.data.NewsRepository
 import com.foreverrafs.radiocore.data.local.LocalNews
-import com.foreverrafs.radiocore.data.local.NewsDatabase
 import com.foreverrafs.radiocore.data.remote.RemoteNews
 import com.foreverrafs.radiocore.model.News
+import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.util.RadioPreferences
+import com.foreverrafs.radiocore.workers.PersistNewsWorker
 import kotlinx.coroutines.Dispatchers
 import org.joda.time.DateTime
 import org.joda.time.Hours
@@ -33,7 +38,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllNews(): LiveData<List<News>> {
         val elapsedHours = Hours.hoursBetween(lastFetchedTime, DateTime.now())
 
-        val isCacheValid = (hoursBeforeExpire - elapsedHours.hours) <= 0
+        val isCacheValid = (hoursBeforeExpire - elapsedHours.hours) >= 0
 
         val repository = if (isCacheValid) {
             Timber.i("Cache Valid for ${hoursBeforeExpire - elapsedHours.hours} Hours: Loading from local...")
@@ -46,15 +51,25 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
         return liveData(Dispatchers.IO) {
             val data = repository.fetchNews()
+            //keep this inside our repository
+            NewsRepository.getInstance().radioCoreNews = data
 
-            //let's sync with local news if it's from online
-            if (repository is RemoteNews) {
-                repository.syncWithLocal(data, NewsDatabase.getInstance(appContext))
-                lastFetchedTime = DateTime.now()
-            }
+            //save to localstorage if we fetched from online
+            if (repository is RemoteNews)
+                saveNewsToLocalStorage()
 
             emit(data)
         }
     }
+
+    private fun saveNewsToLocalStorage() {
+        val workManager = WorkManager.getInstance(appContext)
+        val persistNewsRequest = OneTimeWorkRequestBuilder<PersistNewsWorker>().build()
+
+        workManager.enqueueUniqueWork(Constants.PERSIST_WORK_NAME,
+                ExistingWorkPolicy.REPLACE,
+                persistNewsRequest)
+    }
+
 
 }

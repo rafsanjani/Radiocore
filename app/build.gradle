@@ -29,6 +29,10 @@ android {
         targetCompatibility JavaVersion.current()
     }
     buildToolsVersion = '29.0.2'
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -100,4 +104,8 @@ dependencies {
     //lifecycle
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc02'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc02'
+
+    //worker
+    implementation "androidx.work:work-runtime-ktx:2.2.0"
+    androidTestImplementation "androidx.work:work-testing:2.2.0"
 }
