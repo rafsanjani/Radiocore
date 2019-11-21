@@ -109,7 +109,7 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 //                        //keep a copy in our news repository for use by viewpaging fragments
 //                        newsRepository.saveNewsItems(newsItems)
 //
-//                        Log.i(TAG, "${newsItems.size} news items fetched")
+//                        Timber.i( "${newsItems.size} news items fetched")
 //                        contentNoConnection.visibility = View.INVISIBLE
 //                        if (swipeRefreshLayout.isRefreshing) {
 //                            swipeRefreshLayout.isRefreshing = false

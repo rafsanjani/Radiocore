@@ -1,7 +1,5 @@
 package com.foreverrafs.radiocore.util;
 
-import android.util.Log;
-
 import com.foreverrafs.radiocore.model.News;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -14,6 +12,8 @@ import com.google.gson.JsonSerializer;
 import org.joda.time.DateTime;
 
 import java.lang.reflect.Type;
+
+import timber.log.Timber;
 
 public class Serializers {
 
@@ -30,7 +30,7 @@ public class Serializers {
             try {
                 date = DateTime.parse(dateStr);
             } catch (Exception exception) {
-                Log.i("Serializers", exception.getMessage());
+                Timber.i(exception.getMessage());
             }
 
             return new News(headline, content, date, category, imageUrl);

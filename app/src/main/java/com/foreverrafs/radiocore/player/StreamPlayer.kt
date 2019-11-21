@@ -2,7 +2,6 @@ package com.foreverrafs.radiocore.player
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -24,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import org.joda.time.Period
 import org.joda.time.Seconds
 import org.joda.time.format.PeriodFormatterBuilder
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
@@ -51,7 +51,7 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
                     mStreamMetadataListener?.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
                 }
                 else -> {
-                    Log.d(TAG, "metaDataOutput: Other -  $md")
+                    Timber.i("metaDataOutput: Other -  $md")
                 }
             }
         }
@@ -211,7 +211,7 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
     }
 
     override fun onLoadingChanged(isLoading: Boolean) {
-        Log.i(TAG, "Media" + if (isLoading) "Loading..." else "Loaded!")
+        Timber.i("Media %s", if (isLoading) "Loading..." else "Loaded!")
         if (isLoading) {
             mStreamStateChangesListener.onBuffering()
             mPlaybackState = PlaybackState.BUFFERING
@@ -220,26 +220,26 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, state: Int) {
         when (state) {
-            STATE_READY -> Log.d(TAG, "onPlayerStateChanged: Ready")
+            STATE_READY -> Timber.i("onPlayerStateChanged: Ready")
 
-            STATE_ENDED -> Log.d(TAG, "onPlayerStateChanged: Ended")
+            STATE_ENDED -> Timber.i("onPlayerStateChanged: Ended")
 
-            STATE_BUFFERING -> Log.d(TAG, "onPlayerStateChanged: Buffering...")
-            STATE_IDLE -> Log.d(TAG, "onPlayerStateChanged: Idle")
+            STATE_BUFFERING -> Timber.i("onPlayerStateChanged: Buffering...")
+            STATE_IDLE -> Timber.i("onPlayerStateChanged: Idle")
         }
 
         if (playWhenReady && state == STATE_READY) {
             // Active playback.
             mStreamStateChangesListener.onPlay()
             mPlaybackState = PlaybackState.PLAYING
-            Log.d(TAG, "onPlayerStateChanged: Playing...")
+            Timber.i("onPlayerStateChanged: Playing...")
         } else if (playWhenReady) {
             // Not playing because playback ended, the player is buffering, stopped or
             // failed. Check mPlaybackState and player.getPlaybackError for details.
             mPlaybackState = PlaybackState.STOPPED
             mStreamStateChangesListener.onStop()
             if (state == STATE_BUFFERING) {
-                Log.d(TAG, "onPlayerStateChanged: Buffering...")
+                Timber.i("onPlayerStateChanged: Buffering...")
                 mPlaybackState = PlaybackState.BUFFERING
                 mStreamStateChangesListener.onBuffering()
             }
@@ -248,7 +248,7 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
             // Paused by app.
             mStreamStateChangesListener.onPause()
             mPlaybackState = PlaybackState.PAUSED
-            Log.d(TAG, "onPlayerStateChanged: Paused")
+            Timber.i("onPlayerStateChanged: Paused")
         }
     }
 

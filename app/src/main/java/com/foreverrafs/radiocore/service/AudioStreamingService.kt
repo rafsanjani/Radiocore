@@ -11,7 +11,6 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -22,6 +21,7 @@ import com.foreverrafs.radiocore.activity.HomeActivity
 import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.util.RadioPreferences
+import timber.log.Timber
 
 
 /***
@@ -83,7 +83,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         if (playbackAuthorized)
-            Log.i(TAG, "Audio Focus gained on Android o+")
+            Timber.i("Audio Focus gained on Android o+")
 
         try {
             mMediaPlayer = StreamPlayer.getInstance(this)
@@ -91,38 +91,38 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
 
             mMediaPlayer.setPlayerStateChangesListener(object : StreamPlayer.StreamStateChangesListener {
                 override fun onError(exception: Exception?) {
-                    Log.e(TAG, "setPlayerStatechangesListener: Error Loading Stream ${exception?.message}")
+                    Timber.i("setPlayerStatechangesListener: Error Loading Stream ${exception?.message}")
                     Toast.makeText(applicationContext, "Error loading stream!", Toast.LENGTH_SHORT).show()
                     sendResult(AudioStreamingState.STATUS_STOPPED)
                     stopForeground(true)
                 }
 
                 override fun onPlay() {
-                    Log.e(TAG, "setPlayerStatechangesListener: OnPlay")
+                    Timber.i("setPlayerStatechangesListener: OnPlay")
                     sendResult(AudioStreamingState.STATUS_PLAYING)
                     startForeground(5, streamNotification)
                 }
 
                 override fun onBuffering() {
-                    Log.e(TAG, "setPlayerStatechangesListener: OnBuffering")
+                    Timber.i("setPlayerStatechangesListener: OnBuffering")
                     sendResult(AudioStreamingState.STATUS_LOADING)
                 }
 
                 override fun onStop() {
-                    Log.e(TAG, "setPlayerStateChangesListener: OnStop")
+                    Timber.i("setPlayerStateChangesListener: OnStop")
                     sendResult(AudioStreamingState.STATUS_STOPPED)
                     stopForeground(true)
                 }
 
                 override fun onPause() {
-                    Log.e(TAG, "setPlayerStateChangesListener: OnPause")
+                    Timber.i("setPlayerStateChangesListener: OnPause")
                     sendResult(AudioStreamingState.STATUS_PAUSED)
                 }
 
             })
 
         } catch (e: Exception) {
-            Log.e(TAG, e.message!!)
+            Timber.i(e.message!!)
         }
 
     }
@@ -222,7 +222,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
 
     private fun cleanShutDown() {
         stopForeground(true)
-        Log.i(TAG, "Performing stream status cleanup")
+        Timber.i("Performing stream status cleanup")
         mRadioPreferences?.cleanShutdown = true
     }
 
@@ -232,7 +232,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
             mAudioManager.abandonAudioFocusRequest(mFocusRequest)
         }
 
-        Log.d(TAG, "onDestroy: Service Destroyed")
+        Timber.i("onDestroy: Service Destroyed")
     }
 
     /**
@@ -261,16 +261,16 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
                     synchronized(mFocusLock) {
                         mResumeOnFocusGain = false
                         startPlayback()
-                        Log.d(TAG, "OnAudioFocusChange: Focus Gained...resuming playback")
+                        Timber.i("OnAudioFocusChange: Focus Gained...resuming playback")
                     }
                 } else {
-                    Log.d(TAG, "OnAudioFocusChange: Focus Gained...Unable to resume playback")
+                    Timber.i("OnAudioFocusChange: Focus Gained...Unable to resume playback")
                 }
 
             AudioManager.AUDIOFOCUS_LOSS -> {
                 synchronized(mFocusLock) {
                     mResumeOnFocusGain = true
-                    Log.d(TAG, "OnAudioFocusChange: Focus Lost completely...stopping playback")
+                    Timber.i("OnAudioFocusChange: Focus Lost completely...stopping playback")
                 }
                 pausePlayback()
             }
@@ -278,7 +278,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
                 synchronized(mFocusLock) {
                     val canResume = StreamPlayer.getInstance(this).playBackState == StreamPlayer.PlaybackState.PLAYING
                     mResumeOnFocusGain = canResume
-                    Log.d(TAG, "OnAudioFocusChange: Focus Lost. We will resume. $canResume...pausing playback")
+                    Timber.i("OnAudioFocusChange: Focus Lost. We will resume. $canResume...pausing playback")
                 }
                 pausePlayback()
             }
