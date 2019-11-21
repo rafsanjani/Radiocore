@@ -77,76 +77,23 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     if (!newsList.isNullOrEmpty()) {
                         swipeRefreshLayout.visibility = View.VISIBLE
                         contentNoConnection.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
 
                         val adapter = NewsAdapter(newsList, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
                         recyclerView.adapter = adapter
                         setUpNewsItemClickListener(adapter)
 
                     } else {
-                        progressBar!!.visibility = View.GONE
+                        contentNoConnection.visibility = View.VISIBLE
                     }
 
+                    //these views will be hidden either ways
                     if (swipeRefreshLayout.isRefreshing) {
                         swipeRefreshLayout.isRefreshing = false
                     }
+
+                    progressBar.visibility = View.INVISIBLE
                 })
     }
-
-//    private fun getNewsData() {
-//        if (activity == null)
-//            return
-//
-//        val newsRepository = NewsService(context!!)
-//
-//        newsRepository.fetchNews()
-//                .subscribe(object : SimpleObserver<List<News>>() {
-//                    override fun onSubscribe(d: Disposable) {
-//                        mCompositeDisposable.add(d)
-//                    }
-//
-//                    override fun onNext(newsItems: List<News>) {
-//                        //keep a copy in our news repository for use by viewpaging fragments
-//                        newsRepository.saveNewsItems(newsItems)
-//
-//                        Timber.i( "${newsItems.size} news items fetched")
-//                        contentNoConnection.visibility = View.INVISIBLE
-//                        if (swipeRefreshLayout.isRefreshing) {
-//                            swipeRefreshLayout.isRefreshing = false
-//                        }
-//                        swipeRefreshLayout.visibility = View.VISIBLE
-//                        mNewsAdapter = NewsAdapter(newsItems, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
-//                        recyclerView.adapter = mNewsAdapter
-//
-//                        //lets keep a copy of the adapter in case fetching goes awry on next try
-//                        mNewsAdapterCached = mNewsAdapter
-//
-//                        progressBar!!.visibility = View.GONE
-//
-//                        setUpNewsItemClickListener()
-//                    }
-//
-//                    override fun onError(e: Throwable) {
-//                        progressBar.visibility = View.INVISIBLE
-//
-//                        if (swipeRefreshLayout.isRefreshing) {
-//                            swipeRefreshLayout.isRefreshing = false
-//                        }
-//
-//                        contentNoConnection.visibility = View.VISIBLE
-//
-//                        if (mNewsAdapterCached == null)
-//                            return
-//
-//                        Handler().postDelayed({
-//                            mNewsAdapter = mNewsAdapterCached
-//                            setUpNewsItemClickListener()
-//                            recyclerView.adapter = mNewsAdapter
-//
-//                        }, 3000)
-//                    }
-//                })
-//    }
 
     private fun setUpNewsItemClickListener(adapter: NewsAdapter) {
         adapter.setOnNewsItemClickListener(object : NewsItemClickListener {

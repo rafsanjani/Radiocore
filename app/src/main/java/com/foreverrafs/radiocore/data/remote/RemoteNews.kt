@@ -12,7 +12,13 @@ import timber.log.Timber
 class RemoteNews : INewsManager<News> {
     override suspend fun fetchNews(): List<News> {
         val newsApi = ServiceGenerator.createService(NewsApi::class.java)
-        return newsApi.getNewsAsyc()
+
+        return try {
+            newsApi.getNewsAsyc()
+        } catch (e: Exception) {
+            //return an empty list
+            ArrayList()
+        }
     }
 
     fun syncWithLocal(items: List<News>, database: NewsDatabase) {
