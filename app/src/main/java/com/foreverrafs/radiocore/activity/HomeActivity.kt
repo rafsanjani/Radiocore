@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.foreverrafs.radiocore.R
@@ -33,6 +34,7 @@ import com.foreverrafs.radiocore.util.Constants.STREAM_RESULT
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
+import com.foreverrafs.radiocore.viewmodels.HomeActivityViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.disposables.CompositeDisposable
@@ -42,6 +44,10 @@ import kotlinx.android.synthetic.main.bottom_sheet.*
 import org.joda.time.Seconds
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener {
+    private val viewModel by lazy {
+        ViewModelProviders.of(this)[HomeActivityViewModel::class.java]
+    }
+
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
@@ -52,11 +58,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                     AudioStreamingState.STATUS_STOPPED -> startPlayback()
                     AudioStreamingState.STATUS_LOADING -> Log.d(TAG, "Loading")
                 }
-
             }
         }
     }
-
 
     private val TAG = "HomeActivity"
     private val PERMISSION_RECORD_AUDIO = 6900
@@ -72,13 +76,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_home)
 
         btnSmallPlay.setOnClickListener(this)
         btnPlay.setOnClickListener(this)
 
         mCompositeDisposable = CompositeDisposable()
-        mStreamPlayer = StreamPlayer.getInstance(this)
+        mStreamPlayer = StreamPlayer.getInstance(context = applicationContext)
 
         initializeViews()
         setUpInitialPlayerState()
@@ -144,20 +149,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun setUpInitialPlayerState() {
         val radioPreferences = RadioPreferences(this)
-
-//        mAudioStreamingState = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
-//            AudioStreamingState.STATUS_PLAYING
-//        else
-//            AudioStreamingState.STATUS_STOPPED
-
-
-//        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this)) {
-//            if (radioPreferences.isAutoPlayOnStart &&
-//                    mAudioStreamingState != AudioStreamingState.STATUS_PLAYING)
-//                startPlayback()
-//
-//            return
-//        }
 
         if (!Tools.isServiceRunning(AudioStreamingService::class.java, this)) {
             if (radioPreferences.isAutoPlayOnStart)
@@ -425,7 +416,6 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
         LocalBroadcastManager.getInstance(this).registerReceiver(mAudioServiceBroadcastReceiver,
                 IntentFilter(STREAM_RESULT)
         )
-
     }
 
 
