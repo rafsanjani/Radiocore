@@ -4,11 +4,11 @@ package com.foreverrafs.radiocore.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import org.joda.time.DateTime
 
+private const val TAG = "RadioPreferences"
 class RadioPreferences(context: Context) {
-    private val settings: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val settings: SharedPreferences = context.getSharedPreferences("RadioCore", Context.MODE_PRIVATE)
 
     /**
      * Checks if we are starting the application for the first time.
@@ -82,7 +82,6 @@ class RadioPreferences(context: Context) {
 
 
     companion object {
-        private const val TAG = "RadioPreferences"
         const val CACHE_STORAGE_TIME = "com.foreverrafs.radiocore.cache_storage_time"
         private const val AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start"
         private const val IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch"
