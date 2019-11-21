@@ -42,10 +42,6 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark)
         swipeRefreshLayout.setOnRefreshListener(this)
-
-//        mNewsAdapter = NewsAdapter()
-//        recyclerView.adapter = mNewsAdapter
-
         getNewsData()
 
         buttonRetry.setOnClickListener {
@@ -58,23 +54,13 @@ class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-//    override fun onRefresh() {
-//        if (mNewsAdapter == null) {
-//            swipeRefreshLayout!!.isRefreshing = false
-//            return
-//        }
-//
-//        getNewsData()
-//    }
-
     private fun getNewsData() {
         viewModel.getAllNews().observe(this,
                 Observer { newsList ->
-                    //keep this inside our repository
-                    NewsRepository.getInstance().radioCoreNews = newsList
-
-
                     if (!newsList.isNullOrEmpty()) {
+                        //keep this inside our repository
+                        NewsRepository.getInstance().radioCoreNews = newsList
+
                         swipeRefreshLayout.visibility = View.VISIBLE
                         contentNoConnection.visibility = View.INVISIBLE
 
