@@ -21,8 +21,8 @@ public abstract class AnimationAdapter extends RecyclerView.Adapter<RecyclerView
     private static final long DURATION_IN_FADE_ID = 250;
     private static final long DURATION_IN_LEFT_RIGHT = 150;
     private static final long DURATION_IN_RIGHT_LEFT = 150;
-    private AnimationType mAnimationType;
-    private int mAnimationDuration;
+    private final AnimationType mAnimationType;
+    private final int mAnimationDuration;
     private int mLastPosition = -1;
     private boolean mOn_Attach = true;
 

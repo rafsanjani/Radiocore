@@ -30,7 +30,6 @@ import timber.log.Timber
 class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChangeListener {
 
 
-    private val TAG = "AudioStreamingService"
     private val mFocusLock = Any()
     private var mBroadcastManager: LocalBroadcastManager? = null
     private lateinit var mMediaPlayer: StreamPlayer

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import org.joda.time.DateTime
 
-private const val TAG = "RadioPreferences"
 class RadioPreferences(context: Context) {
     private val settings: SharedPreferences = context.getSharedPreferences("RadioCore", Context.MODE_PRIVATE)
 

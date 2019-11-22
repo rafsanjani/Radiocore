@@ -64,7 +64,7 @@ class NewsAdapter : AnimationAdapter {
         fun bind(newsItem: News) {
             val formatter = DateTimeFormat.forPattern("MMMM d, yyyy")
 
-            itemView.tvDate.text = newsItem.date!!.toString(formatter)
+            itemView.tvDate.text = newsItem.date.toString(formatter)
             itemView.tvHeadline.text = newsItem.headline
             itemView.tvCategory.text = newsItem.category
 

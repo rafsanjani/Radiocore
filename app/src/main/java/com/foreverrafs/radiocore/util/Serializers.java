@@ -30,7 +30,7 @@ public class Serializers {
             try {
                 date = DateTime.parse(dateStr);
             } catch (Exception exception) {
-                Timber.i(exception.getMessage());
+                Timber.i(exception);
             }
 
             return new News(headline, content, date, category, imageUrl);

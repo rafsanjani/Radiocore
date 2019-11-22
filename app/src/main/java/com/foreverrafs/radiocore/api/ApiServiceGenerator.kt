@@ -4,9 +4,9 @@ import com.foreverrafs.radiocore.util.NewsGson
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ServiceGenerator {
+class ApiServiceGenerator {
     companion object {
-        const val BASE_URL = "https://newscentral.herokuapp.com/"
+        private const val BASE_URL = "https://newscentral.herokuapp.com/"
 
         private val builder: Retrofit.Builder = Retrofit.Builder()
                 .baseUrl(BASE_URL)

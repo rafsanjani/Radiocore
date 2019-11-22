@@ -28,8 +28,6 @@ import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 class StreamPlayer private constructor(context: Context) : EventListener, LifecycleObserver {
-    private val TAG = this::class.java.simpleName
-
     companion object {
         private var instance: WeakReference<StreamPlayer>? = null
         private var mStreamMetadataListener: StreamMetadataListener? = null
