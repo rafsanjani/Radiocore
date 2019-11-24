@@ -33,16 +33,16 @@
             android:label="@string/activity_news_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.foreverrafs.radiocore.activity.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <!--        <activity-->
+        <!--            android:name="com.foreverrafs.radiocore.activity.SplashActivity"-->
+        <!--            android:screenOrientation="portrait"-->
+        <!--            android:theme="@style/AppTheme.SplashTheme">-->
+        <!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <action android:name="android.intent.action.MAIN" />&ndash;&gt;-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!--            &lt;!&ndash;                <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+        <!--        </activity>-->
         <activity
             android:name="com.foreverrafs.radiocore.activity.HomeActivity"
             android:launchMode="singleInstance"
@@ -51,7 +51,13 @@
         <activity
             android:name="com.foreverrafs.radiocore.activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name="com.foreverrafs.radiocore.service.AudioStreamingService" />
     </application>
