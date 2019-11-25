@@ -7,6 +7,15 @@ import android.content.SharedPreferences
 import org.joda.time.DateTime
 
 class RadioPreferences(context: Context) {
+    companion object {
+        const val CACHE_STORAGE_TIME = "com.foreverrafs.radiocore.cache_storage_time"
+        private const val AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start"
+        private const val IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch"
+        private const val CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours"
+        private const val STREAMING_TIMER = "com.foreverrafs.radiocore.streaming_timer"
+        private const val CLEAN_SHUT_DOWN = "com.foreverrafs.radiocore.clean_shut_down"
+    }
+
     private val settings: SharedPreferences = context.getSharedPreferences("RadioCore", Context.MODE_PRIVATE)
 
     /**
@@ -78,14 +87,4 @@ class RadioPreferences(context: Context) {
     var cleanShutdown: Boolean
         get() = settings.getBoolean(CLEAN_SHUT_DOWN, false)
         set(value) = settings.edit().putBoolean(CLEAN_SHUT_DOWN, value).apply()
-
-
-    companion object {
-        const val CACHE_STORAGE_TIME = "com.foreverrafs.radiocore.cache_storage_time"
-        private const val AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start"
-        private const val IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch"
-        private const val CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours"
-        private const val STREAMING_TIMER = "com.foreverrafs.radiocore.streaming_timer"
-        private const val CLEAN_SHUT_DOWN = "com.foreverrafs.radiocore.clean_shut_down"
-    }
 }

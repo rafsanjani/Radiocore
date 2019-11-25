@@ -13,7 +13,7 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="@dimen/bottomsheet_peek_height"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:context=".activity.HomeActivity">
+    tools:context=".activity.MainFragment">
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
 
         android:layout_marginBottom="32dp"
         android:background="@color/colorPrimary"
-        android:theme="@style/CustomViews"
+        android:theme="@style/AppTheme.SeekBar"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/btnPlay"
         app:layout_constraintEnd_toEndOf="parent"

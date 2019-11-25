@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.foreverrafs.radiocore.R
-import com.foreverrafs.radiocore.activity.HomeActivity
+import com.foreverrafs.radiocore.activity.MainFragment
 import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.util.RadioPreferences
@@ -153,7 +153,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
      * TODO: Dynamically add play and pause buttons to notification
      */
     private fun createNotification(): Notification {
-        val contentIntent = Intent(this, HomeActivity::class.java)
+        val contentIntent = Intent(this, MainFragment::class.java)
         val playIntent = Intent(this, AudioStreamingService::class.java)
         val stopIntent = Intent(this, AudioStreamingService::class.java)
 //        val pauseIntent = Intent(this, AudioStreamingService::class.java)
@@ -235,7 +235,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
     }
 
     /**
-     * Send a result back to the Broadcast receiver of the calling activity_news_item_detail_pager, in this case (HomeActivity.java)
+     * Send a result back to the Broadcast receiver of the calling news_detail_viewpager, in this case (HomeActivity.java)
      * The result is basically the state of the stream audio and is usually one of STATUS_LOADING, STATUS_STOPPED or STATUS_PLAYING
      *
      * @param message which is an [AudioStreamingState]

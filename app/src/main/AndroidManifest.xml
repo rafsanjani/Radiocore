@@ -44,7 +44,7 @@
         <!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
         <!--        </activity>-->
         <activity
-            android:name="com.foreverrafs.radiocore.activity.HomeActivity"
+            android:name="com.foreverrafs.radiocore.activity.MainFragment"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -52,6 +52,16 @@
             android:name="com.foreverrafs.radiocore.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SplashTheme">
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
+
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".activity.HostActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

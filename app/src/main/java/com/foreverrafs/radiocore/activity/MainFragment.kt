@@ -8,14 +8,16 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Menu
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.foreverrafs.radiocore.R
@@ -23,7 +25,7 @@ import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
 import com.foreverrafs.radiocore.concurrency.SimpleObserver
 import com.foreverrafs.radiocore.fragment.AboutFragment
 import com.foreverrafs.radiocore.fragment.HomeFragment
-import com.foreverrafs.radiocore.fragment.NewsFragment
+import com.foreverrafs.radiocore.fragment.NewsListFragment
 import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.service.AudioStreamingService
 import com.foreverrafs.radiocore.service.AudioStreamingService.AudioStreamingState
@@ -42,7 +44,7 @@ import org.joda.time.Seconds
 import timber.log.Timber
 
 
-class HomeActivity : AppCompatActivity(), View.OnClickListener {
+class MainFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
@@ -69,16 +71,16 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     private var mCompositeDisposable: CompositeDisposable? = null
     private lateinit var mStreamPlayer: StreamPlayer
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.activity_home, container, false)
+    }
 
-        setContentView(R.layout.activity_home)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         btnSmallPlay.setOnClickListener(this)
         btnPlay.setOnClickListener(this)
 
         mCompositeDisposable = CompositeDisposable()
-        mStreamPlayer = StreamPlayer.getInstance(context = applicationContext)
+        mStreamPlayer = StreamPlayer.getInstance(context!!)
 
         initializeViews()
         setUpInitialPlayerState()
@@ -86,21 +88,43 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        setContentView(R.layout.activity_home)
+//
+//        btnSmallPlay.setOnClickListener(context!!)
+//        btnPlay.setOnClickListener(context!!)
+//
+//        mCompositeDisposable = CompositeDisposable()
+//        mStreamPlayer = StreamPlayer.getInstance(context = applicationContext)
+//
+//        initializeViews()
+//        setUpInitialPlayerState()
+//        setUpAudioStreamingServiceReceiver()
+//
+//    }
+
 
     private fun intiializeAudioVisualizer() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission()
         }
 
         setUpAudioVisualizer()
+
     }
 
     private fun initializeToolbar() {
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.title = getString(R.string.app_name)
-        }
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
     }
+
+//    private fun initializeToolbar() {
+//        activity.setSupportActionBar(toolbar)
+//        if (supportActionBar != null) {
+//            supportActionBar!!.title = getString(R.string.app_name)
+//        }
+//    }
 
     private fun initializeTabComponents() {
         setupViewPager(viewPager!!)
@@ -113,8 +137,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
         // set icon color pre-selected
         tabLayout.getTabAt(0)!!.icon!!.setTint(Color.RED)
-        tabLayout.getTabAt(1)!!.icon!!.setTint(ContextCompat.getColor(this, R.color.grey_20))
-        tabLayout.getTabAt(2)!!.icon!!.setTint(ContextCompat.getColor(this, R.color.grey_20))
+        tabLayout.getTabAt(1)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
+        tabLayout.getTabAt(2)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
 
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -127,7 +151,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 if (tab.position != 0)
-                    tab.icon!!.setTint(ContextCompat.getColor(applicationContext, R.color.grey_20))
+                    tab.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -142,9 +166,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
     private fun setUpInitialPlayerState() {
-        val radioPreferences = RadioPreferences(this)
+        val radioPreferences = RadioPreferences(context!!)
 
-        if (!Tools.isServiceRunning(AudioStreamingService::class.java, this)) {
+        if (!Tools.isServiceRunning(AudioStreamingService::class.java, context!!)) {
             if (radioPreferences.isAutoPlayOnStart)
                 startPlayback()
         } else {
@@ -173,7 +197,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
                     }
 
                     override fun onNext(strings: Array<out String?>) {
-                        val streamTimer = Integer.parseInt(RadioPreferences(this@HomeActivity).streamingTimer!!) * 3600
+                        val streamTimer = Integer.parseInt(RadioPreferences(context!!).streamingTimer!!) * 3600
                         val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
                         seekBarProgress.max = streamTimer
                         seekBarProgress.progress = currentPosition.seconds
@@ -185,27 +209,27 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startPlayback() {
-        val audioServiceIntent = Intent(this, AudioStreamingService::class.java)
+        val audioServiceIntent = Intent(context!!, AudioStreamingService::class.java)
         audioServiceIntent.action = Constants.ACTION_PLAY
-        ContextCompat.startForegroundService(this, audioServiceIntent)
+        ContextCompat.startForegroundService(context!!, audioServiceIntent)
     }
 
     private fun pausePlayback() {
-        val audioServiceIntent = Intent(this, AudioStreamingService::class.java)
+        val audioServiceIntent = Intent(context!!, AudioStreamingService::class.java)
         audioServiceIntent.action = Constants.ACTION_PAUSE
-        ContextCompat.startForegroundService(this, audioServiceIntent)
+        ContextCompat.startForegroundService(context!!, audioServiceIntent)
     }
 
     private fun stopPlayback() {
-        val audioServiceIntent = Intent(this, AudioStreamingService::class.java)
+        val audioServiceIntent = Intent(context!!, AudioStreamingService::class.java)
         audioServiceIntent.action = Constants.ACTION_STOP
-        ContextCompat.startForegroundService(this, audioServiceIntent)
+        ContextCompat.startForegroundService(context!!, audioServiceIntent)
     }
 
 
     override fun onStop() {
         super.onStop()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mAudioServiceBroadcastReceiver)
+        LocalBroadcastManager.getInstance(context!!).unregisterReceiver(mAudioServiceBroadcastReceiver)
     }
 
     override fun onDestroy() {
@@ -223,12 +247,12 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     /**
      * Initialize all views by findViewById or @Bind when using ButterKnife.
-     * Note: All view Initializing must be performed in this module or it's submodules
+     * Note: All view Initializing must be performed in context!! module or it's submodules
      */
     private fun initializeViews() {
-        val textAnimationIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left)
+        val textAnimationIn = AnimationUtils.loadAnimation(context!!, android.R.anim.slide_in_left)
 
-        val textAnimationOut = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right)
+        val textAnimationOut = AnimationUtils.loadAnimation(context!!, android.R.anim.slide_out_right)
 
         textSwitcherPlayerState.inAnimation = textAnimationIn
         textSwitcherPlayerState.outAnimation = textAnimationOut
@@ -244,14 +268,14 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setUpAudioVisualizer() {
-        val audioSessionId = StreamPlayer.getInstance(applicationContext).audioSessionId
+        val audioSessionId = StreamPlayer.getInstance(context!!).audioSessionId
         try {
             if (audioSessionId != -1) {
                 visualizer.setPlayer(audioSessionId)
                 with(visualizer) {
                     setDensity(0.8F)
                     setGap(2)
-                    setColor(ContextCompat.getColor(this@HomeActivity, R.color.orange_900))
+                    setColor(ContextCompat.getColor(context!!, R.color.orange_900))
                 }
             }
         } catch (exception: Exception) {
@@ -261,7 +285,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun requestAudioRecordingPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_RECORD_AUDIO)
+        ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_RECORD_AUDIO)
     }
 
 
@@ -353,39 +377,39 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
             AudioStreamingState.STATUS_PLAYING -> {
                 Timber.d("onAudioStreamingStateReceived: Playing")
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_play_pause_small)!!)
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause_small)!!)
 
                 intiializeAudioVisualizer()
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
                 textSwitcherPlayerState?.setText(getString(R.string.state_live))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.green_200))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.green_200))
             }
             AudioStreamingState.STATUS_STOPPED -> {
                 Timber.d("onAudioStreamingStateReceived: STOPPED")
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(applicationContext, R.drawable.avd_pause_play)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play_small)!!)
 
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 textSwitcherPlayerState.setText(getString(R.string.state_stopped))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_600))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
                 Timber.i("onAudioStreamingStateReceived: BUFFERING")
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.pink_200))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.pink_200))
                 Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
 
             AudioStreamingState.STATUS_PAUSED -> {
                 Timber.i("onAudioStreamingStateReceived: PAUSED")
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(this, R.drawable.avd_pause_play_small)!!)
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play_small)!!)
 
                 textSwitcherPlayerState.setText(getString(R.string.state_paused))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(this, R.color.yellow_400))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.yellow_400))
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
             }
 
@@ -394,9 +418,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun setupViewPager(viewPager: ViewPager) {
-        val viewPagerAdapter = HomeSectionsPagerAdapter(supportFragmentManager)
+        val viewPagerAdapter = HomeSectionsPagerAdapter(fragmentManager!!)
         viewPagerAdapter.addFragment(HomeFragment(), "Live")    // index 0
-        viewPagerAdapter.addFragment(NewsFragment(), "News")   // index 1
+        viewPagerAdapter.addFragment(NewsListFragment(), "News")   // index 1
         viewPagerAdapter.addFragment(AboutFragment(), "About")   // index 2
 
         viewPager.adapter = viewPagerAdapter
@@ -404,22 +428,26 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(this).registerReceiver(mAudioServiceBroadcastReceiver,
+        LocalBroadcastManager.getInstance(context!!).registerReceiver(mAudioServiceBroadcastReceiver,
                 IntentFilter(STREAM_RESULT)
         )
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.main, menu)
+//    }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(context!!, SettingsActivity::class.java))
         }
 
         return super.onOptionsItemSelected(item)
     }
+
 }

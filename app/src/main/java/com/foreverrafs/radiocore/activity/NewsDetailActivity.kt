@@ -13,7 +13,7 @@ class NewsDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_news_item_detail_pager)
+        setContentView(R.layout.news_detail_viewpager)
 
         getIncomingIntent()
 

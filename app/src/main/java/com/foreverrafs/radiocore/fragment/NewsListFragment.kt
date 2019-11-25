@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_news.*
 
 
 // Created by Emperor95 on 1/13/2019.
-class NewsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
 
