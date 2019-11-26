@@ -19,6 +19,6 @@ class MainActivity : AppCompatActivity() {
         Handler().postDelayed({
             startActivity(Intent(this, HostActivity::class.java))
             finish()
-        }, 800)
+        }, 500)
     }
 }
