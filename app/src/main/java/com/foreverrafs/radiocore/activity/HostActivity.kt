@@ -1,19 +1,15 @@
 package com.foreverrafs.radiocore.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import com.foreverrafs.radiocore.R
 
 class HostActivity : AppCompatActivity() {
-
-    lateinit var navController: NavController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navController = findNavController(R.id.nav_host_fragment)
         setContentView(R.layout.activity_host)
     }
 
@@ -23,10 +19,8 @@ class HostActivity : AppCompatActivity() {
         return true
     }
 
-    //    private fun initializeToolbar() {
-//        setSupportActionBar(toolbar)
-//        if (supportActionBar != null) {
-//            supportActionBar!!.title = getString(R.string.app_name)
-//        }
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        startActivity(Intent(this, SettingsActivity::class.java))
+        return true
+    }
 }

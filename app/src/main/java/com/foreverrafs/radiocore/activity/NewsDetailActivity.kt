@@ -17,7 +17,7 @@ class NewsDetailActivity : AppCompatActivity() {
 
         getIncomingIntent()
 
-        val newsPagerAdapter = NewsPagerAdapter(supportFragmentManager)
+        val newsPagerAdapter = NewsPagerAdapter(this)
         viewPager.offscreenPageLimit = 1
         viewPager.adapter = newsPagerAdapter
         viewPager.currentItem = mNewsPosition

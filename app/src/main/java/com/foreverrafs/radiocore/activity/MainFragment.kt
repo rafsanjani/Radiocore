@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -19,7 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
 import com.foreverrafs.radiocore.concurrency.SimpleObserver
@@ -36,6 +35,7 @@ import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_home.*
@@ -127,9 +127,15 @@ class MainFragment : Fragment(), View.OnClickListener {
 //    }
 
     private fun initializeTabComponents() {
-        setupViewPager(viewPager!!)
+        setupViewPager(viewPager)
 
-        tabLayout.setupWithViewPager(viewPager)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            when (position) {
+                1 -> getString(R.string.live)
+                2 -> getString(R.string.news)
+                3 -> getString(R.string.about)
+            }
+        }.attach()
 
         tabLayout.getTabAt(0)!!.setIcon(R.drawable.ic_radio_live)
         tabLayout.getTabAt(1)!!.setIcon(R.drawable.ic_news)
@@ -199,8 +205,8 @@ class MainFragment : Fragment(), View.OnClickListener {
                     override fun onNext(strings: Array<out String?>) {
                         val streamTimer = Integer.parseInt(RadioPreferences(context!!).streamingTimer!!) * 3600
                         val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
-                        seekBarProgress.max = streamTimer
-                        seekBarProgress.progress = currentPosition.seconds
+                        seekBarProgress?.max = streamTimer
+                        seekBarProgress?.progress = currentPosition.seconds
 
                         textStreamProgress?.text = strings[1]
                         textStreamDuration?.text = strings[0]
@@ -417,8 +423,8 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
 
-    private fun setupViewPager(viewPager: ViewPager) {
-        val viewPagerAdapter = HomeSectionsPagerAdapter(fragmentManager!!)
+    private fun setupViewPager(viewPager: ViewPager2) {
+        val viewPagerAdapter = HomeSectionsPagerAdapter(activity!!)
         viewPagerAdapter.addFragment(HomeFragment(), "Live")    // index 0
         viewPagerAdapter.addFragment(NewsListFragment(), "News")   // index 1
         viewPagerAdapter.addFragment(AboutFragment(), "About")   // index 2
@@ -441,13 +447,5 @@ class MainFragment : Fragment(), View.OnClickListener {
 //        menuInflater.inflate(R.menu.main, menu)
 //        return true
 //    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> startActivity(Intent(context!!, SettingsActivity::class.java))
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
 
 }

@@ -12,6 +12,11 @@
 
     <!--Acivity Titles-->
     <string name="activity_news_title">RadioCore News</string>
+
+    <!--    Tab Titles-->
+    <string name="live">Live</string>
+    <string name="about">About</string>
+    <string name="news">Live</string>
     <!--End of Activity Titles-->
 
     <!--End of Customizable String Entries-->

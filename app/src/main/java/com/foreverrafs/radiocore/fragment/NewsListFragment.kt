@@ -16,6 +16,7 @@ import com.foreverrafs.radiocore.activity.NewsDetailActivity
 import com.foreverrafs.radiocore.adapter.AnimationAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter.NewsItemClickListener
+import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.viewmodels.NewsViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -54,28 +55,51 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun getNewsData() {
-        viewModel.getAllNews().observe(this,
-                Observer { newsList ->
-                    if (!newsList.isNullOrEmpty()) {
+        val observer: Observer<List<News>> = Observer { list ->
+            if (!list.isNullOrEmpty()) {
 
-                        swipeRefreshLayout.visibility = View.VISIBLE
-                        contentNoConnection.visibility = View.INVISIBLE
+                swipeRefreshLayout.visibility = View.VISIBLE
+                contentNoConnection.visibility = View.INVISIBLE
 
-                        val adapter = NewsAdapter(newsList, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
-                        recyclerView.adapter = adapter
-                        setUpNewsItemClickListener(adapter)
+                val adapter = NewsAdapter(list, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+                recyclerView.adapter = adapter
+                setUpNewsItemClickListener(adapter)
 
-                    } else {
-                        contentNoConnection.visibility = View.VISIBLE
-                    }
+            } else {
+                contentNoConnection.visibility = View.VISIBLE
+            }
 
-                    //these views will be hidden either ways
-                    if (swipeRefreshLayout.isRefreshing) {
-                        swipeRefreshLayout.isRefreshing = false
-                    }
+            if (swipeRefreshLayout.isRefreshing) {
+                swipeRefreshLayout.isRefreshing = false
+            }
 
-                    progressBar.visibility = View.INVISIBLE
-                })
+            progressBar.visibility = View.INVISIBLE
+        }
+
+        viewModel.getAllNews().observe(this, observer)
+
+//        viewModel.getAllNews().observe(this,
+//                Observer { newsList ->
+//                    if (!newsList.isNullOrEmpty()) {
+//
+//                        swipeRefreshLayout.visibility = View.VISIBLE
+//                        contentNoConnection.visibility = View.INVISIBLE
+//
+//                        val adapter = NewsAdapter(newsList, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+//                        recyclerView.adapter = adapter
+//                        setUpNewsItemClickListener(adapter)
+//
+//                    } else {
+//                        contentNoConnection.visibility = View.VISIBLE
+//                    }
+//
+//                    //these views will be hidden either ways
+//                    if (swipeRefreshLayout.isRefreshing) {
+//                        swipeRefreshLayout.isRefreshing = false
+//                    }
+//
+//                    progressBar.visibility = View.INVISIBLE
+//                })
     }
 
 
