@@ -131,9 +131,9 @@ class MainFragment : Fragment(), View.OnClickListener {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
-                1 -> getString(R.string.live)
-                2 -> getString(R.string.news)
-                3 -> getString(R.string.about)
+                0 -> tab.text = resources.getString(R.string.live)
+                1 -> tab.text = resources.getString(R.string.news)
+                2 -> tab.text = resources.getString(R.string.about)
             }
         }.attach()
 
