@@ -86,51 +86,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/phone_and_value"
-        android:textAlignment="center"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarProgress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomSheetPlaybackItems">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/email_and_value"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        <ImageView
+            android:id="@+id/imageCentralLogo"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/desc_station_logo"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/website_and_value"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageCentralLogo" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/phone_and_value"
+            android:textAlignment="center" />
 
-    <ImageView
-        android:id="@+id/imageCentralLogo"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/desc_station_logo"
-        android:scaleType="fitXY"
-        android:src="@drawable/logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomSheetPlaybackItems" />
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/email_and_value"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/website_and_value"
+            android:textAlignment="center" />
+
+
+    </LinearLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomSheetPlaybackItems"
@@ -144,15 +146,16 @@
 
         <ImageView
             android:id="@+id/smallLogo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="2dp"
-            android:background="?selectableItemBackgroundBorderless"
+            android:layout_width="@dimen/bottom_image_width"
+            android:layout_height="@dimen/bottom_image_height"
+            android:layout_marginTop="@dimen/spacing_xsmall"
             android:contentDescription="@string/desc_small_logo"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/ic_launcher_round"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- This progress bar is constrained within the imageview so
+        it's height and width are determined by the height and width of the imageView -->
         <ProgressBar
             android:id="@+id/smallProgressBar"
             style="?android:attr/progressBarStyle"
@@ -171,6 +174,7 @@
             android:layout_width="@dimen/logo_small_size"
             android:layout_height="@dimen/logo_small_size"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="4dp"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back_small"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -179,14 +183,12 @@
 
         <ImageButton
             android:id="@+id/btnSmallPlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/small_play_size"
+            android:layout_height="@dimen/small_play_size"
             android:layout_gravity="center_vertical"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_small_play_button"
             android:cropToPadding="true"
-            android:maxWidth="30dp"
-            android:maxHeight="30dp"
             android:scaleType="center"
             android:src="@drawable/avd_play_pause_small"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -205,8 +207,8 @@
 
         <com.chibde.visualizer.SquareBarVisualizer
             android:id="@+id/visualizer"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/visualizer_width"
+            android:layout_height="@dimen/visualizer_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

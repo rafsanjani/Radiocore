@@ -3,7 +3,7 @@
     <!--Customizable String Entries. Change these values as appropriate-->
     <string name="app_name">RadioCore 999.9 FM</string>
     <string name="org_email">radiocore@foreverrafs.com</string>
-    <string name="org_phone">+233551234567</string>
+    <string name="org_phone">+441234567</string>
     <string name="live_radio_freq">Live Radio - 999.9FM</string>
     <string name="website_and_value">Website: https://www.foreverafs.com/radiocore</string>
     <string name="email_and_value">Email: radiocore@foreverrafs.com</string>
@@ -16,7 +16,7 @@
     <!--    Tab Titles-->
     <string name="live">Live</string>
     <string name="about">About</string>
-    <string name="news">Live</string>
+    <string name="news">News</string>
     <!--End of Activity Titles-->
 
     <!--End of Customizable String Entries-->

@@ -24,7 +24,7 @@
         android:id="@+id/tvMetaData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="135dp"
         android:ellipsize="marquee"
         android:fontFamily="@font/courgette"
         android:textAlignment="center"

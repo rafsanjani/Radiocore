@@ -22,6 +22,7 @@
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
+
     <style name="CardStyle.About">
         <item name="cardBackgroundColor">@color/grey_10</item>
     </style>

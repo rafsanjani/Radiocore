@@ -9,8 +9,8 @@
 
 
     <ImageView
-        android:layout_width="300dp"
-        android:layout_height="200dp"
+        android:layout_width="@dimen/splash_logo_width"
+        android:layout_height="@dimen/splash_logo_height"
         android:contentDescription="@string/desc_station_logo"
         android:scaleType="fitXY"
         android:src="@drawable/logo"
