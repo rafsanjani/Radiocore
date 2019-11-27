@@ -163,10 +163,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
         playIntent.action = Constants.ACTION_PLAY
 
         val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
-//        val pausePendingIntent = PendingIntent.getService(this, 6, pauseIntent, 0)
         val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
-//        val playPendingIntent = PendingIntent.getService(this, 8, playIntent, 0)
-
 
         val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Online Radio")
