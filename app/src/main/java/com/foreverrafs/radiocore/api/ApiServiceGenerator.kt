@@ -10,7 +10,7 @@ class ApiServiceGenerator {
 
         private val builder: Retrofit.Builder = Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(NewsGson.getInstance()))
+                .addConverterFactory(GsonConverterFactory.create(NewsGson.instance!!))
 
 
         fun <T> createService(serviceClass: Class<T>): T {
