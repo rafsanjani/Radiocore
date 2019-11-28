@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.NewsPagerAdapter
 import com.foreverrafs.radiocore.util.Constants
-import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.fragment_main.*
 
 class NewsDetailActivity : AppCompatActivity() {
     private var mNewsPosition: Int = 0

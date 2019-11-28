@@ -16,12 +16,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
 import com.foreverrafs.radiocore.concurrency.SimpleObserver
+import com.foreverrafs.radiocore.databinding.BottomSheetBinding
 import com.foreverrafs.radiocore.fragment.AboutFragment
 import com.foreverrafs.radiocore.fragment.HomeFragment
 import com.foreverrafs.radiocore.fragment.NewsListFragment
@@ -33,46 +36,37 @@ import com.foreverrafs.radiocore.util.Constants.STREAM_RESULT
 import com.foreverrafs.radiocore.util.RadioPreferences
 import com.foreverrafs.radiocore.util.Tools
 import com.foreverrafs.radiocore.util.Tools.animateButtonDrawable
+import com.foreverrafs.radiocore.viewmodels.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_main.*
 import org.joda.time.Seconds
 import timber.log.Timber
 
 
 class MainFragment : Fragment(), View.OnClickListener {
-    override fun onClick(view: View?) {
-        when (view?.id) {
-            R.id.btnSmallPlay, R.id.btnPlay -> {
-                Timber.i("onPlay: ${mAudioStreamingState.name}")
-
-                when (mAudioStreamingState) {
-                    AudioStreamingState.STATUS_PLAYING -> pausePlayback()
-                    AudioStreamingState.STATUS_PAUSED,
-                    AudioStreamingState.STATUS_STOPPED -> startPlayback()
-                    AudioStreamingState.STATUS_LOADING -> Timber.d("Loading")
-                }
-            }
-        }
-    }
-
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
     //let's assume nothing is playing when application starts
-    private var mAudioStreamingState: AudioStreamingState = AudioStreamingState.STATUS_STOPPED
+//    private var mAudioStreamingState: AudioStreamingState = AudioStreamingState.STATUS_STOPPED
 
 
     private var mSheetBehaviour: BottomSheetBehavior<*>? = null
     private var mCompositeDisposable: CompositeDisposable? = null
     private lateinit var mStreamPlayer: StreamPlayer
 
+    private val viewModel: HomeViewModel by lazy {
+        ViewModelProviders.of(this)[HomeViewModel::class.java]
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_home, container, false)
+        //val binding: FragmentMainBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,13 +79,12 @@ class MainFragment : Fragment(), View.OnClickListener {
         initializeViews()
         setUpInitialPlayerState()
         setUpAudioStreamingServiceReceiver()
-
     }
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //
-//        setContentView(R.layout.activity_home)
+//        setContentView(R.layout.fragment_main)
 //
 //        btnSmallPlay.setOnClickListener(context!!)
 //        btnPlay.setOnClickListener(context!!)
@@ -178,15 +171,15 @@ class MainFragment : Fragment(), View.OnClickListener {
             if (radioPreferences.isAutoPlayOnStart)
                 startPlayback()
         } else {
-            mAudioStreamingState = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
-                AudioStreamingState.STATUS_PLAYING
-            else
-                AudioStreamingState.STATUS_STOPPED
+            val state = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
+                AudioStreamingState.STATUS_PLAYING else AudioStreamingState.STATUS_STOPPED
+            viewModel.updatePlaybackState(state)
+//            else
+//                AudioStreamingState.STATUS_STOPPED
 
             val intent = Intent(STREAM_RESULT)
-            intent.putExtra(Constants.STREAMING_STATUS, mAudioStreamingState.toString())
+            intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString()) //mAudioStreamingState.toString())
             onAudioStreamingStateReceived(intent)
-
         }
     }
 
@@ -268,8 +261,6 @@ class MainFragment : Fragment(), View.OnClickListener {
         initializeToolbar()
         initializeBottomSheet()
 
-
-
         seekBarProgress.isEnabled = false
     }
 
@@ -311,7 +302,9 @@ class MainFragment : Fragment(), View.OnClickListener {
     private fun initializeBottomSheet() {
         mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet!!)
 
-        mSheetBehaviour!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        val binding: BottomSheetBinding? = DataBindingUtil.bind(layoutBottomSheet)
+        binding?.viewModel = viewModel
+        mSheetBehaviour!!.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     appBarLayout.setExpanded(false, true)
@@ -373,13 +366,14 @@ class MainFragment : Fragment(), View.OnClickListener {
      * Called when a broadcast is received from the AudioStreamingService so that the
      * UI can be resolved accordingly to correspond with the states
      *
-     * @param intent The intent received fromt he audio service (STATUS_PAUSED, STATUS_PLAYING ETC)
+     * @param intent The intent received from the audio service (STATUS_PAUSED, STATUS_PLAYING ETC)
      */
     private fun onAudioStreamingStateReceived(intent: Intent) {
         val receivedState = intent.getStringExtra(Constants.STREAMING_STATUS)
-        mAudioStreamingState = AudioStreamingState.valueOf(receivedState!!)
+        val state = AudioStreamingState.valueOf(receivedState!!)
+        viewModel.updatePlaybackState(state)
 
-        when (mAudioStreamingState) {
+        when (state) {
             AudioStreamingState.STATUS_PLAYING -> {
                 Timber.d("onAudioStreamingStateReceived: Playing")
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
@@ -419,6 +413,21 @@ class MainFragment : Fragment(), View.OnClickListener {
                 Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
             }
 
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when (view?.id) {
+            R.id.btnSmallPlay, R.id.btnPlay -> {
+                Timber.i("onPlay: ${viewModel.playbackState.value.toString()}")
+
+                when (viewModel.playbackState.value) {
+                    AudioStreamingState.STATUS_PLAYING -> pausePlayback()
+                    AudioStreamingState.STATUS_PAUSED,
+                    AudioStreamingState.STATUS_STOPPED -> startPlayback()
+                    AudioStreamingState.STATUS_LOADING -> Timber.d("Loading")
+                }
+            }
         }
     }
 

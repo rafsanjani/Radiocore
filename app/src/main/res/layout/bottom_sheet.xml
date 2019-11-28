@@ -1,247 +1,254 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--This view is contained within fragment_main.xml-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutBottomSheet"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:clickable="true"
-    android:focusable="true"
-    android:minHeight="65dp"
-    app:behavior_hideable="false"
-    app:behavior_peekHeight="@dimen/bottomsheet_peek_height"
-    app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:context=".activity.MainFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center_vertical"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/desc_prev_button"
-        android:src="@drawable/ic_back"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
-        app:layout_constraintEnd_toStartOf="@+id/btnPlay"
-        app:layout_constraintTop_toTopOf="@+id/btnPlay" />
+    <data>
 
-    <ImageButton
-        android:id="@+id/btnPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:adjustViewBounds="true"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/desc_play_button"
-        android:src="@drawable/avd_play_pause"
-        android:tint="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/textSwitcherPlayerState"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/next_button_desc"
-        android:src="@drawable/ic_next"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
-        app:layout_constraintStart_toEndOf="@+id/btnPlay"
-        app:layout_constraintTop_toTopOf="@+id/btnPlay" />
-
-    <TextView
-        android:id="@+id/textStreamDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="8dp"
-        android:text="@string/timer_default"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textStreamProgress" />
-
-    <TextView
-        android:id="@+id/textStreamProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/timer_default"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarProgress" />
-
-    <SeekBar
-        android:id="@+id/seekBarProgress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_marginBottom="32dp"
-        android:background="@color/colorPrimary"
-        android:theme="@style/AppTheme.SeekBar"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/btnPlay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarProgress"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottomSheetPlaybackItems">
-
-        <ImageView
-            android:id="@+id/imageCentralLogo"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="100dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/desc_station_logo"
-            android:scaleType="fitXY"
-            android:src="@drawable/logo" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/phone_and_value"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/email_and_value"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/website_and_value"
-            android:textAlignment="center" />
-
-
-    </LinearLayout>
-
+        <variable
+            name="viewModel"
+            type="com.foreverrafs.radiocore.viewmodels.HomeViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bottomSheetPlaybackItems"
+        android:id="@+id/layoutBottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="65dp"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="@dimen/bottomsheet_peek_height"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        tools:context=".activity.MainFragment">
 
-        <ImageView
-            android:id="@+id/smallLogo"
-            android:layout_width="@dimen/bottom_image_width"
-            android:layout_height="@dimen/bottom_image_height"
-            android:layout_marginTop="@dimen/spacing_xsmall"
-            android:contentDescription="@string/desc_small_logo"
-            android:src="@mipmap/ic_launcher_round"
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_prev_button"
+            android:src="@drawable/ic_back"
+            app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
+            app:layout_constraintEnd_toStartOf="@+id/btnPlay"
+            app:layout_constraintTop_toTopOf="@+id/btnPlay" />
+
+        <ImageButton
+            android:id="@+id/btnPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_play_button"
+            android:src="@drawable/avd_play_pause"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/textSwitcherPlayerState"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/next_button_desc"
+            android:src="@drawable/ic_next"
+            app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
+            app:layout_constraintStart_toEndOf="@+id/btnPlay"
+            app:layout_constraintTop_toTopOf="@+id/btnPlay" />
+
+        <TextView
+            android:id="@+id/textStreamDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            android:text="@string/timer_default"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textStreamProgress" />
+
+        <TextView
+            android:id="@+id/textStreamProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/timer_default"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/seekBarProgress" />
 
-        <!-- This progress bar is constrained within the imageview so
-        it's height and width are determined by the height and width of the imageView -->
-        <ProgressBar
-            android:id="@+id/smallProgressBar"
-            style="?android:attr/progressBarStyle"
+        <SeekBar
+            android:id="@+id/seekBarProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="32dp"
+            android:background="@color/colorPrimary"
+            android:theme="@style/AppTheme.SeekBar"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/btnPlay"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/smallLogo"
-            app:layout_constraintEnd_toEndOf="@+id/smallLogo"
-            app:layout_constraintStart_toStartOf="@id/smallLogo"
-            app:layout_constraintTop_toTopOf="@id/smallLogo"
-            app:layout_constraintVertical_bias="0.48000002"
-            tools:visibility="visible" />
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/seekBarProgress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottomSheetPlaybackItems">
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="@dimen/logo_small_size"
-            android:layout_height="@dimen/logo_small_size"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_back_small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/smallLogo"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/imageCentralLogo"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="100dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/desc_station_logo"
+                android:scaleType="fitXY"
+                android:src="@drawable/logo" />
 
-        <ImageButton
-            android:id="@+id/btnSmallPlay"
-            android:layout_width="@dimen/small_play_size"
-            android:layout_height="@dimen/small_play_size"
-            android:layout_gravity="center_vertical"
-            android:background="?selectableItemBackgroundBorderless"
-            android:contentDescription="@string/desc_small_play_button"
-            android:cropToPadding="true"
-            android:scaleType="center"
-            android:src="@drawable/avd_play_pause_small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/phone_and_value"
+                android:textAlignment="center" />
 
-        <ImageButton
-            android:layout_width="@dimen/logo_small_size"
-            android:layout_height="@dimen/logo_small_size"
-            android:layout_gravity="center_vertical"
-            android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_next_small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnSmallPlay"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/email_and_value"
+                android:textAlignment="center" />
 
-        <com.chibde.visualizer.SquareBarVisualizer
-            android:id="@+id/visualizer"
-            android:layout_width="@dimen/visualizer_width"
-            android:layout_height="@dimen/visualizer_height"
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/website_and_value"
+                android:textAlignment="center" />
+
+
+        </LinearLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomSheetPlaybackItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/smallLogo"
+                android:layout_width="@dimen/bottom_image_width"
+                android:layout_height="@dimen/bottom_image_height"
+                android:layout_marginTop="@dimen/spacing_xsmall"
+                android:contentDescription="@string/desc_small_logo"
+                android:src="@mipmap/ic_launcher_round"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- This progress bar is constrained within the imageview so
+            it's height and width are determined by the height and width of the imageView -->
+            <ProgressBar
+                android:id="@+id/smallProgressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:hideIfLoading="@{viewModel.playbackState}"
+                app:layout_constraintBottom_toBottomOf="@id/smallLogo"
+                app:layout_constraintEnd_toEndOf="@+id/smallLogo"
+                app:layout_constraintStart_toStartOf="@id/smallLogo"
+                app:layout_constraintTop_toTopOf="@id/smallLogo"
+                app:layout_constraintVertical_bias="0.48000002"
+                tools:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="@dimen/logo_small_size"
+                android:layout_height="@dimen/logo_small_size"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="4dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/smallLogo"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btnSmallPlay"
+                android:layout_width="@dimen/small_play_size"
+                android:layout_height="@dimen/small_play_size"
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/desc_small_play_button"
+                android:cropToPadding="true"
+                android:scaleType="center"
+                android:src="@drawable/avd_play_pause_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:layout_width="@dimen/logo_small_size"
+                android:layout_height="@dimen/logo_small_size"
+                android:layout_gravity="center_vertical"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_next_small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnSmallPlay"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.chibde.visualizer.SquareBarVisualizer
+                android:id="@+id/visualizer"
+                android:layout_width="@dimen/visualizer_width"
+                android:layout_height="@dimen/visualizer_height"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextSwitcher
+            android:id="@+id/textSwitcherPlayerState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="@string/state_buffering"
+                android:textColor="@color/pink_600"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:singleLine="true"
+                android:text="@string/state_buffering"
+                android:textColor="@color/green_200"
+                android:textSize="17sp" />
+        </TextSwitcher>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextSwitcher
-        android:id="@+id/textSwitcherPlayerState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="@string/state_buffering"
-            android:textColor="@color/pink_600"
-            android:textSize="17sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="@string/state_buffering"
-            android:textColor="@color/green_200"
-            android:textSize="17sp" />
-    </TextSwitcher>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
