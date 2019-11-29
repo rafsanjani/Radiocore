@@ -17,7 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.foreverrafs.radiocore.R
-import com.foreverrafs.radiocore.activity.MainFragment
+import com.foreverrafs.radiocore.fragment.MainFragment
 import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.util.Constants
 import com.foreverrafs.radiocore.util.RadioPreferences

@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.activity
+package com.foreverrafs.radiocore.fragment
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -25,9 +25,6 @@ import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.adapter.HomeSectionsPagerAdapter
 import com.foreverrafs.radiocore.concurrency.SimpleObserver
 import com.foreverrafs.radiocore.databinding.BottomSheetBinding
-import com.foreverrafs.radiocore.fragment.AboutFragment
-import com.foreverrafs.radiocore.fragment.HomeFragment
-import com.foreverrafs.radiocore.fragment.NewsListFragment
 import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.service.AudioStreamingService
 import com.foreverrafs.radiocore.service.AudioStreamingService.AudioStreamingState
