@@ -1,5 +1,6 @@
 package com.foreverrafs.radiocore.fragment
 
+import android.animation.AnimatorInflater
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.foreverrafs.radiocore.databinding.FragmentHomeBinding
 import com.foreverrafs.radiocore.player.StreamMetadataListener
 import com.foreverrafs.radiocore.player.StreamPlayer
 import com.foreverrafs.radiocore.viewmodels.HomeViewModel
+import kotlinx.android.synthetic.main.fragment_home.*
 import timber.log.Timber
 
 
@@ -42,41 +44,21 @@ class HomeFragment : Fragment(), StreamMetadataListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        val slideRight = AnimationUtils.loadAnimation(context, R.anim.text_slide_right)
-//        val slideLeft = AnimationUtils.loadAnimation(context, R.anim.text_slide_left)
-//        val slideToOrigin = AnimationUtils.loadAnimation(context, R.anim.text_slide_to_origin)
-//        slideRight.setAnimationListener(object : Animation.AnimationListener {
-//            override fun onAnimationRepeat(p0: Animation?) {
-//
-//            }
-//
-//            override fun onAnimationEnd(p0: Animation?) {
-//                tvMetaData.clearAnimation()
-//                tvMetaData.animation = slideLeft
-//            }
-//
-//            override fun onAnimationStart(p0: Animation?) {
-//            }
-//        })
-//
-//        slideLeft.setAnimationListener(object : Animation.AnimationListener {
-//            override fun onAnimationRepeat(p0: Animation?) {
-//
-//            }
-//
-//            override fun onAnimationEnd(p0: Animation?) {
-//                tvMetaData.clearAnimation()
-//                tvMetaData.animation = slideToOrigin
-//
-//            }
-//
-//            override fun onAnimationStart(p0: Animation?) {
-//
-//            }
-//        })
-
-
         StreamPlayer.getInstance(activity!!.applicationContext).addMetadataListener(this)
+
+        startAnimations()
+    }
+
+    private fun startAnimations() {
+        val metadataAnimation = AnimatorInflater.loadAnimator(activity, R.animator.metadata_anim_set)
+        val logoAnimation = AnimatorInflater.loadAnimator(activity, R.animator.scale)
+
+        metadataAnimation.setTarget(tvMetaData)
+        logoAnimation.setTarget(imageCentralLogo)
+
+
+        logoAnimation.start()
+        metadataAnimation.start()
     }
 
 

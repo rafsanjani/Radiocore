@@ -11,7 +11,6 @@ import timber.log.Timber
 class PersistNewsWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
         val appContext = applicationContext
-
         val newsDao = NewsDatabase.getInstance(appContext).newsDao()
         val newsItemsList = NewsRepository.getInstance().radioCoreNews
 

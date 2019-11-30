@@ -21,7 +21,7 @@
         app:behavior_hideable="false"
         app:behavior_peekHeight="@dimen/bottomsheet_peek_height"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        tools:context=".activity.MainFragment">
+        tools:context=".fragment.MainFragment">
 
         <ImageButton
             android:layout_width="wrap_content"

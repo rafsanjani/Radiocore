@@ -19,6 +19,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imageCentralLogo"
             android:layout_width="@dimen/splash_logo_width"
             android:layout_height="@dimen/splash_logo_height"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
@@ -32,7 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="120dp"
-            android:ellipsize="marquee"
             android:fontFamily="@font/courgette"
             android:text="@{viewmodel.metaData}"
             android:textAlignment="center"

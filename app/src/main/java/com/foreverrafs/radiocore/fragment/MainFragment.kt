@@ -78,23 +78,6 @@ class MainFragment : Fragment(), View.OnClickListener {
         setUpAudioStreamingServiceReceiver()
     }
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        setContentView(R.layout.fragment_main)
-//
-//        btnSmallPlay.setOnClickListener(context!!)
-//        btnPlay.setOnClickListener(context!!)
-//
-//        mCompositeDisposable = CompositeDisposable()
-//        mStreamPlayer = StreamPlayer.getInstance(context = applicationContext)
-//
-//        initializeViews()
-//        setUpInitialPlayerState()
-//        setUpAudioStreamingServiceReceiver()
-//
-//    }
-
 
     private fun intiializeAudioVisualizer() {
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -108,13 +91,6 @@ class MainFragment : Fragment(), View.OnClickListener {
     private fun initializeToolbar() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
     }
-
-//    private fun initializeToolbar() {
-//        activity.setSupportActionBar(toolbar)
-//        if (supportActionBar != null) {
-//            supportActionBar!!.title = getString(R.string.app_name)
-//        }
-//    }
 
     private fun initializeTabComponents() {
         setupViewPager(viewPager)
