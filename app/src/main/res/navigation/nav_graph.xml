@@ -6,19 +6,9 @@
     app:startDestination="@id/main_fragment">
     <fragment
         android:id="@+id/main_fragment"
-        android:name="com.foreverrafs.radiocore.activity.MainFragment"
+        android:name="com.foreverrafs.radiocore.fragment.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/activity_home">
-        <action
-            android:id="@+id/action_main_fragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <!--            app:enterAnim="@anim/slide_in_right"-->
-        <!--            app:exitAnim="@anim/slide_out_left"-->
-        <!--            app:popEnterAnim="@anim/slide_in_left"-->
-        <!--            app:popExitAnim="@anim/slide_out_right" />-->
+        tools:layout="@layout/fragment_main">
     </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.foreverrafs.radiocore.activity.SettingsFragment"
-        android:label="Settings Fragment" />
+
 </navigation>
