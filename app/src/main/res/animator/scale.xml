@@ -3,11 +3,13 @@
     android:ordering="together">
     <objectAnimator
         android:duration="1500"
+        android:interpolator="@android:anim/bounce_interpolator"
         android:propertyName="scaleX"
         android:valueFrom="0.0"
         android:valueTo="1.0"
         android:valueType="floatType" />
     <objectAnimator
+        android:interpolator="@android:anim/bounce_interpolator"
         android:duration="1500"
         android:propertyName="scaleY"
         android:valueFrom="0.0"
