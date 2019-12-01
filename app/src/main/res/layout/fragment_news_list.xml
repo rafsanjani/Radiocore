@@ -7,30 +7,17 @@
     android:background="@color/grey_5">
 
 
-    <include
-        android:id="@+id/contentNoConnection"
-        layout="@layout/content_no_connection"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="60dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/swipeRefreshLayout"
-        app:layout_constraintStart_toStartOf="@+id/swipeRefreshLayout"
-        app:layout_constraintTop_toTopOf="@+id/swipeRefreshLayout"
-        tools:visibility="invisible" />
-
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/progressBar"
         android:layout_width="200dp"
         android:layout_height="100dp"
-        android:visibility="visible"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="65dp"
         android:src="@drawable/loading"
-        app:layout_constraintBottom_toBottomOf="@+id/contentNoConnection"
-        app:layout_constraintEnd_toEndOf="@+id/contentNoConnection"
-        app:layout_constraintStart_toStartOf="@+id/contentNoConnection"
-        app:layout_constraintTop_toTopOf="@+id/swipeRefreshLayout" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -54,4 +41,17 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include
+        android:id="@+id/contentNoConnection"
+        layout="@layout/content_no_connection"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="65dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>
