@@ -45,7 +45,10 @@ class HomeFragment : Fragment(), StreamMetadataListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         StreamPlayer.getInstance(activity!!.applicationContext).addMetadataListener(this)
+    }
 
+    override fun onResume() {
+        super.onResume()
         startAnimations()
     }
 
