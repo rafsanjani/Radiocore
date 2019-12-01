@@ -51,13 +51,15 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
         return liveData(Dispatchers.IO) {
             val data = repository.fetchNews()
-            //keep this inside our repository
-            NewsRepository.getInstance().radioCoreNews = data
 
-            //save to localstorage if we fetched from online
-            if (repository is RemoteNews)
-                saveNewsToLocalStorage()
+            //keep this inside our repository if it's not empty
+            if (!data.isNullOrEmpty()) {
+                NewsRepository.getInstance().radioCoreNews = data
 
+                //save to localstorage if we fetched from online
+                if (repository is RemoteNews)
+                    saveNewsToLocalStorage()
+            }
             emit(data)
         }
     }
