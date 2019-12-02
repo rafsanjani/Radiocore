@@ -78,29 +78,6 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         viewModel.getAllNews().observe(this, observer)
-
-        viewModel.getAllNews().observe(this,
-                Observer { newsList ->
-                    if (!newsList.isNullOrEmpty()) {
-
-                        swipeRefreshLayout.visibility = View.VISIBLE
-                        contentNoConnection.visibility = View.INVISIBLE
-
-                        val adapter = NewsAdapter(newsList, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
-                        recyclerView.adapter = adapter
-                        setUpNewsItemClickListener(adapter)
-
-                    } else {
-                        contentNoConnection.visibility = View.VISIBLE
-                    }
-
-                    //these views will be hidden either ways
-                    if (swipeRefreshLayout.isRefreshing) {
-                        swipeRefreshLayout.isRefreshing = false
-                    }
-
-                    progressBar.visibility = View.INVISIBLE
-                })
     }
 
 

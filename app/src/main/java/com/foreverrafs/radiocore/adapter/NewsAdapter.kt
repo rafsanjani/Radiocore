@@ -13,25 +13,16 @@ import com.foreverrafs.radiocore.model.News
 import kotlinx.android.synthetic.main.item_news__.view.*
 import kotlinx.android.synthetic.main.item_news_header__.view.*
 import org.joda.time.format.DateTimeFormat
-import java.util.*
 
 
-class NewsAdapter : AnimationAdapter {
+class NewsAdapter(val list: List<News>, type: AnimationType, duration: Int) : AnimationAdapter(type, duration) {
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_NEWS_ITEM = 1
     }
 
-    private var newsList: List<News>
     private var listener: NewsItemClickListener? = null
 
-    constructor(list: List<News>, type: AnimationType, duration: Int) : super(type, duration) {
-        this.newsList = list
-    }
-
-    constructor() : super(AnimationType.LEFT_RIGHT, 200) {
-        this.newsList = ArrayList()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == VIEW_TYPE_HEADER) {
@@ -48,7 +39,7 @@ class NewsAdapter : AnimationAdapter {
     }
 
     override fun getItemCount(): Int {
-        return newsList.size
+        return list.size
     }
 
 
@@ -60,7 +51,7 @@ class NewsAdapter : AnimationAdapter {
      * {@inheritDoc}
      */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val newsItem = newsList[position]
+        val newsItem = list[position]
 
         when (holder.itemViewType) {
             VIEW_TYPE_NEWS_ITEM -> (holder as NewsHolder).bind(newsItem)
@@ -74,8 +65,8 @@ class NewsAdapter : AnimationAdapter {
             return VIEW_TYPE_HEADER
         }
 
-        val currentItemDate = newsList[position].date
-        val pastItemDate = newsList[position - 1].date
+        val currentItemDate = list[position].date
+        val pastItemDate = list[position - 1].date
 
         return if (pastItemDate.year == currentItemDate.year &&
                 pastItemDate.monthOfYear == currentItemDate.monthOfYear &&
