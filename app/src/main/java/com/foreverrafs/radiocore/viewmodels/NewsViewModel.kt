@@ -8,6 +8,7 @@ import androidx.lifecycle.liveData
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.foreverrafs.radiocore.data.INewsManager
 import com.foreverrafs.radiocore.data.NewsRepository
 import com.foreverrafs.radiocore.data.local.LocalNews
 import com.foreverrafs.radiocore.data.remote.RemoteNews
@@ -49,9 +50,12 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
             RemoteNews()
         }
 
-        return liveData(Dispatchers.IO) {
-            val data = repository.fetchNews()
+        return emitNewsItems(repository)
+    }
 
+    private fun emitNewsItems(repository: INewsManager<News>): LiveData<List<News>> {
+        return liveData(Dispatchers.IO) {
+            var data = repository.fetchNews()
             //keep this inside our repository if it's not empty
             if (!data.isNullOrEmpty()) {
                 NewsRepository.getInstance().radioCoreNews = data
@@ -59,6 +63,9 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
                 //save to localstorage if we fetched from online
                 if (repository is RemoteNews)
                     saveNewsToLocalStorage()
+            } else {
+                data = RemoteNews().fetchNews()
+                saveNewsToLocalStorage()
             }
             emit(data)
         }
