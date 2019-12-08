@@ -64,6 +64,7 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
                 val adapter = NewsAdapter(list, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
                 recyclerView?.adapter = adapter
+
                 setUpNewsItemClickListener(adapter)
 
             } else {

@@ -9,10 +9,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.foreverrafs.radiocore.R
+import com.foreverrafs.radiocore.databinding.ItemNewsBinding
 import com.foreverrafs.radiocore.model.News
-import kotlinx.android.synthetic.main.item_news__.view.*
 import kotlinx.android.synthetic.main.item_news_header__.view.*
-import org.joda.time.format.DateTimeFormat
 
 
 class NewsAdapter(val list: List<News>, type: AnimationType, duration: Int) : AnimationAdapter(type, duration) {
@@ -22,20 +21,27 @@ class NewsAdapter(val list: List<News>, type: AnimationType, duration: Int) : An
     }
 
     private var listener: NewsItemClickListener? = null
+    private var mHeaders: Int = 0
+    private var isPreviousHeader: Boolean = false
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        var view: View = View(parent.context)
+
         if (viewType == VIEW_TYPE_HEADER) {
-            val view = LayoutInflater.from(parent.context)
+            view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_news_header__, parent, false)
             return NewsHeaderHolder(view)
         } else if (viewType == VIEW_TYPE_NEWS_ITEM) {
-            val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_news__, parent, false)
-            return NewsHolder(view)
+
+            val inflater = LayoutInflater.from(parent.context)
+
+            val itemBinding = ItemNewsBinding.inflate(inflater, parent, false)
+            return NewsHolder(itemBinding)
         }
 
-        return NewsHolder(parent)
+        //let's hope that it doesn't get to this
+        return NewsHeaderHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -51,11 +57,17 @@ class NewsAdapter(val list: List<News>, type: AnimationType, duration: Int) : An
      * {@inheritDoc}
      */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val newsItem = list[position]
+        val newsItem = list[if (isPreviousHeader) position - 1 else position]
 
         when (holder.itemViewType) {
-            VIEW_TYPE_NEWS_ITEM -> (holder as NewsHolder).bind(newsItem)
-            VIEW_TYPE_HEADER -> (holder as NewsHeaderHolder).bind(newsItem)
+            VIEW_TYPE_NEWS_ITEM -> {
+                isPreviousHeader = false
+                (holder as NewsHolder).bind(newsItem)
+            }
+            VIEW_TYPE_HEADER -> {
+                isPreviousHeader = true
+                (holder as NewsHeaderHolder).bind(newsItem)
+            }
         }
     }
 
@@ -68,13 +80,15 @@ class NewsAdapter(val list: List<News>, type: AnimationType, duration: Int) : An
         val currentItemDate = list[position].date
         val pastItemDate = list[position - 1].date
 
-        return if (pastItemDate.year == currentItemDate.year &&
+        if (pastItemDate.year == currentItemDate.year &&
                 pastItemDate.monthOfYear == currentItemDate.monthOfYear &&
                 pastItemDate.dayOfMonth == currentItemDate.dayOfMonth) {
-            VIEW_TYPE_NEWS_ITEM
-        } else {
-            VIEW_TYPE_HEADER
+            return VIEW_TYPE_NEWS_ITEM
+        } else if (!isPreviousHeader) {
+            isPreviousHeader = true
+            return VIEW_TYPE_HEADER
         }
+        return VIEW_TYPE_NEWS_ITEM
     }
 
     /**
@@ -91,26 +105,23 @@ class NewsAdapter(val list: List<News>, type: AnimationType, duration: Int) : An
     }
 
 
-    internal inner class NewsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal inner class NewsHolder(var binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(newsItem: News) {
-            val formatter = DateTimeFormat.forPattern("MMMM d, yyyy")
+            binding.newsItem = newsItem
+            binding.executePendingBindings()
 
-            itemView.tvDate.text = newsItem.date.toString(formatter)
-            itemView.tvHeadline.text = newsItem.headline
-            itemView.tvCategory.text = newsItem.category
-
-
-            Glide.with(itemView)
+            Glide.with(binding.image)
                     .load(newsItem.imageUrl)
                     .error(R.drawable.newsimage)
                     .placeholder(R.drawable.newsimage)
                     .centerCrop()
-                    .into(itemView.image)
+                    .into(binding.image)
 
-            itemView.image.transitionName = newsItem.imageUrl
+            binding.image.transitionName = newsItem.imageUrl
 
-            itemView.setOnClickListener { listener?.onNewsItemClicked(adapterPosition, itemView.image) }
+            itemView.rootView.setOnClickListener { listener?.onNewsItemClicked(adapterPosition, binding.image) }
             setAnimation(itemView, adapterPosition)
         }
     }
+
 }

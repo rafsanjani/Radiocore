@@ -1,68 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CardStyle"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="newsItem"
+            type="com.foreverrafs.radiocore.model.News" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        style="@style/CardStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:adjustViewBounds="false"
-            android:contentDescription="@string/desc_news_image"
-            android:cropToPadding="false"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_newspaper"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvHeadline"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:lines="3"
-            android:text="@string/news_custom_headline"
-            android:textAllCaps="false"
-            android:textColor="@color/brown_900"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:typeface="sans"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.109"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:adjustViewBounds="false"
+                android:contentDescription="@string/desc_news_image"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_newspaper"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCategory"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/aldrich"
-            android:text="@string/news_custom_category"
-            android:textColor="@color/brown_600"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tvDate"
-            app:layout_constraintEnd_toEndOf="@+id/tvHeadline" />
+            <TextView
+                android:id="@+id/tvHeadline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:lines="3"
+                android:text="@{newsItem.headline}"
+                android:textAllCaps="false"
+                android:textColor="@color/brown_900"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.109"
+                app:layout_constraintStart_toEndOf="@+id/image"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/news_custom_headline" />
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="@string/news_custom_date"
-            android:textColor="@color/grey_900"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvHeadline" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/aldrich"
+                android:text="@{newsItem.category}"
+                android:textColor="@color/brown_600"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/tvDate"
+                app:layout_constraintEnd_toEndOf="@+id/tvHeadline"
+                tools:text="@string/news_custom_category" />
 
-</androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/grey_900"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:date="@{newsItem.date}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvHeadline"
+                tools:text="@string/news_custom_date" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

@@ -16,12 +16,13 @@ class PersistNewsWorker(context: Context, params: WorkerParameters) : Worker(con
         newsDao.clear()
 
         //store news items in localstore using room
-        newsItemsList.forEach { newsItem ->
+        newsItemsList?.forEach { newsItem ->
             newsDao.insert(newsItem)
         }
 
         Timber.i("Persisting ${newsItemsList.size} News Items to Local Storage")
 
         return Result.success()
+
     }
 }

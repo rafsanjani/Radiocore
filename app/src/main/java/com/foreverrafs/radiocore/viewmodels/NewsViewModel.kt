@@ -18,6 +18,7 @@ import com.foreverrafs.radiocore.util.RadioPreferences
 import com.foreverrafs.radiocore.workers.PersistNewsWorker
 import kotlinx.coroutines.Dispatchers
 import org.joda.time.DateTime
+
 import org.joda.time.Hours
 import timber.log.Timber
 
@@ -67,6 +68,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
                 data = RemoteNews().fetchNews()
                 saveNewsToLocalStorage()
             }
+            NewsRepository.getInstance().radioCoreNews = data
             emit(data)
         }
     }
