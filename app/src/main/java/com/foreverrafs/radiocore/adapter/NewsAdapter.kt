@@ -20,12 +20,14 @@ import org.joda.time.format.DateTimeFormat
 
 
 class NewsAdapter(val news: SectionedNews, type: AnimationType, duration: Int) : AnimationAdapter(type, duration), StickyHeaders {
-    var listItems: MutableList<Any> = mutableListOf()
-
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_NEWS_ITEM = 1
     }
+
+    var listItems: MutableList<Any> = mutableListOf()
+    private lateinit var listener: NewsItemClickListener
+
 
     init {
         listItems.addAll(news.list)
@@ -46,7 +48,6 @@ class NewsAdapter(val news: SectionedNews, type: AnimationType, duration: Int) :
         }
     }
 
-    private var listener: NewsItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var view = View(parent.context)
@@ -140,7 +141,7 @@ class NewsAdapter(val news: SectionedNews, type: AnimationType, duration: Int) :
 
             binding.image.transitionName = newsItem.imageUrl
 
-            itemView.rootView.setOnClickListener { listener?.onNewsItemClicked(adapterPosition, binding.image) }
+            itemView.rootView.setOnClickListener { listener.onNewsItemClicked(adapterPosition, binding.image) }
             setAnimation(itemView, adapterPosition)
         }
     }
