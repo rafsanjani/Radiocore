@@ -22,8 +22,9 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:fontFamily="@font/suez_one"
-            android:text="@string/news_custom_headline"
+            tools:text="@string/news_custom_headline"
             android:textSize="20sp"
             android:textStyle="bold"
             android:typeface="sans"
@@ -35,9 +36,10 @@
         <TextView
             android:id="@+id/text_category_label"
             android:layout_width="0dp"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Category:"
+            android:text="@string/category"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/tvCategory"
             app:layout_constraintTop_toTopOf="@+id/tvDate" />
@@ -45,8 +47,9 @@
         <TextView
             android:id="@+id/text_publishedon"
             android:layout_width="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_height="wrap_content"
-            android:text="Published:"
+            android:text="@string/published"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/tvDate"
             app:layout_constraintHorizontal_bias="0.0"
@@ -58,8 +61,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:justificationMode="inter_word"
-            android:text="@string/news_custom_category"
+            tools:text="@string/news_custom_category"
             android:textColor="@color/pink_A100"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="@+id/tvHeadline"
@@ -68,15 +72,17 @@
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="0dp"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="@string/news_custom_date"
+            tools:text="@string/news_custom_date"
             android:textStyle="bold|italic"
             app:layout_constraintStart_toEndOf="@+id/text_publishedon"
             app:layout_constraintTop_toBottomOf="@+id/tvHeadline" />
 
         <TextView
+            android:paddingBottom="@dimen/spacing_medium"
             android:id="@+id/tvContent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

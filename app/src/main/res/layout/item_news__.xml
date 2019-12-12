@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="newsItem"
             type="com.foreverrafs.radiocore.model.News" />
@@ -27,13 +26,14 @@
                 android:contentDescription="@string/desc_news_image"
                 android:cropToPadding="false"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_newspaper"
+                tools:src="@drawable/newsimage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvHeadline"
                 android:layout_width="0dp"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
@@ -43,7 +43,6 @@
                 android:textAllCaps="false"
                 android:textColor="@color/brown_900"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 android:typeface="sans"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.109"
@@ -59,7 +58,7 @@
                 android:text="@{newsItem.category}"
                 android:textColor="@color/brown_600"
                 android:textSize="12sp"
-                android:textStyle="bold"
+                style="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintBottom_toBottomOf="@+id/tvDate"
                 app:layout_constraintEnd_toEndOf="@+id/tvHeadline"
                 tools:text="@string/news_custom_category" />
@@ -71,6 +70,7 @@
                 android:layout_marginBottom="4dp"
                 android:textColor="@color/grey_900"
                 android:textSize="12sp"
+                style="@style/TextAppearance.MaterialComponents.Caption"
                 android:textStyle="italic"
                 app:date="@{newsItem.date}"
                 app:layout_constraintBottom_toBottomOf="parent"
