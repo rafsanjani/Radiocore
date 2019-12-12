@@ -79,9 +79,6 @@ dependencies {
     //google exoplayer for audio rendering
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
 
-    //for that fancy loading icon at the news tab
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
-
     //leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
 
@@ -120,5 +117,7 @@ dependencies {
     kapt "com.android.databinding:compiler:3.1.4"
 
     implementation "androidx.core:core-ktx:1.2.0-rc01"
+
+    implementation 'com.airbnb.android:lottie:3.3.1'
 
 }

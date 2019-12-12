@@ -20,7 +20,7 @@ class PersistNewsWorker(context: Context, params: WorkerParameters) : CoroutineW
             newsDao.insert(newsItem)
         }
 
-        Timber.i("Persisting ${newsItemsList.size} News Items to Local Storage")
+        Timber.i("Saving ${newsItemsList.size} News Items to Local Storage")
 
         return Result.success()
 

@@ -19,7 +19,6 @@ data class News(
         @ColumnInfo(name = "category") var category: String,
         @ColumnInfo(name = "imageUrl") var imageUrl: String
 
-
 ) : Parcelable {
         //our primary key definition
         @PrimaryKey(autoGenerate = true)

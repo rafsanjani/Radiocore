@@ -17,7 +17,9 @@ import com.foreverrafs.radiocore.adapter.AnimationAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter
 import com.foreverrafs.radiocore.adapter.NewsAdapter.NewsItemClickListener
 import com.foreverrafs.radiocore.model.News
+import com.foreverrafs.radiocore.model.SectionedNews
 import com.foreverrafs.radiocore.util.Constants
+import com.foreverrafs.radiocore.util.StickyHeadersLinearLayoutManager
 import com.foreverrafs.radiocore.viewmodels.NewsViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
@@ -46,7 +48,7 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnRetry.setOnClickListener {
             run {
                 contentNoConnection.visibility = View.INVISIBLE
-                progressBar.visibility = View.VISIBLE
+                loadingBar.visibility = View.VISIBLE
                 getNewsData()
             }
         }
@@ -62,7 +64,10 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 swipeRefreshLayout.visibility = View.VISIBLE
                 contentNoConnection.visibility = View.INVISIBLE
 
-                val adapter = NewsAdapter(list, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+                val x = SectionedNews(list)
+
+                val adapter = NewsAdapter(x, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+                recyclerView.layoutManager = StickyHeadersLinearLayoutManager<NewsAdapter>(requireContext())
                 recyclerView?.adapter = adapter
 
                 setUpNewsItemClickListener(adapter)
@@ -75,7 +80,7 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 swipeRefreshLayout.isRefreshing = false
             }
 
-            progressBar.visibility = View.INVISIBLE
+            loadingBar.visibility = View.INVISIBLE
         }
 
         viewModel.getAllNews().observe(this, observer)

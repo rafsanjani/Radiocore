@@ -28,10 +28,6 @@ class HomeFragment : Fragment(), StreamMetadataListener {
     override fun onMetadataReceived(metadata: String) {
         if (metadata.isNotEmpty() && metadata != data) {
             viewModel.updateStreamMetaData(metadata)
-//            tvMetaData.text = metadata
-//            data = metadata
-//                    tvMetaData.animation = slideRight
-//                    slideRight.start()
             Timber.i("onMetadataReceived: new metadata received")
         }
     }
@@ -45,10 +41,6 @@ class HomeFragment : Fragment(), StreamMetadataListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         StreamPlayer.getInstance(activity!!.applicationContext).addMetadataListener(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
         startAnimations()
     }
 
@@ -58,7 +50,6 @@ class HomeFragment : Fragment(), StreamMetadataListener {
 
         metadataAnimation.setTarget(tvMetaData)
         logoAnimation.setTarget(imageCentralLogo)
-
 
         logoAnimation.start()
         metadataAnimation.start()
