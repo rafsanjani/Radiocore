@@ -1,0 +1,28 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <!--genaral spacing-->
+    <dimen name="spacing_small">5dp</dimen>
+    <dimen name="spacing_medium">7dp</dimen>
+    <dimen name="spacing_large">20dp</dimen>
+    <dimen name="spacing_mlarge">25dp</dimen>
+    <dimen name="spacing_mxlarge">35dp</dimen>
+    <dimen name="spacing_xxxlarge">60dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_elevation">@dimen/card_margin</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="bottomsheet_peek_height">75dp</dimen>
+    <dimen name="logo_small_size">30dp</dimen>
+    <dimen name="btn_rounded_radius">20dp</dimen>
+    <dimen name="splash_logo_width">500dp</dimen>
+    <dimen name="splash_logo_height">300dp</dimen>
+
+    <dimen name="visualizer_width">160dp</dimen>
+    <dimen name="visualizer_height">60dp</dimen>
+    <dimen name="small_play_size">60dp</dimen>
+    <dimen name="bottom_image_width">40dp</dimen>
+    <dimen name="bottom_image_height">60dp</dimen>
+    <dimen name="spacing_xsmall">4dp</dimen>
+    <dimen name="news_line_spacing">30dp</dimen>
+    <dimen name="news_image_height">400dp</dimen>
+</resources>
