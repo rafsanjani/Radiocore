@@ -4,14 +4,14 @@
 
     <set android:ordering="together">
         <objectAnimator
-            android:duration="1000"
+            android:duration="500"
             android:propertyName="scaleX"
             android:valueFrom="0.3"
             android:valueTo="1"
             android:valueType="floatType" />
 
         <objectAnimator
-            android:duration="1000"
+            android:duration="500"
             android:propertyName="scaleY"
             android:valueFrom="0.3"
             android:valueTo="1"

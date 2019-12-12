@@ -7,13 +7,16 @@
     android:background="@color/grey_5">
 
 
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/progressBar"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingBar"
         android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="65dp"
-        android:src="@drawable/loading"
+        android:elevation="3dp"
+        app:lottie_autoPlay="true"
         android:visibility="visible"
+        app:lottie_fileName="loading_anim.json"
+        app:lottie_loop="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="4"
-            tools:listitem="@layout/item_news__"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            tools:listitem="@layout/item_news__" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include

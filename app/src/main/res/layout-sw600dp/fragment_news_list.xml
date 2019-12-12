@@ -20,12 +20,12 @@
         app:layout_constraintTop_toTopOf="@+id/swipeRefreshLayout"
         tools:visibility="invisible" />
 
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/progressBar"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingBar"
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:layout_marginBottom="100dp"
-        android:src="@drawable/loading"
+        app:lottie_fileName="loading_anim.json"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
