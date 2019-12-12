@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.util;
+package com.foreverrafs.stickyheaders;
 
 import android.view.View;
 
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Adds sticky headers capabilities to the {@link RecyclerView.Adapter}. Should return {@code true} for all
  * positions that represent sticky headers.
+ * src: https://github.com/Doist/RecyclerViewExtensions
  */
 public interface StickyHeaders {
     boolean isStickyHeader(int position);

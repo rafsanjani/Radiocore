@@ -19,8 +19,8 @@ import com.foreverrafs.radiocore.adapter.NewsAdapter.NewsItemClickListener
 import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.model.SectionedNews
 import com.foreverrafs.radiocore.util.Constants
-import com.foreverrafs.radiocore.util.StickyHeadersLinearLayoutManager
 import com.foreverrafs.radiocore.viewmodels.NewsViewModel
+import com.foreverrafs.stickyheaders.StickyHeadersLinearLayoutManager
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news_list.*

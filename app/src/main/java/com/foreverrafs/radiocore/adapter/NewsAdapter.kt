@@ -12,7 +12,7 @@ import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.databinding.ItemNewsBinding
 import com.foreverrafs.radiocore.model.News
 import com.foreverrafs.radiocore.model.SectionedNews
-import com.foreverrafs.radiocore.util.StickyHeaders
+import com.foreverrafs.stickyheaders.StickyHeaders
 import kotlinx.android.synthetic.main.item_news_header__.view.*
 import org.joda.time.DateTime
 import org.joda.time.Days

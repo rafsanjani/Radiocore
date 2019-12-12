@@ -1,4 +1,4 @@
-package com.foreverrafs.radiocore.util;
+package com.foreverrafs.stickyheaders;
 
 import android.content.Context;
 import android.graphics.PointF;
@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * Adds sticky headers capabilities to your {@link RecyclerView.Adapter}. It must implement {@link StickyHeaders} to
  * indicate which items are headers.
+ * src: https://github.com/Doist/RecyclerViewExtensions
  */
 public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & StickyHeaders>
         extends LinearLayoutManager {
@@ -158,7 +159,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
 
     @Override
     public void scrollToPosition(int position) {
-        scrollToPositionWithOffset(position, INVALID_OFFSET);
+        scrollToPositionWithOffset(position, LinearLayoutManager.INVALID_OFFSET);
     }
 
     @Override
@@ -168,7 +169,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
 
     private void scrollToPositionWithOffset(int position, int offset, boolean adjustForStickyHeader) {
         // Reset pending scroll.
-        setPendingScroll(RecyclerView.NO_POSITION, INVALID_OFFSET);
+        setPendingScroll(RecyclerView.NO_POSITION, LinearLayoutManager.INVALID_OFFSET);
 
         // Adjusting is disabled.
         if (!adjustForStickyHeader) {
@@ -191,7 +192,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
 
         // Current sticky header is the same as at the position. Adjust the scroll offset and reset pending scroll.
         if (mStickyHeader != null && headerIndex == findHeaderIndex(mStickyHeaderPosition)) {
-            int adjustedOffset = (offset != INVALID_OFFSET ? offset : 0) + mStickyHeader.getHeight();
+            int adjustedOffset = (offset != LinearLayoutManager.INVALID_OFFSET ? offset : 0) + mStickyHeader.getHeight();
             super.scrollToPositionWithOffset(position, adjustedOffset);
             return;
         }
@@ -424,7 +425,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
 
                     if (mPendingScrollPosition != RecyclerView.NO_POSITION) {
                         scrollToPositionWithOffset(mPendingScrollPosition, mPendingScrollOffset);
-                        setPendingScroll(RecyclerView.NO_POSITION, INVALID_OFFSET);
+                        setPendingScroll(RecyclerView.NO_POSITION, LinearLayoutManager.INVALID_OFFSET);
                     }
                 }
             });
@@ -436,7 +437,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
      */
     private void measureAndLayout(View stickyHeader) {
         measureChildWithMargins(stickyHeader, 0, 0);
-        if (getOrientation() == VERTICAL) {
+        if (getOrientation() == LinearLayoutManager.VERTICAL) {
             stickyHeader.layout(getPaddingLeft(), 0, getWidth() - getPaddingRight(), stickyHeader.getMeasuredHeight());
         } else {
             stickyHeader.layout(0, getPaddingTop(), stickyHeader.getMeasuredWidth(), getHeight() - getPaddingBottom());
@@ -478,7 +479,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
      */
     private boolean isViewValidAnchor(View view, RecyclerView.LayoutParams params) {
         if (!params.isItemRemoved() && !params.isViewInvalid()) {
-            if (getOrientation() == VERTICAL) {
+            if (getOrientation() == LinearLayoutManager.VERTICAL) {
                 if (getReverseLayout()) {
                     return view.getTop() + view.getTranslationY() <= getHeight() + mTranslationY;
                 } else {
@@ -500,7 +501,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
      * Returns true when the {@code view} is at the edge of the parent {@link RecyclerView}.
      */
     private boolean isViewOnBoundary(View view) {
-        if (getOrientation() == VERTICAL) {
+        if (getOrientation() == LinearLayoutManager.VERTICAL) {
             if (getReverseLayout()) {
                 return view.getBottom() - view.getTranslationY() > getHeight() + mTranslationY;
             } else {
@@ -520,7 +521,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
      * {@link android.R.attr#clipToPadding}.
      */
     private float getY(View headerView, View nextHeaderView) {
-        if (getOrientation() == VERTICAL) {
+        if (getOrientation() == LinearLayoutManager.VERTICAL) {
             float y = mTranslationY;
             if (getReverseLayout()) {
                 y += getHeight() - headerView.getHeight();
@@ -551,7 +552,7 @@ public class StickyHeadersLinearLayoutManager<T extends RecyclerView.Adapter & S
      * {@link android.R.attr#clipToPadding}.
      */
     private float getX(View headerView, View nextHeaderView) {
-        if (getOrientation() != VERTICAL) {
+        if (getOrientation() != LinearLayoutManager.VERTICAL) {
             float x = mTranslationX;
             if (getReverseLayout()) {
                 x += getWidth() - headerView.getWidth();
