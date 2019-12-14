@@ -3,7 +3,7 @@
 buildscript {
 
     ext {
-        kotlin_version = '1.3.60-eap-25'
+        kotlin_version = '1.3.61'
     }
     repositories {
         google()
