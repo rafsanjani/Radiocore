@@ -277,7 +277,7 @@ class MainFragment : Fragment(), View.OnClickListener {
         mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet!!)
 
         val binding: BottomSheetBinding? = DataBindingUtil.bind(layoutBottomSheet)
-        binding.viewModel = viewModel
+        binding?.viewModel = viewModel
         mSheetBehaviour!!.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {

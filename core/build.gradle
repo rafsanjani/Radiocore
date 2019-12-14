@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -49,16 +49,16 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
 
     //androidx media
-    implementation 'androidx.media:media:1.1.0'
+//    implementation 'androidx.media:media:1.1.0'
     
     //google exoplayer for audio rendering
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
+//    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
 
     //timber for logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     //lifecycle
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+//    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
 
     //material
