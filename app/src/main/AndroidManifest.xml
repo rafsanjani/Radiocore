@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.foreverrafs.radiocore">
+    package="com.radiocore.app">
 
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!--    Don't use usesCleartextTraffic="true" in production. use networkSecurityConfig="@xml/network_config" instead-->
     <application
-        android:name=".RadioCoreApp"
+        android:name="com.radiocore.app.RadioCoreApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -22,34 +23,33 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
-        <activity
-            android:name="com.foreverrafs.radiocore.activity.NewsDetailActivity"
 
+        <activity
+            android:name="com.radiocore.news.NewsDetailActivity"
             android:label="@string/activity_news_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.foreverrafs.radiocore.fragment.MainFragment"
+            android:name="com.radiocore.app.fragment.MainFragment"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.foreverrafs.radiocore.activity.SplashActivity"
+            android:name="com.radiocore.app.activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name="com.radiocore.app.activity.SettingsActivity" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.radiocore.app.activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="com.foreverrafs.radiocore.service.AudioStreamingService" />
+        <service android:name="com.radiocore.app.AudioStreamingService" />
     </application>
 
 

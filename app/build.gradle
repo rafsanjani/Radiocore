@@ -41,27 +41,27 @@ android {
 }
 
 dependencies {
-    implementation project(":stickyheaders")
+    implementation project(":player")
+    implementation project(":news")
+    implementation project(":core")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.2.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
-    implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.media:media:1.1.0'
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.60"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61"
 }
 
 dependencies {
     //networking libraries
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
+
 
 
     //JodaTime for date and time operations
@@ -73,9 +73,6 @@ dependencies {
     //firebase for crashlytics analysis
     implementation 'com.google.firebase:firebase-core:17.2.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-
-    //google gson for storing news items as json
-    implementation 'com.google.code.gson:gson:2.8.5'
 
     //google exoplayer for audio rendering
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
@@ -89,10 +86,6 @@ dependencies {
 
     //swipe to refresh
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
-
-    //Room database
-    implementation 'androidx.room:room-runtime:2.2.2'
-    kapt "android.arch.persistence.room:compiler:1.1.1"
 
     //Kotlin Android Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2"
@@ -110,15 +103,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03'
 
-    //worker
-    implementation "androidx.work:work-runtime-ktx:2.2.0"
-    androidTestImplementation "androidx.work:work-testing:2.2.0"
-
     //databinding
     kapt "com.android.databinding:compiler:3.1.4"
 
     implementation "androidx.core:core-ktx:1.2.0-rc01"
-
-    implementation 'com.airbnb.android:lottie:3.3.1'
-
 }

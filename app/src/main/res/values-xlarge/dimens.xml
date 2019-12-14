@@ -7,7 +7,6 @@
     <dimen name="spacing_large">20dp</dimen>
     <dimen name="spacing_mlarge">25dp</dimen>
     <dimen name="spacing_mxlarge">35dp</dimen>
-    <dimen name="spacing_xxxlarge">60dp</dimen>
     <dimen name="card_margin">8dp</dimen>
     <dimen name="card_elevation">@dimen/card_margin</dimen>
     <dimen name="card_corner_radius">8dp</dimen>

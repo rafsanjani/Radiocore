@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RadioCore.iml" filepath="$PROJECT_DIR$/RadioCore.iml" group="RadioCore" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="RadioCore/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" group="RadioCore/core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/news/news.iml" filepath="$PROJECT_DIR$/.idea/modules/news/news.iml" group="RadioCore/news" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/player/player.iml" filepath="$PROJECT_DIR$/.idea/modules/player/player.iml" group="RadioCore/player" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/stickyheaders/stickyheaders.iml" filepath="$PROJECT_DIR$/.idea/modules/stickyheaders/stickyheaders.iml" group="RadioCore/stickyheaders" />
     </modules>
   </component>
