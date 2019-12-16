@@ -1,6 +1,6 @@
 package com.radiocore.news.api
 
-import com.radiocore.news.util.NewsGson
+import com.radiocore.news.util.GsonConverters
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -10,7 +10,7 @@ class ApiServiceGenerator {
 
         private val builder: Retrofit.Builder = Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(NewsGson.instance!!))
+                .addConverterFactory(GsonConverterFactory.create(GsonConverters.instance!!))
 
         fun <T> createService(serviceClass: Class<T>): T {
             return builder.build().create(serviceClass)

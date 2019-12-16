@@ -28,7 +28,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
     private var hoursBeforeExpire: Int
     private var lastFetchedTime: DateTime
     private val appContext: Context = application.applicationContext
-    private lateinit var news: LiveData<List<com.radiocore.news.model.News>>
+    private lateinit var news: LiveData<List<News>>
 
     init {
         mPreferences = RadioPreferences(appContext)
@@ -37,7 +37,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //The viewmodel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
-    fun getAllNews(): LiveData<List<com.radiocore.news.model.News>> {
+    fun getAllNews(): LiveData<List<News>> {
         val elapsedHours = Hours.hoursBetween(lastFetchedTime, DateTime.now())
 
         val isCacheValid = (hoursBeforeExpire - elapsedHours.hours) >= 0
@@ -54,7 +54,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         return emitNewsItems(repository)
     }
 
-    private fun emitNewsItems(repository: INewsManager<News>): LiveData<List<com.radiocore.news.model.News>> {
+    private fun emitNewsItems(repository: INewsManager<News>): LiveData<List<News>> {
         return liveData(Dispatchers.IO) {
             var data = repository.fetchNews()
             //keep this inside our repository if it's not empty

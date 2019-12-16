@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.radiocore.news.model.News
 import com.radiocore.news.util.RoomTypeConverters
 
 
-@Database(entities = [com.radiocore.news.model.News::class], version = 1)
+@Database(entities = [News::class], version = 1)
 @TypeConverters(RoomTypeConverters::class)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao
@@ -23,7 +24,7 @@ abstract class NewsDatabase : RoomDatabase() {
                         .fallbackToDestructiveMigration().build()
             }
 
-            return instance as NewsDatabase
+            return instance!!
         }
     }
 }
