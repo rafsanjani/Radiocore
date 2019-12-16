@@ -14,9 +14,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.radiocore.core.util.Constants
 import com.radiocore.news.NewsDetailActivity
 import com.radiocore.news.R
-import com.radiocore.news.adapter.AnimationAdapter
 import com.radiocore.news.adapter.NewsAdapter
 import com.radiocore.news.adapter.NewsAdapter.NewsItemClickListener
+import com.radiocore.news.model.SectionedNews
 import com.radiocore.stickyheaders.StickyHeadersLinearLayoutManager
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_news_list.*
 
 
 // Created by Emperor95 on 1/13/2019.
-class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsItemClickListener {
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
 
@@ -61,13 +61,11 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 swipeRefreshLayout.visibility = View.VISIBLE
                 contentNoConnection.visibility = View.INVISIBLE
 
-                val x = com.radiocore.news.model.SectionedNews(list)
+                val sectionedNews = SectionedNews(list)
 
-                val adapter = NewsAdapter(x, AnimationAdapter.AnimationType.BOTTOM_UP, 150)
+                val adapter = NewsAdapter(sectionedNews, this)
                 recyclerView.layoutManager = StickyHeadersLinearLayoutManager<NewsAdapter>(requireContext())
                 recyclerView?.adapter = adapter
-
-                setUpNewsItemClickListener(adapter)
 
             } else {
                 contentNoConnection.visibility = View.VISIBLE
@@ -83,20 +81,6 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         viewModel.getAllNews().observe(this, observer)
     }
 
-
-    private fun setUpNewsItemClickListener(adapter: NewsAdapter) {
-        adapter.setOnNewsItemClickListener(object : NewsItemClickListener {
-            override fun onNewsItemClicked(position: Int, image: ImageView) {
-                val intent = Intent(context, NewsDetailActivity::class.java)
-                intent.putExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, position)
-                val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
-
-                startActivity(intent/*, options.toBundle()*/)
-            }
-        })
-
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         mCompositeDisposable.clear()
@@ -106,4 +90,11 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         getNewsData()
     }
 
+    override fun onNewsItemClicked(position: Int, image: ImageView) {
+        val intent = Intent(context, NewsDetailActivity::class.java)
+        intent.putExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, position)
+        val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
+
+        startActivity(intent/*, options.toBundle()*/)
+    }
 }

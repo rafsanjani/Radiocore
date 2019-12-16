@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.radiocore.news.R
@@ -16,19 +17,28 @@ import kotlinx.android.synthetic.main.item_news_header__.view.*
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.format.DateTimeFormat
+import timber.log.Timber
 
 
-class NewsAdapter(val news: SectionedNews, type: AnimationType, duration: Int) : AnimationAdapter(type, duration), StickyHeaders {
+class NewsAdapter(val news: SectionedNews, val fragment: Fragment) : AnimationAdapter(AnimationType.BOTTOM_UP, 150), StickyHeaders {
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_NEWS_ITEM = 1
     }
 
-    var listItems: MutableList<Any> = mutableListOf()
     private lateinit var listener: NewsItemClickListener
 
 
+    private var listItems: MutableList<Any> = mutableListOf()
+
+
     init {
+        if (fragment is NewsItemClickListener) {
+            listener = fragment
+        } else {
+            Timber.e("Fragment must implement NewsItemClickListener")
+        }
+
         listItems.addAll(news.list)
 
         var offset = 0
@@ -69,10 +79,6 @@ class NewsAdapter(val news: SectionedNews, type: AnimationType, duration: Int) :
         return listItems.size
     }
 
-
-    fun setOnNewsItemClickListener(listener: NewsItemClickListener) {
-        this.listener = listener
-    }
 
     /**
      * {@inheritDoc}

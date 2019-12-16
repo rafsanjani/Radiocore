@@ -53,6 +53,7 @@ class HomeFragment : Fragment(), StreamMetadataListener {
 
         logoAnimation.start()
         metadataAnimation.start()
+
     }
 
 
