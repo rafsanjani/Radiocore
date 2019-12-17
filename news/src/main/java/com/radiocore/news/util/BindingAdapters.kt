@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
 
-@BindingAdapter("app:date")
+@BindingAdapter("date")
 fun setDate(view: TextView, date: DateTime) {
     val formatter = DateTimeFormat.forPattern("MMMM d, yyyy")
     view.text = date.toString(formatter)
