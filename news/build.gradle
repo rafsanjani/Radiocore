@@ -82,5 +82,4 @@ dependencies {
 
     //Lottie for static animations
     implementation 'com.airbnb.android:lottie:3.3.1'
-
 }

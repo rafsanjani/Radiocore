@@ -31,11 +31,8 @@ import com.radiocore.app.adapter.HomeSectionsPagerAdapter
 import com.radiocore.app.concurrency.SimpleObserver
 import com.radiocore.app.databinding.BottomSheetBinding
 import com.radiocore.app.viewmodels.HomeViewModel
-import com.radiocore.core.util.Constants
+import com.radiocore.core.util.*
 import com.radiocore.core.util.Constants.STREAM_RESULT
-import com.radiocore.core.util.RadioPreferences
-import com.radiocore.core.util.Tools
-import com.radiocore.core.util.Tools.animateButtonDrawable
 import com.radiocore.news.ui.NewsListFragment
 import com.radiocore.player.StreamPlayer
 import io.reactivex.disposables.CompositeDisposable
@@ -141,15 +138,14 @@ class MainFragment : Fragment(), View.OnClickListener {
     private fun setUpInitialPlayerState() {
         val radioPreferences = RadioPreferences(context!!)
 
-        if (!Tools.isServiceRunning(AudioStreamingService::class.java, context!!)) {
+
+        if (isServiceRunning(AudioStreamingService::class.java, requireContext())) {
             if (radioPreferences.isAutoPlayOnStart)
                 startPlayback()
         } else {
             val state = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
                 AudioStreamingState.STATUS_PLAYING else AudioStreamingState.STATUS_STOPPED
             viewModel.updatePlaybackState(state)
-//            else
-//                AudioStreamingState.STATUS_STOPPED
 
             val intent = Intent(STREAM_RESULT)
             intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString()) //mAudioStreamingState.toString())
@@ -350,7 +346,7 @@ class MainFragment : Fragment(), View.OnClickListener {
         when (state) {
             AudioStreamingState.STATUS_PLAYING -> {
                 Timber.d("onAudioStreamingStateReceived: Playing")
-                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause_small)!!)
 
@@ -366,7 +362,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play_small)!!)
 
-                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 textSwitcherPlayerState.setText(getString(R.string.state_stopped))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.pink_600))
             }
@@ -374,7 +370,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 Timber.i("onAudioStreamingStateReceived: BUFFERING")
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.pink_200))
-                Tools.toggleViewsVisibility(View.VISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
 
             AudioStreamingState.STATUS_PAUSED -> {
@@ -384,7 +380,7 @@ class MainFragment : Fragment(), View.OnClickListener {
 
                 textSwitcherPlayerState.setText(getString(R.string.state_paused))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.yellow_400))
-                Tools.toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
             }
 
         }
@@ -421,14 +417,4 @@ class MainFragment : Fragment(), View.OnClickListener {
                 IntentFilter(STREAM_RESULT)
         )
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.main, menu)
-//    }
-
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.main, menu)
-//        return true
-//    }
-
 }

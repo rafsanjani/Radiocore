@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.radiocore.news.R
 import com.radiocore.news.databinding.ItemNewsBinding
+import com.radiocore.news.model.News
 import com.radiocore.news.model.SectionedNews
 import com.radiocore.stickyheaders.StickyHeaders
 import kotlinx.android.synthetic.main.item_news_header__.view.*
@@ -47,7 +48,7 @@ class NewsAdapter(val news: SectionedNews, val fragment: Fragment) : AnimationAd
                 if (headerPosition == 0) {
                     listItems.add(0, news.list[0].date.toString())
 
-                } else if (listItems[headerPosition - 1] is com.radiocore.news.model.News) {
+                } else if (listItems[headerPosition - 1] is News) {
                     listItems.add(++offset + headerPosition, news.list[headerPosition].date.toString())
                 }
 
@@ -88,7 +89,7 @@ class NewsAdapter(val news: SectionedNews, val fragment: Fragment) : AnimationAd
 
         when (holder.itemViewType) {
             VIEW_TYPE_NEWS_ITEM -> {
-                (holder as NewsHolder).bind(newsItem as com.radiocore.news.model.News)
+                (holder as NewsHolder).bind(newsItem as News)
             }
             VIEW_TYPE_HEADER -> {
                 (holder as NewsHeaderHolder).bind(newsItem as String)
@@ -133,7 +134,7 @@ class NewsAdapter(val news: SectionedNews, val fragment: Fragment) : AnimationAd
     }
 
     internal inner class NewsHolder(var binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(newsItem: com.radiocore.news.model.News) {
+        fun bind(newsItem: News) {
             binding.newsItem = newsItem
             binding.executePendingBindings()
 
@@ -146,7 +147,9 @@ class NewsAdapter(val news: SectionedNews, val fragment: Fragment) : AnimationAd
 
             binding.image.transitionName = newsItem.imageUrl
 
-            itemView.rootView.setOnClickListener { listener.onNewsItemClicked(adapterPosition, binding.image) }
+            itemView.rootView.setOnClickListener {
+                listener.onNewsItemClicked(adapterPosition, binding.image)
+            }
             setAnimation(itemView, adapterPosition)
         }
     }
