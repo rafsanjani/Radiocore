@@ -24,8 +24,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.radiocore.app.AudioStreamingService
-import com.radiocore.app.AudioStreamingService.AudioStreamingState
 import com.radiocore.app.R
 import com.radiocore.app.adapter.HomeSectionsPagerAdapter
 import com.radiocore.app.concurrency.SimpleObserver
@@ -34,6 +32,9 @@ import com.radiocore.app.viewmodels.HomeViewModel
 import com.radiocore.core.util.*
 import com.radiocore.core.util.Constants.STREAM_RESULT
 import com.radiocore.news.ui.NewsListFragment
+import com.radiocore.player.AudioServiceConnection
+import com.radiocore.player.AudioStreamingService
+import com.radiocore.player.AudioStreamingService.AudioStreamingState
 import com.radiocore.player.StreamPlayer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -47,9 +48,8 @@ class MainFragment : Fragment(), View.OnClickListener {
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
+    private lateinit var mAudioServiceConnection: AudioServiceConnection
     //let's assume nothing is playing when application starts
-//    private var mAudioStreamingState: AudioStreamingState = AudioStreamingState.STATUS_STOPPED
-
 
     private var mSheetBehaviour: BottomSheetBehavior<*>? = null
     private var mCompositeDisposable: CompositeDisposable? = null
@@ -60,7 +60,6 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //val binding: FragmentMainBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -83,7 +82,6 @@ class MainFragment : Fragment(), View.OnClickListener {
         }
 
         setUpAudioVisualizer()
-
     }
 
     private fun initializeToolbar() {
@@ -137,9 +135,10 @@ class MainFragment : Fragment(), View.OnClickListener {
      */
     private fun setUpInitialPlayerState() {
         val radioPreferences = RadioPreferences(context!!)
+        mAudioServiceConnection = AudioServiceConnection()
 
 
-        if (isServiceRunning(AudioStreamingService::class.java, requireContext())) {
+        if (!isServiceRunning(AudioStreamingService::class.java, requireContext())) {
             if (radioPreferences.isAutoPlayOnStart)
                 startPlayback()
         } else {
@@ -158,7 +157,6 @@ class MainFragment : Fragment(), View.OnClickListener {
      * Also checks if the stream timer is up which triggers a shutdown of the app
      */
     private fun startUpdateStreamProgress() {
-        Timber.d("startUpdateStreamProgress: ")
         mStreamPlayer.streamDurationStringsObservable
                 .subscribe(object : SimpleObserver<Array<out String?>>() {
                     override fun onSubscribe(d: Disposable) {
@@ -178,27 +176,30 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
     private fun startPlayback() {
-        val audioServiceIntent = Intent(context!!, AudioStreamingService::class.java)
-        audioServiceIntent.action = Constants.ACTION_PLAY
-        ContextCompat.startForegroundService(context!!, audioServiceIntent)
+        mAudioServiceConnection.audioService?.startPlayback()
     }
 
     private fun pausePlayback() {
-        val audioServiceIntent = Intent(context!!, AudioStreamingService::class.java)
-        audioServiceIntent.action = Constants.ACTION_PAUSE
-        ContextCompat.startForegroundService(context!!, audioServiceIntent)
+        mAudioServiceConnection.audioService?.pausePlayback()
     }
 
     private fun stopPlayback() {
-        val audioServiceIntent = Intent(context!!, AudioStreamingService::class.java)
-        audioServiceIntent.action = Constants.ACTION_STOP
-        ContextCompat.startForegroundService(context!!, audioServiceIntent)
+        mAudioServiceConnection.audioService?.stopPlayback()
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        Intent(context!!, AudioStreamingService::class.java).apply {
+            activity?.bindService(this, mAudioServiceConnection, Context.BIND_AUTO_CREATE)
+            ContextCompat.startForegroundService(context!!, this)
+        }
+    }
 
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(context!!).unregisterReceiver(mAudioServiceBroadcastReceiver)
+        activity?.unbindService(mAudioServiceConnection)
     }
 
     override fun onDestroy() {
@@ -242,7 +243,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 with(visualizer) {
                     setDensity(0.8F)
                     setGap(2)
-                    setColor(ContextCompat.getColor(context!!, R.color.orange_900))
+                    setColor(ContextCompat.getColor(context, R.color.orange_900))
                 }
             }
         } catch (exception: Exception) {
@@ -325,6 +326,7 @@ class MainFragment : Fragment(), View.OnClickListener {
     private fun setUpAudioStreamingServiceReceiver() {
         mAudioServiceBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
+                Timber.i(intent.action)
                 if (intent.action == STREAM_RESULT) {
                     onAudioStreamingStateReceived(intent)
                 }

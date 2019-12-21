@@ -31,6 +31,7 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
         private var instance: WeakReference<StreamPlayer>? = null
         private var mStreamMetadataListener: StreamMetadataListener? = null
 
+
         fun getInstance(context: Context): StreamPlayer {
             synchronized(StreamPlayer::class.java) {
                 if (instance == null) {

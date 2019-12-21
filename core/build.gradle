@@ -44,6 +44,10 @@ dependencies {
     kapt "com.android.databinding:compiler:3.1.4"
     implementation 'joda-time:joda-time:2.10.3'
 
+    //dagger
+    implementation "com.google.dagger:dagger:2.25.2"
+    kapt "com.google.dagger:dagger-compiler:2.25.2"
+
     //RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
@@ -52,5 +56,5 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     //material
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
 }
