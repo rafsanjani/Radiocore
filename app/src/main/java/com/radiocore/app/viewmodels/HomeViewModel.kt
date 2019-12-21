@@ -3,7 +3,7 @@ package com.radiocore.app.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.radiocore.app.AudioStreamingService.AudioStreamingState
+import com.radiocore.player.AudioStreamingService.AudioStreamingState
 
 class HomeViewModel : ViewModel() {
     private var _metaData = MutableLiveData<String>()

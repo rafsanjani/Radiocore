@@ -3,7 +3,7 @@ package com.radiocore.app
 import android.view.View
 import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter
-import com.radiocore.app.AudioStreamingService.AudioStreamingState
+import com.radiocore.player.AudioStreamingService.AudioStreamingState
 
 @BindingAdapter("app:hideIfLoading")
 fun hideIfPlaying(view: ProgressBar, state: AudioStreamingState) {

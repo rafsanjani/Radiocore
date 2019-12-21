@@ -24,6 +24,7 @@ class HomeFragment : Fragment(), StreamMetadataListener {
         ViewModelProviders.of(this)[HomeViewModel::class.java]
     }
 
+
     var data = ""
     override fun onMetadataReceived(metadata: String) {
         if (metadata.isNotEmpty() && metadata != data) {
