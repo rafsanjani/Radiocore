@@ -3,6 +3,7 @@ package com.radiocore.core.util
 // Created by Emperor95 on 3/5/2019.
 object Constants {
 
+    const val NOTIFICATION_CHANNEL_NAME = "RadioCore Notification Channel"
     const val PERSIST_WORK_NAME = "com.radiocore.work.persist_work_name"
     const val STREAM_RESULT = "com.radiocore.service.AudioStreamingService.STREAM_RESULT"
     const val STREAMING_STATUS = "com.radiocore.service.AudioStreamingService.AUDIO_STREAMING_STATUS"

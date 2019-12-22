@@ -34,10 +34,12 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
     private lateinit var mMediaPlayer: StreamPlayer
     private var mRadioPreferences: RadioPreferences? = null
     private lateinit var mNotificationText: String
-    private var streamNotification: Notification? = null
+    private lateinit var mStreamNotification: Notification
     private lateinit var mAudioManager: AudioManager
     private lateinit var mFocusRequest: AudioFocusRequest
     private var mResumeOnFocusGain: Boolean = false
+
+    private val SERVICE_ID: Int = 5
 
     override fun onBind(intent: Intent): IBinder? {
         super.onBind(intent)
@@ -79,7 +81,6 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
     override fun onCreate() {
         super.onCreate()
         mNotificationText = this.getString(R.string.live_radio_freq)
-        streamNotification = createNotification()
         mRadioPreferences = RadioPreferences(this)
         mBroadcastManager = LocalBroadcastManager.getInstance(this)
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -102,7 +103,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
                 override fun onPlay() {
                     Timber.i("setPlayerStatechangesListener: OnPlay")
                     sendResult(AudioStreamingState.STATUS_PLAYING)
-                    startForeground(5, streamNotification)
+                    startForeground(SERVICE_ID, mStreamNotification)
                 }
 
                 override fun onBuffering() {
@@ -139,7 +140,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                     Constants.NOTIFICATION_CHANNEL_ID,
-                    "Music Streaming Channel",
+                    Constants.NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_LOW
             )
 
@@ -156,16 +157,15 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
      * @return a Notification object which c
      * TODO: Dynamically add play and pause buttons to notification
      */
-    private fun createNotification(): Notification {
+    private fun createNotification(contentIntent: Intent): Notification {
         createNotificationChannel()
-//        val contentIntent = Intent(this, T::class.java)
         val playIntent = Intent(this, AudioStreamingService::class.java)
         val stopIntent = Intent(this, AudioStreamingService::class.java)
 
         stopIntent.action = Constants.ACTION_STOP
         playIntent.action = Constants.ACTION_PLAY
 
-//        val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
+        val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
         val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
 
         val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
@@ -175,8 +175,19 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
                         .setShowActionsInCompactView(0))
                 .setColor(ContextCompat.getColor(this, R.color.amber_400))
                 .setContentText(mNotificationText)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-//                .setContentIntent(contentPendingIntent)
+                .setSmallIcon(R.drawable.notification)
+                .setContentIntent(contentPendingIntent)
+
+        return builder.build()
+    }
+
+    private fun createNotification(): Notification {
+        createNotificationChannel()
+        val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("RadioCore")
+                .setContentText("Initialized")
+                .setColor(ContextCompat.getColor(this, R.color.amber_400))
+                .setSmallIcon(R.drawable.notification)
 
         return builder.build()
     }
@@ -185,6 +196,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
      * Start playback and set playback status in SharedPreferences.
      */
     fun startPlayback() {
+        startForeground(SERVICE_ID, mStreamNotification)
         mMediaPlayer.play()
     }
 
@@ -192,32 +204,24 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
      * Stop playback and set playback status in SharedPreferences
      */
     fun stopPlayback() {
+        stopForeground(true)
         mMediaPlayer.stop()
         cleanShutDown()
     }
 
     fun pausePlayback() {
+        stopForeground(true)
         mMediaPlayer.pause()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        //on some rare occasions, the state of the stream is indeterminate so we perform a cleanup before attempting to reload
-//        createNotificationChannel()
 
-        startForeground(5, streamNotification)
+        if (mMediaPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING)
+            startForeground(SERVICE_ID, createNotification())
 
-
-        when (intent.action) {
-            Constants.ACTION_PLAY -> startPlayback()
-
-            Constants.ACTION_STOP -> stopPlayback()
-
-            Constants.ACTION_PAUSE -> pausePlayback()
-        }
         return START_NOT_STICKY
     }
-
 
     private fun cleanShutDown() {
         stopForeground(true)
@@ -271,7 +275,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
                     mResumeOnFocusGain = true
                     Timber.i("OnAudioFocusChange: Focus Lost completely...stopping playback")
                 }
-                pausePlayback()
+                // pausePlayback()
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
                 synchronized(mFocusLock) {
@@ -296,6 +300,9 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
     }
 
     inner class LocalBinder : Binder() {
-        fun getAudioService(): AudioStreamingService = this@AudioStreamingService
+        fun getAudioService(intent: Intent): AudioStreamingService {
+            mStreamNotification = createNotification(intent)
+            return this@AudioStreamingService
+        }
     }
 }

@@ -41,10 +41,13 @@ class HomeFragment : Fragment(), StreamMetadataListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        StreamPlayer.getInstance(activity!!.applicationContext).addMetadataListener(this)
         startAnimations()
     }
 
+    override fun onResume() {
+        super.onResume()
+        StreamPlayer.getInstance(requireContext()).addMetadataListener(this)
+    }
     private fun startAnimations() {
         val metadataAnimation = AnimatorInflater.loadAnimator(activity, R.animator.metadata_anim_set)
         val logoAnimation = AnimatorInflater.loadAnimator(activity, R.animator.scale)
@@ -54,12 +57,6 @@ class HomeFragment : Fragment(), StreamMetadataListener {
 
         logoAnimation.start()
         metadataAnimation.start()
-
     }
 
-
-    override fun onPause() {
-        super.onPause()
-        StreamPlayer.getInstance(activity!!.applicationContext).removeMetadataListener()
-    }
 }

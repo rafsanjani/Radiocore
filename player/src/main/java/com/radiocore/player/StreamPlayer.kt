@@ -26,11 +26,10 @@ import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-class StreamPlayer private constructor(context: Context) : EventListener, LifecycleObserver {
+class StreamPlayer private constructor(private var context: Context) : EventListener, LifecycleObserver {
     companion object {
         private var instance: WeakReference<StreamPlayer>? = null
-        private var mStreamMetadataListener: StreamMetadataListener? = null
-
+        private lateinit var mStreamMetadataListener: StreamMetadataListener
 
         fun getInstance(context: Context): StreamPlayer {
             synchronized(StreamPlayer::class.java) {
@@ -46,7 +45,7 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
         for (n in 0 until metadata.length()) {
             when (val md = metadata[n]) {
                 is com.google.android.exoplayer2.metadata.icy.IcyInfo -> {
-                    mStreamMetadataListener?.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
+                    mStreamMetadataListener.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
                 }
                 else -> {
                     Timber.i("metaDataOutput: Other -  $md")
@@ -73,6 +72,11 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
         exoPlayer.addListener(this)
     }
 
+    private lateinit var mStreamStateChangesListener: StreamStateChangesListener
+
+    private var mPlaybackState = PlaybackState.IDLE
+    private val mPreferences: RadioPreferences = RadioPreferences(context)
+
     fun addMetadataListener(streamMetadataListener: StreamMetadataListener) {
         mStreamMetadataListener = streamMetadataListener
     }
@@ -81,11 +85,6 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
         exoPlayer.removeMetadataOutput(mMetaDataOutput)
     }
 
-    private lateinit var mStreamStateChangesListener: StreamStateChangesListener
-
-    private var mPlaybackState = PlaybackState.IDLE
-    private val context: WeakReference<Context> = WeakReference(context)
-    private val mPreferences: RadioPreferences = RadioPreferences(context)
 
     val audioSessionId: Int
         get() = exoPlayer.audioSessionId
@@ -148,7 +147,7 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
 
     var streamSource: Uri? = null
         set(value) {
-            val dataSourceFactory = DefaultDataSourceFactory(context.get(), Util.getUserAgent(context.get(), "RadioCore"))
+            val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "RadioCore"))
 
             mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(value)
         }
@@ -224,29 +223,26 @@ class StreamPlayer private constructor(context: Context) : EventListener, Lifecy
             STATE_BUFFERING -> Timber.i("onPlayerStateChanged: Buffering...")
             STATE_IDLE -> Timber.i("onPlayerStateChanged: Idle")
         }
+        if (state == STATE_BUFFERING) {
+            mStreamStateChangesListener.onBuffering()
+            Timber.i("onPlayerStatechanged: Buffering")
+            return
+        }
 
         if (playWhenReady && state == STATE_READY) {
-            // Active playback.
+            //active playback
             mStreamStateChangesListener.onPlay()
             mPlaybackState = PlaybackState.PLAYING
-            Timber.i("onPlayerStateChanged: Playing...")
-        } else if (playWhenReady) {
-            // Not playing because playback ended, the player is buffering, stopped or
-            // failed. Check mPlaybackState and player.getPlaybackError for details.
-            mPlaybackState = PlaybackState.STOPPED
-            mStreamStateChangesListener.onStop()
-            if (state == STATE_BUFFERING) {
-                Timber.i("onPlayerStateChanged: Buffering...")
-                mPlaybackState = PlaybackState.BUFFERING
-                mStreamStateChangesListener.onBuffering()
-            }
+            return
+        }
 
-        } else {
-            // Paused by app.
+        if (!playWhenReady && state == STATE_READY) {
+            //paused
             mStreamStateChangesListener.onPause()
             mPlaybackState = PlaybackState.PAUSED
-            Timber.i("onPlayerStateChanged: Paused")
+            return
         }
+
     }
 
     override fun onPlayerError(error: ExoPlaybackException?) {

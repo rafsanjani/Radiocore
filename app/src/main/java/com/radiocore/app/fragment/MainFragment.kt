@@ -18,13 +18,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.radiocore.app.R
+import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomeSectionsPagerAdapter
 import com.radiocore.app.concurrency.SimpleObserver
 import com.radiocore.app.databinding.BottomSheetBinding
@@ -49,15 +50,13 @@ class MainFragment : Fragment(), View.OnClickListener {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
     private lateinit var mAudioServiceConnection: AudioServiceConnection
-    //let's assume nothing is playing when application starts
+
 
     private var mSheetBehaviour: BottomSheetBehavior<*>? = null
     private var mCompositeDisposable: CompositeDisposable? = null
     private lateinit var mStreamPlayer: StreamPlayer
 
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(this)[HomeViewModel::class.java]
-    }
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -71,12 +70,10 @@ class MainFragment : Fragment(), View.OnClickListener {
         mStreamPlayer = StreamPlayer.getInstance(context!!)
 
         initializeViews()
-        setUpInitialPlayerState()
-        setUpAudioStreamingServiceReceiver()
     }
 
 
-    private fun intiializeAudioVisualizer() {
+    private fun intializeAudioVisualizer() {
         if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission()
         }
@@ -99,14 +96,15 @@ class MainFragment : Fragment(), View.OnClickListener {
             }
         }.attach()
 
-        tabLayout.getTabAt(0)!!.setIcon(R.drawable.ic_radio_live)
-        tabLayout.getTabAt(1)!!.setIcon(R.drawable.ic_news)
-        tabLayout.getTabAt(2)!!.setIcon(R.drawable.ic_about)
+        with(tabLayout) {
+            getTabAt(0)?.setIcon(R.drawable.ic_radio_live)
+            getTabAt(1)!!.setIcon(R.drawable.ic_news)
+            getTabAt(2)!!.setIcon(R.drawable.ic_about)
 
-        // set icon color pre-selected
-        tabLayout.getTabAt(0)!!.icon!!.setTint(Color.RED)
-        tabLayout.getTabAt(1)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
-        tabLayout.getTabAt(2)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
+            getTabAt(0)!!.icon!!.setTint(Color.RED)
+            getTabAt(1)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
+            getTabAt(2)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
+        }
 
         tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -135,7 +133,8 @@ class MainFragment : Fragment(), View.OnClickListener {
      */
     private fun setUpInitialPlayerState() {
         val radioPreferences = RadioPreferences(context!!)
-        mAudioServiceConnection = AudioServiceConnection()
+        var intent = Intent(requireContext(), MainActivity::class.java)
+        mAudioServiceConnection = AudioServiceConnection(intent)
 
 
         if (!isServiceRunning(AudioStreamingService::class.java, requireContext())) {
@@ -146,7 +145,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 AudioStreamingState.STATUS_PLAYING else AudioStreamingState.STATUS_STOPPED
             viewModel.updatePlaybackState(state)
 
-            val intent = Intent(STREAM_RESULT)
+            intent = Intent(STREAM_RESULT)
             intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString()) //mAudioStreamingState.toString())
             onAudioStreamingStateReceived(intent)
         }
@@ -190,6 +189,9 @@ class MainFragment : Fragment(), View.OnClickListener {
 
     override fun onStart() {
         super.onStart()
+        setUpInitialPlayerState()
+        setUpAudioStreamingServiceReceiver()
+
         Intent(context!!, AudioStreamingService::class.java).apply {
             activity?.bindService(this, mAudioServiceConnection, Context.BIND_AUTO_CREATE)
             ContextCompat.startForegroundService(context!!, this)
@@ -253,7 +255,7 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
     private fun requestAudioRecordingPermission() {
-        ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_RECORD_AUDIO)
+        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_RECORD_AUDIO)
     }
 
 
@@ -352,7 +354,7 @@ class MainFragment : Fragment(), View.OnClickListener {
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause_small)!!)
 
-                intiializeAudioVisualizer()
+                intializeAudioVisualizer()
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
@@ -405,7 +407,7 @@ class MainFragment : Fragment(), View.OnClickListener {
 
 
     private fun setupViewPager(viewPager: ViewPager2) {
-        val viewPagerAdapter = HomeSectionsPagerAdapter(activity!!)
+        val viewPagerAdapter = HomeSectionsPagerAdapter(requireActivity())
         viewPagerAdapter.addFragment(HomeFragment(), "Live")    // index 0
         viewPagerAdapter.addFragment(NewsListFragment(), "News")   // index 1
         viewPagerAdapter.addFragment(AboutFragment(), "About")   // index 2
