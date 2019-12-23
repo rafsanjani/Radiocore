@@ -27,7 +27,7 @@ import timber.log.Timber
  * Handle Audio playback
  */
 class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChangeListener {
-    private val binder = LocalBinder()
+    private val binder = AudioServiceBinder()
 
     private val mFocusLock = Any()
     private var mBroadcastManager: LocalBroadcastManager? = null
@@ -175,7 +175,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
                         .setShowActionsInCompactView(0))
                 .setColor(ContextCompat.getColor(this, R.color.amber_400))
                 .setContentText(mNotificationText)
-                .setSmallIcon(R.drawable.notification)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(contentPendingIntent)
 
         return builder.build()
@@ -299,7 +299,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
         STATUS_PAUSED,
     }
 
-    inner class LocalBinder : Binder() {
+    inner class AudioServiceBinder : Binder() {
         fun getAudioService(intent: Intent): AudioStreamingService {
             mStreamNotification = createNotification(intent)
             return this@AudioStreamingService

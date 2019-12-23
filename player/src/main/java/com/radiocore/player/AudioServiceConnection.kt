@@ -23,7 +23,7 @@ class AudioServiceConnection(var intent: Intent) : ServiceConnection {
     }
 
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-        val binder = service as AudioStreamingService.LocalBinder
+        val binder = service as AudioStreamingService.AudioServiceBinder
         audioStreamingService = binder.getAudioService(intent)
         isBound = true
     }
