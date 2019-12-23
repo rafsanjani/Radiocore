@@ -14,9 +14,10 @@ class RadioPreferences(context: Context) {
         private const val CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours"
         private const val STREAMING_TIMER = "com.foreverrafs.radiocore.streaming_timer"
         private const val CLEAN_SHUT_DOWN = "com.foreverrafs.radiocore.clean_shut_down"
+        private const val RADIOCORE_SHARED_PREFS = "com.foreverrafs.radiocore_preferences"
     }
 
-    private val settings: SharedPreferences = context.getSharedPreferences("RadioCore", Context.MODE_PRIVATE)
+    private val settings: SharedPreferences = context.getSharedPreferences(RADIOCORE_SHARED_PREFS, Context.MODE_PRIVATE)
 
     /**
      * Checks if we are starting the application for the first time.
