@@ -1,18 +1,24 @@
 package com.radiocore.app
 
-import android.app.Application
+import DaggerAppComponent
 import android.os.StrictMode
 import com.crashlytics.android.Crashlytics
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
-class RadioCoreApp : Application() {
+class RadioCoreApp : DaggerApplication() {
     override fun onCreate() {
         super.onCreate()
 
         enableStrictMode()
         setUpCrashlytics()
         setUpTimber()
+    }
+
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerAppComponent.factory().create(this)
     }
 
     private fun setUpTimber() {

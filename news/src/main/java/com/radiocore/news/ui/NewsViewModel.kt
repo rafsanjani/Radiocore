@@ -47,8 +47,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
             LocalNews(appContext)
         } else {
             Timber.i("Cache Expired: Loading from Remote...")
-            mPreferences.cacheStorageTime = DateTime.now()
-            RemoteNews()
+            RemoteNews(appContext)
         }
 
         return emitNewsItems(repository)
@@ -65,7 +64,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
                 if (repository is RemoteNews)
                     saveNewsToLocalStorage()
             } else {
-                data = RemoteNews().fetchNews()
+                data = RemoteNews(appContext).fetchNews()
                 saveNewsToLocalStorage()
             }
             NewsRepository.getInstance().radioCoreNews = data

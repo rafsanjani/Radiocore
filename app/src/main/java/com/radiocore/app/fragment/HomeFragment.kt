@@ -6,23 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.radiocore.app.R
 import com.radiocore.app.databinding.FragmentHomeBinding
 import com.radiocore.app.viewmodels.HomeViewModel
+import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.player.StreamMetadataListener
 import com.radiocore.player.StreamPlayer
 import kotlinx.android.synthetic.main.fragment_home.*
 import timber.log.Timber
+import javax.inject.Inject
 
 
 // Created by Emperor95 on 1/13/2019
-class HomeFragment : Fragment(), StreamMetadataListener {
+class HomeFragment : DaggerAndroidXFragment(), StreamMetadataListener {
 
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this)[HomeViewModel::class.java]
     }
+
+    @Inject
+    lateinit var mStreamPlayer: StreamPlayer
 
 
     var data = ""
@@ -46,8 +50,9 @@ class HomeFragment : Fragment(), StreamMetadataListener {
 
     override fun onResume() {
         super.onResume()
-        StreamPlayer.getInstance(requireContext()).addMetadataListener(this)
+        mStreamPlayer.addMetadataListener(this)
     }
+
     private fun startAnimations() {
         val metadataAnimation = AnimatorInflater.loadAnimator(activity, R.animator.metadata_anim_set)
         val logoAnimation = AnimatorInflater.loadAnimator(activity, R.animator.scale)

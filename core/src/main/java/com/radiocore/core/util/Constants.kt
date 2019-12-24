@@ -8,9 +8,10 @@ object Constants {
     const val STREAM_RESULT = "com.radiocore.service.AudioStreamingService.STREAM_RESULT"
     const val STREAMING_STATUS = "com.radiocore.service.AudioStreamingService.AUDIO_STREAMING_STATUS"
     const val STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3"
+    const val NEWS_URL = "https://newscentral.herokuapp.com/"
     const val ACTION_PLAY = "com.radiocore.PLAY"
     const val ACTION_STOP = "com.radiocore.STOP"
-    const val ACTION_PAUSE = "com.radiocore.PAUSE"
+//    const val ACTION_PAUSE = "com.radiocore.PAUSE"
 
 
     //Notification channel for Android 0

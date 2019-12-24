@@ -23,23 +23,30 @@ import org.joda.time.Period
 import org.joda.time.Seconds
 import org.joda.time.format.PeriodFormatterBuilder
 import timber.log.Timber
-import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class StreamPlayer private constructor(private var context: Context) : EventListener, LifecycleObserver {
-    companion object {
-        private var instance: WeakReference<StreamPlayer>? = null
-        private lateinit var mStreamMetadataListener: StreamMetadataListener
+class StreamPlayer constructor(private var context: Context) : EventListener, LifecycleObserver {
 
-        fun getInstance(context: Context): StreamPlayer {
-            synchronized(StreamPlayer::class.java) {
-                if (instance == null) {
-                    instance = WeakReference(StreamPlayer(context))
-                }
-                return instance?.get()!!
-            }
-        }
-    }
+    @Inject
+    lateinit var mPreferences: RadioPreferences
+
+    private lateinit var mStreamMetadataListener: StreamMetadataListener
+
+
+//    companion object {
+//        private var instance: WeakReference<StreamPlayer>? = null
+//        private lateinit var mStreamMetadataListener: StreamMetadataListener
+//
+//        fun getInstance(context: Context): StreamPlayer {
+//            synchronized(StreamPlayer::class.java) {
+//                if (instance == null) {
+//                    instance = WeakReference(StreamPlayer(context))
+//                }
+//                return instance?.get()!!
+//            }
+//        }
+//    }
 
     private var mMetaDataOutput = MetadataOutput { metadata ->
         for (n in 0 until metadata.length()) {
@@ -75,7 +82,6 @@ class StreamPlayer private constructor(private var context: Context) : EventList
     private lateinit var mStreamStateChangesListener: StreamStateChangesListener
 
     private var mPlaybackState = PlaybackState.IDLE
-    private val mPreferences: RadioPreferences = RadioPreferences(context)
 
     fun addMetadataListener(streamMetadataListener: StreamMetadataListener) {
         mStreamMetadataListener = streamMetadataListener

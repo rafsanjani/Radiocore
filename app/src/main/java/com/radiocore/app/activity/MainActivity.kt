@@ -1,17 +1,12 @@
 package com.radiocore.app.activity
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.radiocore.app.R
+import com.radiocore.core.di.DaggerAndroidXAppCompatActivity
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_host)
-    }
+class MainActivity : DaggerAndroidXAppCompatActivity(R.layout.activity_host) {
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

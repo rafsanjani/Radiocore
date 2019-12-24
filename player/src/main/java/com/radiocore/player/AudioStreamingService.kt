@@ -16,23 +16,29 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.radiocore.core.di.DaggerAndroidService
 import com.radiocore.core.util.Constants
 import com.radiocore.core.util.RadioPreferences
 import timber.log.Timber
+import javax.inject.Inject
 
 
 /***
  * Handle Audio playback
  */
-class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChangeListener {
+class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusChangeListener {
     private val binder = AudioServiceBinder()
 
     private val mFocusLock = Any()
     private var mBroadcastManager: LocalBroadcastManager? = null
-    private lateinit var mMediaPlayer: StreamPlayer
-    private var mRadioPreferences: RadioPreferences? = null
+
+    @Inject
+    lateinit var mMediaPlayer: StreamPlayer
+
+    @Inject
+    lateinit var mRadioPreferences: RadioPreferences
+
     private lateinit var mNotificationText: String
     private lateinit var mStreamNotification: Notification
     private lateinit var mAudioManager: AudioManager
@@ -42,7 +48,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
     private val SERVICE_ID: Int = 5
 
     override fun onBind(intent: Intent): IBinder? {
-        super.onBind(intent)
+//        super.onBind(intent)
         return binder
     }
 
@@ -89,7 +95,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
             Timber.i("Audio Focus gained on Android o+")
 
         try {
-            mMediaPlayer = StreamPlayer.getInstance(this)
+//            mMediaPlayer = StreamPlayer.getInstance(this)
             mMediaPlayer.streamSource = Uri.parse(Constants.STREAM_URL)
 
             mMediaPlayer.setPlayerStateChangesListener(object : StreamPlayer.StreamStateChangesListener {
@@ -226,7 +232,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
     private fun cleanShutDown() {
         stopForeground(true)
         Timber.i("Performing stream status cleanup")
-        mRadioPreferences?.cleanShutdown = true
+        mRadioPreferences.cleanShutdown = true
     }
 
     override fun onDestroy() {
@@ -279,7 +285,7 @@ class AudioStreamingService : LifecycleService(), AudioManager.OnAudioFocusChang
             }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
                 synchronized(mFocusLock) {
-                    val canResume = StreamPlayer.getInstance(this).playBackState == StreamPlayer.PlaybackState.PLAYING
+                    val canResume = mMediaPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING
                     mResumeOnFocusGain = canResume
                     Timber.i("OnAudioFocusChange: Focus Lost. We will resume. $canResume...pausing playback")
                 }

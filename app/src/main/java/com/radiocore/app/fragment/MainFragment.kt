@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
@@ -30,6 +29,7 @@ import com.radiocore.app.adapter.HomeSectionsPagerAdapter
 import com.radiocore.app.concurrency.SimpleObserver
 import com.radiocore.app.databinding.BottomSheetBinding
 import com.radiocore.app.viewmodels.HomeViewModel
+import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.core.util.*
 import com.radiocore.core.util.Constants.STREAM_RESULT
 import com.radiocore.news.ui.NewsListFragment
@@ -43,9 +43,10 @@ import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.joda.time.Seconds
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class MainFragment : Fragment(), View.OnClickListener {
+class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
@@ -54,7 +55,9 @@ class MainFragment : Fragment(), View.OnClickListener {
 
     private var mSheetBehaviour: BottomSheetBehavior<*>? = null
     private var mCompositeDisposable: CompositeDisposable? = null
-    private lateinit var mStreamPlayer: StreamPlayer
+
+    @Inject
+    lateinit var mStreamPlayer: StreamPlayer
 
     private val viewModel: HomeViewModel by viewModels()
 
@@ -67,7 +70,6 @@ class MainFragment : Fragment(), View.OnClickListener {
         btnPlay.setOnClickListener(this)
 
         mCompositeDisposable = CompositeDisposable()
-        mStreamPlayer = StreamPlayer.getInstance(context!!)
 
         initializeViews()
     }
@@ -238,7 +240,7 @@ class MainFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setUpAudioVisualizer() {
-        val audioSessionId = StreamPlayer.getInstance(context!!).audioSessionId
+        val audioSessionId = mStreamPlayer.audioSessionId
         try {
             if (audioSessionId != -1) {
                 visualizer.setPlayer(audioSessionId)

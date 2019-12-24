@@ -1,14 +1,13 @@
 package com.radiocore.app.activity
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import com.radiocore.app.R
+import com.radiocore.core.di.DaggerAndroidXAppCompatActivity
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : DaggerAndroidXAppCompatActivity(R.layout.settings_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_activity)
 
         supportFragmentManager
                 .beginTransaction()
