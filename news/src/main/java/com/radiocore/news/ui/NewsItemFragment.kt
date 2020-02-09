@@ -10,13 +10,14 @@ import com.bumptech.glide.Glide
 import com.radiocore.core.util.Constants
 import com.radiocore.news.R
 import com.radiocore.news.data.NewsRepository
+import com.radiocore.news.model.News
 import kotlinx.android.synthetic.main.fragment_news_item_detail.*
 import kotlinx.android.synthetic.main.news_detail_content.*
 import org.joda.time.format.DateTimeFormat
 
 class NewsItemFragment : Fragment() {
 
-    private var mNewsItem: com.radiocore.news.model.News? = null
+    private var mNewsItem: News? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

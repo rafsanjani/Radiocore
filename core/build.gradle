@@ -44,17 +44,18 @@ dependencies {
     kapt "com.android.databinding:compiler:3.1.4"
     implementation 'joda-time:joda-time:2.10.3'
 
+
     //dagger
-    api 'com.google.dagger:dagger:2.25.2'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.25.2'
-    kapt 'com.google.dagger:dagger-compiler:2.25.2'
-    api 'com.google.dagger:dagger-android:2.25.2'
-    api 'com.google.dagger:dagger-android-support:2.25.2' // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.25.2'
+    api 'com.google.dagger:dagger:2.25.4'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.25.4'
+    kapt 'com.google.dagger:dagger-compiler:2.25.4'
+    api 'com.google.dagger:dagger-android:2.25.4'
+    api 'com.google.dagger:dagger-android-support:2.25.4' // if you use the support libraries
+    kapt 'com.google.dagger:dagger-android-processor:2.25.4'
 
     //RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.14'
 
     //timber for logging
     implementation 'com.jakewharton.timber:timber:4.7.1'

@@ -9,7 +9,7 @@ import com.radiocore.news.model.News
 @Dao
 interface NewsDao {
     @get:Query("SELECT * FROM news ORDER BY date DESC")
-    val allNews: List<com.radiocore.news.model.News>
+    val allNews: List<News>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(new: News)

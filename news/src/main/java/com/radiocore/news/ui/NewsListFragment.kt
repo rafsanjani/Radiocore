@@ -8,14 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.radiocore.core.util.Constants
 import com.radiocore.news.NewsDetailActivity
 import com.radiocore.news.R
 import com.radiocore.news.adapter.NewsAdapter
 import com.radiocore.news.adapter.NewsAdapter.NewsItemClickListener
+import com.radiocore.news.model.News
 import com.radiocore.news.model.SectionedNews
 import com.radiocore.stickyheaders.StickyHeadersLinearLayoutManager
 import io.reactivex.disposables.CompositeDisposable
@@ -28,10 +29,7 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsI
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
 
-    private val viewModel: NewsViewModel by lazy {
-        ViewModelProviders.of(this)[NewsViewModel::class.java]
-    }
-
+    private val viewModel: NewsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_news_list, container, false)
@@ -56,7 +54,7 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsI
     }
 
     private fun getNewsData() {
-        val observer: Observer<List<com.radiocore.news.model.News>> = Observer { list ->
+        val observer: Observer<List<News>> = Observer { list ->
             if (!list.isNullOrEmpty()) {
                 swipeRefreshLayout.visibility = View.VISIBLE
                 contentNoConnection.visibility = View.INVISIBLE

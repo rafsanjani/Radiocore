@@ -31,7 +31,7 @@ class RadioPreferences(context: Context) {
      */
     var firstTimeLaunch: Boolean
         get() = settings.getBoolean(IS_FIRST_TIME_LAUNCH, true)
-        set(isFirstTime) = settings.edit().putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime).apply()
+        set(isFirstTime) = writeValue(IS_FIRST_TIME_LAUNCH, isFirstTime)
 
 
     /**
@@ -44,6 +44,7 @@ class RadioPreferences(context: Context) {
      * This will be set mostly from the settings screen automatically
      *
      */
+
     val isAutoPlayOnStart: Boolean
         get() = settings.getBoolean(AUTOPLAY_ON_START, true)
 
@@ -67,7 +68,7 @@ class RadioPreferences(context: Context) {
             return DateTime.parse(time)
         }
         set(storageTime) {
-            settings.edit().putString(CACHE_STORAGE_TIME, storageTime.toString()).apply()
+            writeValue(CACHE_STORAGE_TIME, storageTime.toString())
         }
 
     /**
@@ -87,5 +88,18 @@ class RadioPreferences(context: Context) {
 
     var cleanShutdown: Boolean
         get() = settings.getBoolean(CLEAN_SHUT_DOWN, false)
-        set(value) = settings.edit().putBoolean(CLEAN_SHUT_DOWN, value).apply()
+        set(value) = writeValue(CLEAN_SHUT_DOWN, value)
+
+    private fun writeValue(key: String, value: String) {
+        settings.edit().putString(key, value).apply()
+    }
+
+    private fun writeValue(key: String, value: Int) {
+        settings.edit().putInt(key, value).apply()
+    }
+
+    private fun writeValue(key: String, value: Boolean) {
+        settings.edit().putBoolean(key, value).apply()
+    }
+
 }

@@ -26,7 +26,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class StreamPlayer constructor(private var context: Context) : EventListener, LifecycleObserver {
+class StreamPlayer(private var context: Context) : EventListener, LifecycleObserver {
 
     @Inject
     lateinit var mPreferences: RadioPreferences

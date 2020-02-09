@@ -2,18 +2,20 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply from: '../dependencies.gradle'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion versions.buildToolsVersion
+
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner deps.androidX.test.runner
         consumerProguardFiles 'consumer-rules.pro'
     }
 
@@ -38,48 +40,41 @@ dependencies {
     implementation project(":stickyheaders")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    //worker
-    implementation "androidx.work:work-runtime-ktx:2.2.0"
-    androidTestImplementation "androidx.work:work-testing:2.2.0"
+    implementation deps.androidX.fragment.ktx
+    implementation deps.androidX.appCompat
+    implementation deps.androidX.constraintLayout
+    implementation deps.androidX.coordinatorLayout
+    implementation deps.androidX.viewPager2
+    implementation deps.androidX.recyclerView.values()
+    implementation deps.androidX.swipeRefreshLayout
+    implementation deps.androidX.core.ktx
+    implementation deps.google.material
+    implementation deps.reactive.rxJava
+    implementation deps.reactive.rxAndroid
+    implementation deps.square.retrofit.values()
 
-    implementation 'androidx.room:room-runtime:2.2.3'
-    kapt "android.arch.persistence.room:compiler:1.1.1"
+    implementation deps.androidX.room.runtime
+    kapt deps.androidX.room.compiler
+    implementation deps.androidX.room.ktx
 
-    implementation 'joda-time:joda-time:2.10.3'
+    implementation deps.glide.glide
+    kapt deps.glide.compiler
 
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
-
-    //timber for logging
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    //RxJava
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
-
-    //lifecycle
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-rc03'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-rc03'
-
-    //glide image processing
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
-    kapt 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation deps.jodaTime
+    implementation deps.timber
 
 
-    //Lottie for static animations
-    implementation 'com.airbnb.android:lottie:3.3.1'
+    androidTestImplementation deps.androidX.test.core.ktx
+    testImplementation deps.androidX.test.jUnit.ktx
+
+    implementation deps.androidX.lifecycle.livedata
+    implementation deps.androidX.lifecycle.viewmodel
+    kapt deps.androidX.lifecycle.compiler
+
+    implementation deps.androidX.work.runtimeKtx
+    implementation deps.lottie
+
+
+    androidTestImplementation deps.androidX.test.espresso.values()
 }

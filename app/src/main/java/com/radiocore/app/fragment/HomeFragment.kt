@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
 import com.radiocore.app.R
 import com.radiocore.app.databinding.FragmentHomeBinding
 import com.radiocore.app.viewmodels.HomeViewModel
@@ -21,10 +21,7 @@ import javax.inject.Inject
 // Created by Emperor95 on 1/13/2019
 class HomeFragment : DaggerAndroidXFragment(), StreamMetadataListener {
 
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(this)[HomeViewModel::class.java]
-    }
-
+    private val viewModel: HomeViewModel by viewModels()
     @Inject
     lateinit var mStreamPlayer: StreamPlayer
 
