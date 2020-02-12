@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_5"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,64 +12,79 @@
         android:orientation="vertical">
 
         <!--You may add more cards for more sections-->
-        <androidx.cardview.widget.CardView
-            style="@style/CardStyle.About"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/spacing_mlarge"
-                android:paddingRight="@dimen/spacing_mlarge"
-                android:paddingBottom="@dimen/spacing_small">
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_small">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center"
                     android:justificationMode="inter_word"
                     android:text="@string/mission"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/brown_900"
-                    app:fontFamily="sans-serif-medium" />
+                    app:fontFamily="sans-serif-medium"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView5"
+                    app:layout_constraintEnd_toEndOf="@+id/textView8"
+                    app:layout_constraintStart_toStartOf="@+id/textView8"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="4dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="3dp"
                     android:contentDescription="@string/desc_swipe_up_handle"
                     android:src="@drawable/swipe_up_handle"
-                    android:tint="@color/blue_900" />
+                    android:tint="@color/blue_900"
+                    app:layout_constraintBottom_toTopOf="@+id/textView8"
+                    app:layout_constraintEnd_toEndOf="@+id/textView8"
+                    app:layout_constraintStart_toStartOf="@+id/textView8"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/textView8"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:layout_marginBottom="@dimen/spacing_mlarge"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:layout_marginBottom="5dp"
                     android:lineSpacingExtra="@dimen/spacing_medium"
                     android:text="@string/mission_statement"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_700" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
 
-        <androidx.cardview.widget.CardView
-            style="@style/CardStyle.About"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/spacing_mlarge"
                 android:paddingTop="@dimen/spacing_large"
@@ -78,145 +92,110 @@
                 android:paddingBottom="@dimen/spacing_small">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/textView11"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/contact"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/brown_900"
-                    app:fontFamily="sans-serif-medium" />
+                    app:fontFamily="sans-serif-medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_conversion_absoluteHeight="24dp"
+                    tools:layout_conversion_absoluteWidth="343dp" />
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="4dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:contentDescription="@string/desc_swipe_up_handle"
-                    android:src="@drawable/swipe_up_handle"
-                    android:tint="@color/blue_900" />
+                <TextView
+                    android:id="@+id/tvEmail"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/org_email"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView6"
+                    tools:layout_conversion_absoluteHeight="21dp"
+                    tools:layout_conversion_absoluteWidth="200dp" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/textView6"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/label_email"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView11"
+                    tools:layout_conversion_absoluteHeight="21dp"
+                    tools:layout_conversion_absoluteWidth="45dp" />
 
-                    <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="22dp"
-                        app:layout_constraintStart_toStartOf="@+id/imageView"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView"
-                        app:srcCompat="@drawable/ic_phone" />
+                <TextView
+                    android:id="@+id/textView9"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/label_mobile"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:layout_constraintStart_toStartOf="@+id/textView6"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6"
+                    tools:layout_conversion_absoluteHeight="21dp"
+                    tools:layout_conversion_absoluteWidth="54dp" />
 
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_email" />
+                <TextView
+                    android:id="@+id/tvPhone"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/org_phone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:layout_constraintStart_toStartOf="@+id/tvEmail"
+                    app:layout_constraintTop_toTopOf="@+id/textView9"
+                    tools:layout_conversion_absoluteHeight="21dp"
+                    tools:layout_conversion_absoluteWidth="91dp" />
 
-                    <TextView
-                        android:id="@+id/tvMobile"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/org_phone"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textColor="@color/grey_60"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView9"
-                        app:layout_constraintStart_toStartOf="@+id/tvEmail"
-                        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+                <TextView
+                    android:id="@+id/textView7"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/label_phone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/textView9"
+                    app:layout_constraintTop_toBottomOf="@+id/textView9"
+                    tools:layout_conversion_absoluteHeight="21dp"
+                    tools:layout_conversion_absoluteWidth="50dp" />
 
-                    <TextView
-                        android:id="@+id/tvPhone"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/org_phone"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textColor="@color/grey_60"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView7"
-                        app:layout_constraintStart_toStartOf="@+id/tvMobile" />
+                <TextView
+                    android:id="@+id/tvMobile"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/org_phone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                    app:layout_constraintEnd_toEndOf="@+id/tvPhone"
+                    app:layout_constraintTop_toTopOf="@+id/textView7"
+                    tools:layout_conversion_absoluteHeight="21dp"
+                    tools:layout_conversion_absoluteWidth="91dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-                    <TextView
-                        android:id="@+id/tvEmail"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginEnd="8dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/org_email"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textColor="@color/grey_60"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView6"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/label_email"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textColor="@color/grey_60"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                        app:layout_constraintStart_toEndOf="@+id/imageView" />
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        app:layout_constraintStart_toStartOf="@+id/imageView3"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                        app:srcCompat="@drawable/ic_mobile" />
-
-                    <TextView
-                        android:id="@+id/textView7"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/label_phone"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textColor="@color/grey_60"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                        app:layout_constraintStart_toStartOf="@+id/textView9" />
-
-                    <TextView
-                        android:id="@+id/textView9"
-                        style="@style/TextAppearance.AppCompat.Subhead"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/label_mobile"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                        android:textColor="@color/grey_60"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                        app:layout_constraintStart_toStartOf="@+id/textView6" />
+        </com.google.android.material.card.MaterialCardView>
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/spacing_mlarge" />
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-            style="@style/CardStyle.About"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
@@ -236,7 +215,6 @@
                     android:gravity="center"
                     android:text="@string/share"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/brown_900"
                     app:fontFamily="sans-serif-medium" />
 
                 <ImageView
@@ -259,7 +237,7 @@
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/spacing_mlarge" />
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/tvFooterText"
@@ -269,10 +247,10 @@
             android:textColor="@color/grey_700"
             android:textStyle="bold" />
 
-        <!--make provisions for the space consumed by appbar and bottomsheet peek height-->
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottomsheet_peek_height" />
+        <!--        &lt;!&ndash;make provisions for the space consumed by appbar and bottomsheet peek height&ndash;&gt;-->
+        <!--        <Space-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="@dimen/bottomsheet_peek_height" />-->
 
     </LinearLayout>
 

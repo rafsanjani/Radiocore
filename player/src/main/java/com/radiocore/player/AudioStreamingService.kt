@@ -48,7 +48,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     private val SERVICE_ID: Int = 5
 
     override fun onBind(intent: Intent): IBinder? {
-//        super.onBind(intent)
         return binder
     }
 
@@ -95,7 +94,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
             Timber.i("Audio Focus gained on Android o+")
 
         try {
-//            mMediaPlayer = StreamPlayer.getInstance(this)
             mMediaPlayer.streamSource = Uri.parse(Constants.STREAM_URL)
 
             mMediaPlayer.setPlayerStateChangesListener(object : StreamPlayer.StreamStateChangesListener {
@@ -163,7 +161,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
      * @return a Notification object which c
      * TODO: Dynamically add play and pause buttons to notification
      */
-    private fun createNotification(contentIntent: Intent): Notification {
+    private fun createNotification(contentIntent: PendingIntent): Notification {
         createNotificationChannel()
         val playIntent = Intent(this, AudioStreamingService::class.java)
         val stopIntent = Intent(this, AudioStreamingService::class.java)
@@ -171,7 +169,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         stopIntent.action = Constants.ACTION_STOP
         playIntent.action = Constants.ACTION_PLAY
 
-        val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
+//        val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
         val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
 
         val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
@@ -182,7 +180,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                 .setColor(ContextCompat.getColor(this, R.color.amber_400))
                 .setContentText(mNotificationText)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentIntent(contentPendingIntent)
+                .setContentIntent(contentIntent)
 
         return builder.build()
     }
@@ -306,7 +304,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     }
 
     inner class AudioServiceBinder : Binder() {
-        fun getAudioService(intent: Intent): AudioStreamingService {
+        fun getAudioService(intent: PendingIntent): AudioStreamingService {
             mStreamNotification = createNotification(intent)
             return this@AudioStreamingService
         }

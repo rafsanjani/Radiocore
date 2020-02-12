@@ -21,7 +21,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:icon="@drawable/ic_play_arrow_black_24dp"
             android:key="com.foreverrafs.radiocore.autoplay_on_start"
             android:summaryOff="Don't start playing when app opens"
             android:summaryOn="Start playing when app opens"
@@ -29,7 +28,6 @@
         <ListPreference
             android:entries="@array/settings_timer_entries"
             android:entryValues="@array/settings_timer_entries_values"
-            android:icon="@drawable/ic_clock"
             android:key="com.foreverrafs.radiocore.streaming_timer"
             android:summary="Stop stream after %s"
             android:title="@string/pref_title_stream_timer" />
@@ -37,7 +35,6 @@
         <ListPreference
             android:entries="@array/settings_timer_entries"
             android:entryValues="@array/settings_timer_entries_values"
-            android:icon="@drawable/ic_news"
             android:key="com.foreverrafs.radiocore.cache_expiry_hours"
             android:summary="Fetch news every %s"
             android:title="@string/pref_title_news_fetch_delay" />

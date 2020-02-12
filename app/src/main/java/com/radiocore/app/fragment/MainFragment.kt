@@ -1,6 +1,7 @@
 package com.radiocore.app.fragment
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -58,6 +59,9 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
     @Inject
     lateinit var mStreamPlayer: StreamPlayer
+
+    @Inject
+    lateinit var mRadioPreferences: RadioPreferences
 
     private val viewModel: HomeViewModel by viewModels()
 
@@ -134,20 +138,20 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
     private fun setUpInitialPlayerState() {
-        val radioPreferences = RadioPreferences(context!!)
-        var intent = Intent(requireContext(), MainActivity::class.java)
-        mAudioServiceConnection = AudioServiceConnection(intent)
+        val mainActivityPendingIntent = PendingIntent.getActivity(requireContext(), 3333,
+                Intent(requireContext(), MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+        mAudioServiceConnection = AudioServiceConnection(mainActivityPendingIntent)
 
 
         if (!isServiceRunning(AudioStreamingService::class.java, requireContext())) {
-            if (radioPreferences.isAutoPlayOnStart)
+            if (mRadioPreferences.isAutoPlayOnStart)
                 startPlayback()
         } else {
             val state = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
                 AudioStreamingState.STATUS_PLAYING else AudioStreamingState.STATUS_STOPPED
             viewModel.updatePlaybackState(state)
 
-            intent = Intent(STREAM_RESULT)
+            val intent = Intent(STREAM_RESULT)
             intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString()) //mAudioStreamingState.toString())
             onAudioStreamingStateReceived(intent)
         }

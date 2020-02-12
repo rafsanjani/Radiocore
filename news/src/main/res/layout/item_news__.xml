@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.MainActivity">
 
     <data>
 
@@ -10,7 +11,7 @@
             type="com.radiocore.news.model.News" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         style="@style/CardStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -42,7 +43,6 @@
                 android:lines="3"
                 android:text="@{newsItem.headline}"
                 android:textAllCaps="false"
-                android:textColor="@color/brown_900"
                 android:textSize="16sp"
                 android:typeface="sans"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -58,7 +58,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/aldrich"
                 android:text="@{newsItem.category}"
-                android:textColor="@color/brown_600"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvDate"
                 app:layout_constraintEnd_toEndOf="@+id/tvHeadline"
@@ -71,7 +70,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:textColor="@color/grey_900"
                 android:textSize="12sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -79,5 +77,5 @@
                 tools:text="@string/news_custom_date" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

@@ -43,7 +43,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.radiocore.app.activity.SettingsActivity" />
+
+        <activity
+            android:name="com.radiocore.app.activity.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.radiocore.app.activity.MainActivity"
             android:screenOrientation="portrait"

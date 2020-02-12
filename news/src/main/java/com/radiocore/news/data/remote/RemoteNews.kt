@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 /**
  * Remote news repository will always fetch from online no matter what
  */
-class RemoteNews(private val context: Context) : INewsManager<News> {
+class RemoteNews(context: Context) : INewsManager<News> {
 
     private val mPreferences: RadioPreferences = RadioPreferences(context)
 

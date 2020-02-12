@@ -7,9 +7,9 @@
     android:layout_height="match_parent"
     android:background="@color/grey_5">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/missionCard"
-        style="@style/CardStyle.About"
+        style="@style/CardStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -59,12 +59,13 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textColor="@color/grey_700" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
-        style="@style/CardStyle.About"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardStyle"
         android:layout_width="0dp"
         android:layout_height="0dp"
+
         android:layout_marginBottom="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
@@ -217,10 +218,10 @@
                 android:layout_height="@dimen/spacing_mlarge" />
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
-        style="@style/CardStyle.About"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardUseCompatPadding="true"
@@ -287,7 +288,7 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
