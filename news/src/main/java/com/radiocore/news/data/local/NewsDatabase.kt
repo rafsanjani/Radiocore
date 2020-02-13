@@ -15,6 +15,7 @@ abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao
 
     companion object {
+        @Volatile
         private var instance: NewsDatabase? = null
 
         @Synchronized

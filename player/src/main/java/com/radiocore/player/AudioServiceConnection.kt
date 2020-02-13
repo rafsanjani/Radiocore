@@ -27,5 +27,4 @@ class AudioServiceConnection(var intent: PendingIntent) : ServiceConnection {
         audioStreamingService = binder.getAudioService(intent)
         isBound = true
     }
-
 }

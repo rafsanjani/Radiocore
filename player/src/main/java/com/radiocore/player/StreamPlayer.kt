@@ -34,20 +34,6 @@ class StreamPlayer(private var context: Context) : EventListener, LifecycleObser
     private lateinit var mStreamMetadataListener: StreamMetadataListener
 
 
-//    companion object {
-//        private var instance: WeakReference<StreamPlayer>? = null
-//        private lateinit var mStreamMetadataListener: StreamMetadataListener
-//
-//        fun getInstance(context: Context): StreamPlayer {
-//            synchronized(StreamPlayer::class.java) {
-//                if (instance == null) {
-//                    instance = WeakReference(StreamPlayer(context))
-//                }
-//                return instance?.get()!!
-//            }
-//        }
-//    }
-
     private var mMetaDataOutput = MetadataOutput { metadata ->
         for (n in 0 until metadata.length()) {
             when (val md = metadata[n]) {

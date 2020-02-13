@@ -1,5 +1,4 @@
 include ':app'
-include ':stickyheaders'
 include ':news'
 include ':core'
 include ':player'

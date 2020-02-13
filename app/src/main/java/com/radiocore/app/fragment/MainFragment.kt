@@ -205,13 +205,13 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     }
 
     override fun onStop() {
-        super.onStop()
         LocalBroadcastManager.getInstance(context!!).unregisterReceiver(mAudioServiceBroadcastReceiver)
         activity?.unbindService(mAudioServiceConnection)
+
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (mStreamPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING) {
             stopPlayback()
         }
@@ -220,6 +220,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             visualizer.release()
 
         mCompositeDisposable?.clear()
+        super.onDestroy()
     }
 
 
@@ -369,17 +370,17 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             }
             AudioStreamingState.STATUS_STOPPED -> {
                 Timber.d("onAudioStreamingStateReceived: STOPPED")
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play_small)!!)
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play_small)!!)
 
                 toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
                 textSwitcherPlayerState.setText(getString(R.string.state_stopped))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.pink_600))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_600))
             }
             AudioStreamingState.STATUS_LOADING -> {
                 Timber.i("onAudioStreamingStateReceived: BUFFERING")
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.pink_200))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_200))
                 toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
 
@@ -423,8 +424,9 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(context!!).registerReceiver(mAudioServiceBroadcastReceiver,
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(mAudioServiceBroadcastReceiver,
                 IntentFilter(STREAM_RESULT)
         )
+
     }
 }

@@ -1,9 +1,10 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="4dp"
+    tools:context=".NewsDetailActivity"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp"
     app:cardUseCompatPadding="true">
@@ -61,7 +62,6 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             style="@style/TextAppearance.MaterialComponents.Caption"
-            android:justificationMode="inter_word"
             tools:text="@string/news_custom_category"
             android:textColor="@color/pink_A100"
             android:textStyle="bold|italic"
@@ -89,8 +89,7 @@
             android:justificationMode="inter_word"
             android:lineSpacingExtra="@dimen/news_line_spacing"
             android:text="@string/news_custom_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="@color/grey_20"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/tvCategory"
             app:layout_constraintStart_toStartOf="@+id/text_publishedon"
@@ -108,4 +107,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

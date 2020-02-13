@@ -10,6 +10,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.radiocore.core.util.Constants
 import com.radiocore.news.NewsDetailActivity
@@ -17,8 +18,6 @@ import com.radiocore.news.R
 import com.radiocore.news.adapter.NewsAdapter
 import com.radiocore.news.adapter.NewsAdapter.NewsItemClickListener
 import com.radiocore.news.model.News
-import com.radiocore.news.model.SectionedNews
-import com.radiocore.stickyheaders.StickyHeadersLinearLayoutManager
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
@@ -36,20 +35,16 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsI
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        println("sample output")
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark)
         swipeRefreshLayout.setOnRefreshListener(this)
         getNewsData()
 
         btnRetry.setOnClickListener {
-            run {
-                contentNoConnection.visibility = View.INVISIBLE
-                loadingBar.visibility = View.VISIBLE
-                getNewsData()
-            }
-        }
+            contentNoConnection.visibility = View.INVISIBLE
+            loadingBar.visibility = View.VISIBLE
+            getNewsData()
 
-        textView.setOnClickListener {
-            println("hi")
         }
     }
 
@@ -59,10 +54,8 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsI
                 swipeRefreshLayout.visibility = View.VISIBLE
                 contentNoConnection.visibility = View.INVISIBLE
 
-                val sectionedNews = SectionedNews(list)
-
-                val adapter = NewsAdapter(sectionedNews, this)
-                recyclerView.layoutManager = StickyHeadersLinearLayoutManager<NewsAdapter>(requireContext())
+                val adapter = NewsAdapter(list, this)
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 recyclerView?.adapter = adapter
 
             } else {
@@ -76,12 +69,12 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsI
             loadingBar.visibility = View.INVISIBLE
         }
 
-        viewModel.getAllNews().observe(this, observer)
+        viewModel.getAllNews().observe(viewLifecycleOwner, observer)
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mCompositeDisposable.clear()
+        super.onDestroy()
     }
 
     override fun onRefresh() {

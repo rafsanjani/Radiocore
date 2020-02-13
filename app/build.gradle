@@ -75,7 +75,7 @@ dependencies {
     implementation 'com.chibde:audiovisualizer:2.2.0'
 
     //firebase for crashlytics analysis
-    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //google exoplayer for audio rendering
@@ -98,7 +98,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     testImplementation 'org.robolectric:robolectric:4.3.1'
-    testImplementation 'junit:junit:4.13-rc-2'
+    testImplementation 'junit:junit:4.13'
 
     //timber for logging
     implementation deps.timber
@@ -108,12 +108,12 @@ dependencies {
     implementation deps.androidX.lifecycle.livedata
 
     //dagger
-    api 'com.google.dagger:dagger:2.25.4'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.25.4'
-    kapt 'com.google.dagger:dagger-compiler:2.25.4'
-    api 'com.google.dagger:dagger-android:2.25.4'
-    api 'com.google.dagger:dagger-android-support:2.25.4' // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.25.4'
+    api 'com.google.dagger:dagger:2.26'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.26'
+    kapt 'com.google.dagger:dagger-compiler:2.26'
+    api 'com.google.dagger:dagger-android:2.26'
+    api 'com.google.dagger:dagger-android-support:2.26' // if you use the support libraries
+    kapt 'com.google.dagger:dagger-android-processor:2.26'
 
     implementation deps.androidX.core.ktx
 }

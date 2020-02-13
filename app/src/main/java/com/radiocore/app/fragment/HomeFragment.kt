@@ -1,6 +1,5 @@
 package com.radiocore.app.fragment
 
-import android.animation.AnimatorInflater
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import com.radiocore.app.viewmodels.HomeViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.player.StreamMetadataListener
 import com.radiocore.player.StreamPlayer
-import kotlinx.android.synthetic.main.fragment_home.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,24 +39,29 @@ class HomeFragment : DaggerAndroidXFragment(), StreamMetadataListener {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        startAnimations()
+    override fun onStop() {
+        mStreamPlayer.removeMetadataListener()
+        super.onStop()
     }
+
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        startAnimations()
+//    }
 
     override fun onResume() {
         super.onResume()
         mStreamPlayer.addMetadataListener(this)
     }
-
-    private fun startAnimations() {
-        val metadataAnimation = AnimatorInflater.loadAnimator(activity, R.animator.metadata_anim_set)
-        val logoAnimation = AnimatorInflater.loadAnimator(activity, R.animator.scale)
-
-        metadataAnimation.setTarget(tvMetaData)
-        logoAnimation.setTarget(imageCentralLogo)
-
-        logoAnimation.start()
-        metadataAnimation.start()
-    }
+//
+//    private fun startAnimations() {
+//        val metadataAnimation = AnimatorInflater.loadAnimator(activity, R.animator.metadata_anim_set)
+//        val logoAnimation = AnimatorInflater.loadAnimator(activity, R.animator.scale)
+//
+//        metadataAnimation.setTarget(tvMetaData)
+//        logoAnimation.setTarget(imageCentralLogo)
+//
+//        logoAnimation.start()
+//        metadataAnimation.start()
+//    }
 
 }
