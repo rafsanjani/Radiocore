@@ -230,8 +230,9 @@ class StreamPlayer(private var context: Context) : EventListener, LifecycleObser
 
         if (!playWhenReady && state == STATE_READY) {
             //paused
-            mStreamStateChangesListener.onPause()
-            mPlaybackState = PlaybackState.PAUSED
+//            mStreamStateChangesListener.onPause()
+            mPlaybackState = PlaybackState.STOPPED
+            mStreamStateChangesListener.onStop()
             return
         }
 
@@ -260,7 +261,7 @@ class StreamPlayer(private var context: Context) : EventListener, LifecycleObser
 
         fun onStop()
 
-        fun onPause()
+//        fun onPause()
 
         fun onError(exception: Exception?)
     }

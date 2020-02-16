@@ -124,10 +124,10 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                     stopForeground(true)
                 }
 
-                override fun onPause() {
-                    Timber.i("setPlayerStateChangesListener: OnPause")
-                    sendResult(AudioStreamingState.STATUS_PAUSED)
-                }
+//                override fun onPause() {
+//                    Timber.i("setPlayerStateChangesListener: OnPause")
+//                    sendResult(AudioStreamingState.STATUS_STOPPED)
+//                }
 
             })
 
@@ -207,8 +207,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
      * Start playback and set playback status in SharedPreferences.
      */
     fun startPlayback() {
-        startForeground(SERVICE_ID, mStreamNotification)
         mMediaPlayer.play()
+        startForeground(SERVICE_ID, mStreamNotification)
 
         val data = ""
         mMediaPlayer.addMetadataListener(object : StreamMetadataListener {
@@ -217,6 +217,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                     metaData.value = metadata
             }
         })
+        sendResult(AudioStreamingState.STATUS_PLAYING)
     }
 
     /**
@@ -224,13 +225,10 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
      */
     fun stopPlayback() {
         stopForeground(true)
-        mMediaPlayer.stop()
-        cleanShutDown()
-    }
-
-    fun pausePlayback() {
-        stopForeground(true)
         mMediaPlayer.pause()
+        cleanShutDown()
+
+        sendResult(AudioStreamingState.STATUS_STOPPED)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -238,6 +236,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
         if (mMediaPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING)
             startForeground(SERVICE_ID, createNotification())
+        else
+            stopPlayback()
 
         return START_NOT_STICKY
     }
@@ -303,7 +303,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                     mResumeOnFocusGain = canResume
                     Timber.i("OnAudioFocusChange: Focus Lost. We will resume. $canResume...pausing playback")
                 }
-                pausePlayback()
+                stopPlayback()
             }
         }
     }
@@ -316,7 +316,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         STATUS_PLAYING,
         STATUS_STOPPED,
         STATUS_LOADING,
-        STATUS_PAUSED,
+//        STATUS_PAUSED,
     }
 
     inner class AudioServiceBinder : Binder() {

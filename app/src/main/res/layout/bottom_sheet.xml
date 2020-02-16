@@ -120,7 +120,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/phone_and_value"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimary" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -128,7 +129,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/email_and_value"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimary" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -136,7 +138,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/website_and_value"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimary" />
 
 
         </LinearLayout>

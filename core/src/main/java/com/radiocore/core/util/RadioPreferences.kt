@@ -45,7 +45,7 @@ class RadioPreferences(context: Context) {
      *
      */
 
-    val isAutoPlayOnStart: Boolean
+    val autoPlayOnStart: Boolean
         get() = settings.getBoolean(AUTOPLAY_ON_START, true)
 
     /**
