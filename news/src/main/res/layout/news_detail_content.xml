@@ -61,9 +61,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             tools:text="@string/news_custom_category"
-            android:textColor="@color/pink_A100"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="@+id/tvHeadline"
             app:layout_constraintTop_toTopOf="@+id/text_category_label" />

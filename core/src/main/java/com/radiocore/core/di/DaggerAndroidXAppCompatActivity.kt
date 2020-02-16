@@ -12,7 +12,8 @@ import javax.inject.Inject
 /**
  * AndroidX version of DaggerAppCompatActivity to support contentLayoutId.
  */
-abstract class DaggerAndroidXAppCompatActivity @JvmOverloads constructor(@LayoutRes contentLayoutId: Int = 0) : AppCompatActivity(contentLayoutId), HasAndroidInjector {
+abstract class DaggerAndroidXAppCompatActivity @JvmOverloads
+constructor(@LayoutRes contentLayoutId: Int = 0) : AppCompatActivity(contentLayoutId), HasAndroidInjector {
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
