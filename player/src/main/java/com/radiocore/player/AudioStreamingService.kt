@@ -16,6 +16,7 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.radiocore.core.di.DaggerAndroidService
 import com.radiocore.core.util.Constants
@@ -38,6 +39,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
     @Inject
     lateinit var mRadioPreferences: RadioPreferences
+
+    var metaData = MutableLiveData<String>()
 
     private lateinit var mNotificationText: String
     private lateinit var mStreamNotification: Notification
@@ -134,6 +137,10 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        return false
+    }
+
 
     /**
      * Create notification channel on Android O+
@@ -177,7 +184,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                 .addAction(R.drawable.ic_stop_notification, "Stop", stopPendingIntent)
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0))
-                .setColor(ContextCompat.getColor(this, R.color.amber_400))
+//                .setColor(ContextCompat.getColor(this, R.color.amber_400))
                 .setContentText(mNotificationText)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(contentIntent)
@@ -202,6 +209,14 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     fun startPlayback() {
         startForeground(SERVICE_ID, mStreamNotification)
         mMediaPlayer.play()
+
+        val data = ""
+        mMediaPlayer.addMetadataListener(object : StreamMetadataListener {
+            override fun onMetadataReceived(metadata: String) {
+                if (metadata.isNotEmpty() && metadata != data)
+                    metaData.value = metadata
+            }
+        })
     }
 
     /**
@@ -234,12 +249,13 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mAudioManager.abandonAudioFocusRequest(mFocusRequest)
         }
 
         Timber.i("onDestroy: Service Destroyed")
+
+        super.onDestroy()
     }
 
     /**

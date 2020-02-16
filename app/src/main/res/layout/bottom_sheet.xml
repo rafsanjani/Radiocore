@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.radiocore.app.viewmodels.HomeViewModel" />
+            type="com.radiocore.app.viewmodels.SharedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

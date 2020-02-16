@@ -3,11 +3,13 @@ package com.radiocore.app.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService.AudioStreamingState
 
-class HomeViewModel : ViewModel() {
+class SharedViewModel : ViewModel() {
     private var _metaData = MutableLiveData<String>()
     private var _playbackState = MutableLiveData<AudioStreamingState>(AudioStreamingState.STATUS_STOPPED)
+    lateinit var audioServiceConnection: AudioServiceConnection
 
     val metaData: LiveData<String> = _metaData
     val playbackState: LiveData<AudioStreamingState> = _playbackState

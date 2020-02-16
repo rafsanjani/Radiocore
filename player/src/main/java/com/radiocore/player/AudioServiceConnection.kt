@@ -6,11 +6,11 @@ import android.content.ServiceConnection
 import android.os.IBinder
 
 /***
- * The intent passed to this class will be used to relaunch the activity when the content of the notification
+ * The [PendingIntent] passed to this class will be used to relaunch the activity when the content of the notification
  * is tapped.
  */
-class AudioServiceConnection(var intent: PendingIntent) : ServiceConnection {
-    private var isBound: Boolean = false
+class AudioServiceConnection(var intent: PendingIntent, var autoPlay: Boolean, private val onServiceConnected: () -> Unit) : ServiceConnection {
+    var isBound: Boolean = false
     private lateinit var audioStreamingService: AudioStreamingService
 
     val audioService: AudioStreamingService?
@@ -26,5 +26,10 @@ class AudioServiceConnection(var intent: PendingIntent) : ServiceConnection {
         val binder = service as AudioStreamingService.AudioServiceBinder
         audioStreamingService = binder.getAudioService(intent)
         isBound = true
+
+        onServiceConnected()
+
+        if (autoPlay)
+            audioStreamingService.startPlayback()
     }
 }

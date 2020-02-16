@@ -55,7 +55,7 @@ ext {
                     cameraX           : '1.0.0-alpha06'
             ],
             google             : [
-                    material   : '1.2.0-alpha04',
+                    material   : '1.0.0',
                     dagger     : '2.25.4',
                     gson       : '2.8.6',
                     ossLicenses: [

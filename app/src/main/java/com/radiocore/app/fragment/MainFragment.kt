@@ -18,7 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -29,7 +30,7 @@ import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomeSectionsPagerAdapter
 import com.radiocore.app.concurrency.SimpleObserver
 import com.radiocore.app.databinding.BottomSheetBinding
-import com.radiocore.app.viewmodels.HomeViewModel
+import com.radiocore.app.viewmodels.SharedViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.core.util.*
 import com.radiocore.core.util.Constants.STREAM_RESULT
@@ -51,8 +52,10 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     private val PERMISSION_RECORD_AUDIO = 6900
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
-    private lateinit var mAudioServiceConnection: AudioServiceConnection
 
+    private val mAudioServiceIntent: Intent by lazy {
+        Intent(context, AudioStreamingService::class.java)
+    }
 
     private var mSheetBehaviour: BottomSheetBehavior<*>? = null
     private var mCompositeDisposable: CompositeDisposable? = null
@@ -63,9 +66,10 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     @Inject
     lateinit var mRadioPreferences: RadioPreferences
 
-    private val viewModel: HomeViewModel by viewModels()
+    private lateinit var viewModel: SharedViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = ViewModelProvider(activity!!).get(SharedViewModel::class.java)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -80,7 +84,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
 
     private fun intializeAudioVisualizer() {
-        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission()
         }
 
@@ -104,26 +108,26 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
         with(tabLayout) {
             getTabAt(0)?.setIcon(R.drawable.ic_radio_live)
-            getTabAt(1)!!.setIcon(R.drawable.ic_news)
-            getTabAt(2)!!.setIcon(R.drawable.ic_about)
+            getTabAt(1)?.setIcon(R.drawable.ic_news)
+            getTabAt(2)?.setIcon(R.drawable.ic_about)
 
-            getTabAt(0)!!.icon!!.setTint(Color.RED)
-            getTabAt(1)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
-            getTabAt(2)!!.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
+            getTabAt(0)?.icon?.setTint(Color.RED)
+            getTabAt(1)?.icon?.setTint(ContextCompat.getColor(context, R.color.grey_20))
+            getTabAt(2)?.icon?.setTint(ContextCompat.getColor(context, R.color.grey_20))
         }
 
-        tabLayout!!.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 collapseBottomSheet()
                 if (tab.position != 0)
-                    tab.icon!!.setTint(Color.WHITE)
+                    tab.icon?.setTint(Color.WHITE)
                 else
                     appBarLayout.setExpanded(true, true)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
                 if (tab.position != 0)
-                    tab.icon!!.setTint(ContextCompat.getColor(context!!, R.color.grey_20))
+                    tab.icon?.setTint(ContextCompat.getColor(requireContext(), R.color.grey_20))
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -132,7 +136,6 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         })
     }
 
-
     /**
      * Check if Audio Streaming Service is running and change the AudioStreamingState accordingly
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
@@ -140,8 +143,13 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     private fun setUpInitialPlayerState() {
         val mainActivityPendingIntent = PendingIntent.getActivity(requireContext(), 3333,
                 Intent(requireContext(), MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
-        mAudioServiceConnection = AudioServiceConnection(mainActivityPendingIntent)
 
+        viewModel.audioServiceConnection = AudioServiceConnection(mainActivityPendingIntent, true) {
+            viewModel.audioServiceConnection.audioService?.metaData?.observe(viewLifecycleOwner,
+                    Observer { string ->
+                        viewModel.updateStreamMetaData(string)
+                    })
+        }
 
         if (!isServiceRunning(AudioStreamingService::class.java, requireContext())) {
             if (mRadioPreferences.isAutoPlayOnStart)
@@ -152,7 +160,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             viewModel.updatePlaybackState(state)
 
             val intent = Intent(STREAM_RESULT)
-            intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString()) //mAudioStreamingState.toString())
+            intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString())
             onAudioStreamingStateReceived(intent)
         }
     }
@@ -169,7 +177,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                     }
 
                     override fun onNext(strings: Array<out String?>) {
-                        val streamTimer = Integer.parseInt(RadioPreferences(context!!).streamingTimer!!) * 3600
+                        val streamTimer = Integer.parseInt(RadioPreferences(requireContext()).streamingTimer!!) * 3600
                         val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
                         seekBarProgress?.max = streamTimer
                         seekBarProgress?.progress = currentPosition.seconds
@@ -181,33 +189,33 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     }
 
     private fun startPlayback() {
-        mAudioServiceConnection.audioService?.startPlayback()
+        if (viewModel.audioServiceConnection.isBound) {
+            viewModel.audioServiceConnection.audioService?.startPlayback()
+
+            return
+        }
+
+//        mAudioServiceIntent = Intent(context, AudioStreamingService::class.java)
+        activity?.bindService(mAudioServiceIntent, viewModel.audioServiceConnection, Context.BIND_AUTO_CREATE)
+        ContextCompat.startForegroundService(requireContext(), mAudioServiceIntent)
     }
 
     private fun pausePlayback() {
-        mAudioServiceConnection.audioService?.pausePlayback()
+        viewModel.audioServiceConnection.audioService?.pausePlayback()
     }
 
     private fun stopPlayback() {
-        mAudioServiceConnection.audioService?.stopPlayback()
+        viewModel.audioServiceConnection.audioService?.stopPlayback()
     }
-
 
     override fun onStart() {
         super.onStart()
         setUpInitialPlayerState()
         setUpAudioStreamingServiceReceiver()
-
-        Intent(context!!, AudioStreamingService::class.java).apply {
-            activity?.bindService(this, mAudioServiceConnection, Context.BIND_AUTO_CREATE)
-            ContextCompat.startForegroundService(context!!, this)
-        }
     }
 
     override fun onStop() {
-        LocalBroadcastManager.getInstance(context!!).unregisterReceiver(mAudioServiceBroadcastReceiver)
-        activity?.unbindService(mAudioServiceConnection)
-
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mAudioServiceBroadcastReceiver)
         super.onStop()
     }
 
@@ -229,9 +237,8 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * Note: All view Initializing must be performed in context!! module or it's submodules
      */
     private fun initializeViews() {
-        val textAnimationIn = AnimationUtils.loadAnimation(context!!, android.R.anim.slide_in_left)
-
-        val textAnimationOut = AnimationUtils.loadAnimation(context!!, android.R.anim.slide_out_right)
+        val textAnimationIn = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left)
+        val textAnimationOut = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_out_right)
 
         textSwitcherPlayerState.inAnimation = textAnimationIn
         textSwitcherPlayerState.outAnimation = textAnimationOut
@@ -248,8 +255,8 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         val audioSessionId = mStreamPlayer.audioSessionId
         try {
             if (audioSessionId != -1) {
-                visualizer.setPlayer(audioSessionId)
-                with(visualizer) {
+                visualizer.apply {
+                    setPlayer(audioSessionId)
                     setDensity(0.8F)
                     setGap(2)
                     setColor(ContextCompat.getColor(context, R.color.orange_900))
@@ -258,7 +265,6 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         } catch (exception: Exception) {
             Timber.e("setUpAudioVisualizer:${exception.message} ")
         }
-
     }
 
     private fun requestAudioRecordingPermission() {
@@ -307,7 +313,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      */
     private fun rotateSmallLogo(slideOffset: Float) {
         val rotationAngle = slideOffset * -360
-        smallLogo!!.rotation = rotationAngle
+        smallLogo?.rotation = rotationAngle
     }
 
     /**
@@ -358,15 +364,15 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             AudioStreamingState.STATUS_PLAYING -> {
                 Timber.d("onAudioStreamingStateReceived: Playing")
                 toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_play_pause_small)!!)
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause_small)!!)
 
                 intializeAudioVisualizer()
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
                 textSwitcherPlayerState?.setText(getString(R.string.state_live))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.green_200))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.green_200))
             }
             AudioStreamingState.STATUS_STOPPED -> {
                 Timber.d("onAudioStreamingStateReceived: STOPPED")
@@ -386,14 +392,13 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
             AudioStreamingState.STATUS_PAUSED -> {
                 Timber.i("onAudioStreamingStateReceived: PAUSED")
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(context!!, R.drawable.avd_pause_play_small)!!)
+                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play)!!)
+                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play_small)!!)
 
                 textSwitcherPlayerState.setText(getString(R.string.state_paused))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(context!!, R.color.yellow_400))
+                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.yellow_400))
                 toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
             }
-
         }
     }
 
@@ -428,5 +433,8 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 IntentFilter(STREAM_RESULT)
         )
 
+        if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING) {
+            activity?.bindService(mAudioServiceIntent, viewModel.audioServiceConnection, Context.BIND_AUTO_CREATE)
+        }
     }
 }

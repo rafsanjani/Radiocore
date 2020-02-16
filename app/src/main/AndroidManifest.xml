@@ -30,7 +30,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.radiocore.app.fragment.MainFragment"
+            android:name=".activity.MainActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -46,10 +46,6 @@
 
         <activity
             android:name="com.radiocore.app.activity.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="com.radiocore.app.activity.MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="com.radiocore.player.AudioStreamingService" />
