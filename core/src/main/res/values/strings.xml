@@ -10,15 +10,10 @@
     <string name="phone_and_value">Phone: +233551234567</string>
     <string name="about_build_info">RadioCore Build #%1$s</string>
 
-    <!--Acivity Titles-->
-    <string name="activity_news_title">RadioCore News</string>
-
     <!--    Tab Titles-->
     <string name="live">Live</string>
     <string name="about">About</string>
     <string name="news">News</string>
-    <!--End of Activity Titles-->
-
     <!--End of Customizable String Entries-->
 
     <!--Menu Actions-->
@@ -34,7 +29,7 @@
         em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
         ac habitasse platea dictumst. Suspendisse volutpat blandit ultrices. Sed eget velit id sa
         pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
-        dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
+        dumb malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
     </string>
     <!--End of custom news Item-->
 
