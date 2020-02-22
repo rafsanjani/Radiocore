@@ -96,7 +96,7 @@
     <string name="label_email">Email:</string>
     <string name="label_phone">Phone:</string>
     <string name="label_mobile">Mobile:</string>
-    <string name="footer_copyright">Copyright \u00A9, RadioCore </string>
+    <string name="footer_copyright">Copyright \u00A9, %1$s</string>
     <string name="desc_small_logo">small logo desc</string>
     <string name="sample_metadata_string">Travis Scott - Holiday</string>
 
