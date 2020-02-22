@@ -3,18 +3,27 @@
     <!--Customizable String Entries. Change these values as appropriate-->
     <string name="app_name">RadioCore 999.9 FM</string>
     <string name="org_email">radiocore@foreverrafs.com</string>
+    <string name="org_website">www.radiocore.com</string>
     <string name="org_phone">+441234567</string>
-    <string name="live_radio_freq">Live Radio - 999.9FM</string>
-    <string name="website_and_value">Website: https://www.foreverafs.com/radiocore</string>
-    <string name="email_and_value">Email: radiocore@foreverrafs.com</string>
-    <string name="phone_and_value">Phone: +233551234567</string>
+    <string name="org_mobile">+441234567</string>
+    <string name="org_freq">999.9FM</string>
+
+    <string name="live_radio_freq">Live Radio - %1$s</string>
+    <string name="website_and_value">Website: %1$s</string>
+    <string name="email_and_value">Email: %1$s</string>
+    <string name="phone_and_value">Phone: %1$s</string>
+    <string name="mobile_and_value">Phone: %1$s</string>
     <string name="about_build_info">RadioCore Build #%1$s</string>
+    <!--End of Customizable String Entries-->
+
+    <!--Acivity Titles-->
+    <string name="activity_news_title">%1$s News</string>
 
     <!--    Tab Titles-->
     <string name="live">Live</string>
     <string name="about">About</string>
     <string name="news">News</string>
-    <!--End of Customizable String Entries-->
+    <!--End of Activity Titles-->
 
     <!--Menu Actions-->
     <string name="action_settings">Settings</string>
@@ -29,7 +38,7 @@
         em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
         ac habitasse platea dictumst. Suspendisse volutpat blandit ultrices. Sed eget velit id sa
         pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
-        dumb malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
+        dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
     </string>
     <!--End of custom news Item-->
 
@@ -91,7 +100,7 @@
     <string name="label_email">Email:</string>
     <string name="label_phone">Phone:</string>
     <string name="label_mobile">Mobile:</string>
-    <string name="footer_copyright">Copyright \u00A9, %1$s</string>
+    <string name="footer_copyright">Copyright \u00A9, RadioCore </string>
     <string name="desc_small_logo">small logo desc</string>
     <string name="sample_metadata_string">Travis Scott - Holiday</string>
 
