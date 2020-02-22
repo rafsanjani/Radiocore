@@ -3,23 +3,27 @@
     <!--Customizable String Entries. Change these values as appropriate-->
     <string name="app_name">RadioCore 999.9 FM</string>
     <string name="org_email">radiocore@foreverrafs.com</string>
+    <string name="org_website">www.radiocore.com</string>
     <string name="org_phone">+441234567</string>
-    <string name="live_radio_freq">Live Radio - 999.9FM</string>
-    <string name="website_and_value">Website: https://www.foreverafs.com/radiocore</string>
-    <string name="email_and_value">Email: radiocore@foreverrafs.com</string>
-    <string name="phone_and_value">Phone: +233551234567</string>
+    <string name="org_mobile">+441234567</string>
+    <string name="prg_freq">999.9FM</string>
+
+    <string name="live_radio_freq">Live Radio - %1$s</string>
+    <string name="website_and_value">Website: %1$s</string>
+    <string name="email_and_value">Email: %1$s</string>
+    <string name="phone_and_value">Phone: %1$s</string>
+    <string name="mobile_and_value">Phone: %1$s</string>
     <string name="about_build_info">RadioCore Build #%1$s</string>
+    <!--End of Customizable String Entries-->
 
     <!--Acivity Titles-->
-    <string name="activity_news_title">RadioCore News</string>
+    <string name="activity_news_title">%1$s News</string>
 
     <!--    Tab Titles-->
     <string name="live">Live</string>
     <string name="about">About</string>
     <string name="news">News</string>
     <!--End of Activity Titles-->
-
-    <!--End of Customizable String Entries-->
 
     <!--Menu Actions-->
     <string name="action_settings">Settings</string>

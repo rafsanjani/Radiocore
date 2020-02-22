@@ -36,6 +36,10 @@ class AboutFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         tvFooterText.text = getString(R.string.about_build_info, BuildConfig.VERSION_NAME)
+        tvEmail.text = getString(R.string.org_email)
+        tvPhone.text = getString(R.string.org_phone)
+        tvMobile.text = getString(R.string.org_mobile)
+
         initClickListeneners()
     }
 

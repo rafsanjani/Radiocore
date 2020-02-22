@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -292,8 +291,17 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     private fun initializeBottomSheet() {
         mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet!!)
 
-        val binding: BottomSheetBinding? = DataBindingUtil.bind(layoutBottomSheet)
-        binding?.viewModel = viewModel
+        //initialize the contact texts on the bottom sheet
+        tvEmail.text = getString(R.string.email_and_value, getString(R.string.org_email))
+        tvPhone.text = getString(R.string.phone_and_value, getString(R.string.org_phone))
+        tvWebsite.text = getString(R.string.website_and_value, getString(R.string.org_website))
+
+
+        val binding: BottomSheetBinding? = BottomSheetBinding.inflate(layoutInflater)?.also {
+            it.viewModel = viewModel
+            it.lifecycleOwner = viewLifecycleOwner
+        }
+
         mSheetBehaviour!!.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
