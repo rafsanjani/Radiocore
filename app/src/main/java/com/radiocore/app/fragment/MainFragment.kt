@@ -395,16 +395,6 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_200))
                 toggleViewsVisibility(View.VISIBLE, smallProgressBar)
             }
-
-//            AudioStreamingState.STATUS_PAUSED -> {
-//                Timber.i("onAudioStreamingStateReceived: PAUSED")
-//                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play)!!)
-//                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play_small)!!)
-//
-//                textSwitcherPlayerState.setText(getString(R.string.state_paused))
-//                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.yellow_400))
-//                toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
-//            }
         }
     }
 
@@ -415,7 +405,6 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
                 when (viewModel.playbackState.value) {
                     AudioStreamingState.STATUS_PLAYING -> stopPlayback()
-//                    AudioStreamingState.STATUS_PAUSED,
                     AudioStreamingState.STATUS_STOPPED -> startPlayback()
                     AudioStreamingState.STATUS_LOADING -> Timber.d("Loading")
                 }
@@ -440,10 +429,9 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 IntentFilter(STREAM_RESULT)
         )
 
-        if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING) {
+        if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING &&
+                !viewModel.audioServiceConnection.isBound) {
             activity?.bindService(mAudioServiceIntent, viewModel.audioServiceConnection, Context.BIND_AUTO_CREATE)
-        } else {
-            ContextCompat.startForegroundService(requireContext(), mAudioServiceIntent)
         }
     }
 }
