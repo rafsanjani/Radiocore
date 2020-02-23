@@ -7,6 +7,9 @@
     <string name="org_phone">+441234567</string>
     <string name="org_mobile">+441234567</string>
     <string name="org_freq">999.9FM</string>
+    <string name="org_facebook">https://www.facebook.com/foreverrafs</string>
+    <string name="org_instagram">https://www.instagram.com/foreverrafs/</string>
+    <string name="org_twitter">https://twitter.com/coded_rafs</string>
 
     <string name="live_radio_freq">Live Radio - %1$s</string>
     <string name="website_and_value">Website: %1$s</string>

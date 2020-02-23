@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <!--You may add more cards for more sections-->
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,10 +72,10 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,10 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/spacing_mlarge"
-                android:paddingTop="@dimen/spacing_large"
-                android:paddingRight="@dimen/spacing_mlarge"
-                android:paddingBottom="@dimen/spacing_small">
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/textView11"
@@ -191,53 +188,85 @@
                     tools:layout_conversion_absoluteWidth="91dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             style="@style/CardStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/spacing_mlarge"
-                android:paddingTop="@dimen/spacing_large"
-                android:paddingRight="@dimen/spacing_mlarge"
-                android:paddingBottom="@dimen/spacing_large">
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageTwitter"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/org_twitter"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/twitter_icon" />
+
+                <ImageView
+                    android:id="@+id/imageInstagram"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="11dp"
+                    android:contentDescription="@string/org_instagram"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageTwitter"
+                    app:layout_constraintStart_toEndOf="@+id/imageFacebook"
+                    app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/instagram_icon" />
+
+                <ImageView
+                    android:id="@+id/imageFacebook"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/org_facebook"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
+                    app:layout_constraintEnd_toStartOf="@+id/imageInstagram"
+                    app:layout_constraintStart_toEndOf="@+id/imageWhatsapp"
+                    app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
+                    app:srcCompat="@drawable/facebook_icon" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/textView3"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/share"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:fontFamily="sans-serif-medium" />
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="4dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:contentDescription="@string/desc_swipe_up_handle"
-                    android:src="@drawable/swipe_up_handle"
-                    android:tint="@color/blue_900" />
+                    app:fontFamily="sans-serif-medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/imageWhatsapp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:contentDescription="@string/desc_whatsapp_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imageFacebook"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3"
                     app:srcCompat="@drawable/whatsapp_icon" />
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/spacing_mlarge" />
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/tvFooterText"
@@ -246,12 +275,5 @@
             android:textAlignment="center"
             android:textColor="@color/grey_700"
             android:textStyle="bold" />
-
-        <!--        &lt;!&ndash;make provisions for the space consumed by appbar and bottomsheet peek height&ndash;&gt;-->
-        <!--        <Space-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="@dimen/bottomsheet_peek_height" />-->
-
     </LinearLayout>
-
 </androidx.core.widget.NestedScrollView>

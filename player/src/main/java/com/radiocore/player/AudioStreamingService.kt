@@ -88,7 +88,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
     override fun onCreate() {
         super.onCreate()
-        mNotificationText = this.getString(R.string.live_radio_freq)
+        mNotificationText = this.getString(R.string.live_radio_freq, getString(R.string.org_freq))
         mRadioPreferences = RadioPreferences(this)
         mBroadcastManager = LocalBroadcastManager.getInstance(this)
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager

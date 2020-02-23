@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -20,14 +21,21 @@ import kotlinx.android.synthetic.main.fragment_about.*
 class AboutFragment : Fragment(), View.OnClickListener {
     override fun onClick(clickedView: View?) {
         when (clickedView?.id) {
-            R.id.tvEmail, R.id.tvMobile, R.id.tvPhone -> {
-                val view = clickedView as TextView
-                onContactInfoClicked(view)
-            }
+            R.id.tvEmail, R.id.tvMobile, R.id.tvPhone -> onContactInfoClicked(clickedView as TextView)
 
             R.id.imageWhatsapp -> onWhatsappIconClicked()
+
+            R.id.imageFacebook, R.id.imageInstagram, R.id.imageTwitter ->
+                onSocialIconClicked(clickedView as ImageView)
+        }
+    }
+
+    private fun onSocialIconClicked(view: ImageView) {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(view.contentDescription.toString())
         }
 
+        startActivity(intent)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,6 +56,9 @@ class AboutFragment : Fragment(), View.OnClickListener {
         tvMobile.setOnClickListener(this)
         tvPhone.setOnClickListener(this)
         imageWhatsapp.setOnClickListener(this)
+        imageFacebook.setOnClickListener(this)
+        imageInstagram.setOnClickListener(this)
+        imageTwitter.setOnClickListener(this)
     }
 
     private fun onContactInfoClicked(view: TextView) {
