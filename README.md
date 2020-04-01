@@ -1,9 +1,6 @@
 # Radio Core
 ![alt text](https://travis-ci.com/rafsanjani/Radiocore.svg?token=65WwiWJdxPr2FAs6Lim2&branch=master)
 
-
-[<img align="right" alt="Get it on Google Play" height="100" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.foreverrafs.radiocore)
-
 Online Radio Streaming App, Made by developers for developers
 
 ## Screenshots
