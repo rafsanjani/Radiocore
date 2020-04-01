@@ -10,10 +10,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.radiocore.core.util.Constants
 import com.radiocore.core.util.RadioPreferences
-import com.radiocore.news.data.INewsManager
+import com.radiocore.news.data.NewsDataSource
 import com.radiocore.news.data.NewsRepository
-import com.radiocore.news.data.local.LocalNews
-import com.radiocore.news.data.remote.RemoteNews
+import com.radiocore.news.data.local.LocalDataSource
+import com.radiocore.news.data.remote.RemoteDataSource
 import com.radiocore.news.model.News
 import com.radiocore.news.workers.PersistNewsWorker
 import kotlinx.coroutines.Dispatchers
@@ -44,30 +44,30 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
         val repository = if (isCacheValid) {
             Timber.i("Cache Valid for ${hoursBeforeExpire - elapsedHours.hours} Hours: Loading from local...")
-            LocalNews(appContext)
+            LocalDataSource(appContext)
         } else {
             Timber.i("Cache Expired: Loading from Remote...")
-            RemoteNews(appContext)
+            RemoteDataSource(appContext)
         }
 
         return emitNewsItems(repository)
     }
 
-    private fun emitNewsItems(repository: INewsManager<News>): LiveData<List<News>> {
+    private fun emitNewsItems(repository: NewsDataSource): LiveData<List<News>> {
         return liveData(Dispatchers.IO) {
-            var data = repository.fetchNews()
+            var data = repository.getNews()
             //keep this inside our repository if it's not empty
             if (!data.isNullOrEmpty()) {
-                NewsRepository.getInstance().radioCoreNews = data
+                NewsRepository.newsItems = data
 
                 //save to localstorage if we fetched from online
-                if (repository is RemoteNews)
+                if (repository is RemoteDataSource)
                     saveNewsToLocalStorage()
             } else {
-                data = RemoteNews(appContext).fetchNews()
+                data = RemoteDataSource(appContext).getNews()
                 saveNewsToLocalStorage()
             }
-            NewsRepository.getInstance().radioCoreNews = data
+            NewsRepository.newsItems = data
             emit(data)
         }
     }

@@ -12,7 +12,7 @@ class PersistNewsWorker(context: Context, params: WorkerParameters) : CoroutineW
     override suspend fun doWork(): Result {
         val appContext = applicationContext
         val newsDao = NewsDatabase.getInstance(appContext).newsDao()
-        val newsItemsList = NewsRepository.getInstance().radioCoreNews
+        val newsItemsList = NewsRepository.newsItems
 
         newsDao.clear()
 

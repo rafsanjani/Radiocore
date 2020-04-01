@@ -11,13 +11,10 @@ import com.bumptech.glide.Glide
 import com.radiocore.news.R
 import com.radiocore.news.databinding.ItemNewsBinding
 import com.radiocore.news.model.News
-import org.joda.time.DateTime
-import org.joda.time.Days
-import org.joda.time.format.DateTimeFormat
 import timber.log.Timber
 
 
-class NewsAdapter(val listItems: List<News>, val fragment: Fragment) : AnimationAdapter(AnimationType.BOTTOM_UP, 150) {
+class NewsAdapter(private val listItems: List<News>, val fragment: Fragment) : AnimationAdapter(AnimationType.BOTTOM_UP, 150) {
 
     private lateinit var listener: NewsItemClickListener
 
@@ -56,20 +53,6 @@ class NewsAdapter(val listItems: List<News>, val fragment: Fragment) : Animation
      */
     interface NewsItemClickListener {
         fun onNewsItemClicked(position: Int, image: ImageView)
-    }
-
-    private fun getPeriod(date: DateTime): String {
-        val today = DateTime.now()
-
-        val days = Days.daysBetween(date, today).days
-
-        return when (days) {
-            0 -> "Today"
-            1 -> "Yesterday"
-            in 2..5 -> date.dayOfWeek().asText
-            in 6..10 -> "$days days ago"
-            else -> date.toString(DateTimeFormat.forPattern("MMMM d, yyyy"))
-        }
     }
 
     internal inner class NewsHolder(var binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {

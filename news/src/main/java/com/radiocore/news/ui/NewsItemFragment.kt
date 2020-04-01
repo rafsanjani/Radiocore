@@ -49,7 +49,7 @@ class NewsItemFragment : Fragment() {
 
     companion object {
         fun getInstance(position: Int): NewsItemFragment {
-            val newsItemAtPosition = NewsRepository.getInstance().radioCoreNews[position]
+            val newsItemAtPosition = NewsRepository.newsItems[position]
 
             val fragmentNewsItem = NewsItemFragment()
             val argument = Bundle()

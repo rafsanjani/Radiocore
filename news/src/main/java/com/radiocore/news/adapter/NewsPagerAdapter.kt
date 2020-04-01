@@ -12,7 +12,7 @@ import com.radiocore.news.ui.NewsItemFragment
 class NewsPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
     override fun getItemCount(): Int {
-        return NewsRepository.getInstance().radioCoreNews.size
+        return NewsRepository.newsItems.size
     }
 
     override fun createFragment(position: Int): Fragment {
