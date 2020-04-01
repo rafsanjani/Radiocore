@@ -46,4 +46,4 @@ Please keep use of this code for non-profit purposes only. Also, please note tha
 * [Glide](https://github.com/bumptech/glide)
 * [AudioVisualizer]()
 * [Gson](https://github.com/google/gson)
-* [GH News Central API](https://github.com/rafsanjani/ghnewscentral)
+* [Ghana News Central API](https://github.com/rafsanjani/ghnewscentral)
