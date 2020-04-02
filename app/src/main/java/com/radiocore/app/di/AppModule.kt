@@ -28,8 +28,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideStreamPlayer(context: Context): StreamPlayer {
-        return StreamPlayer(context)
+    fun provideStreamPlayer(context: Context, preferences: RadioPreferences): StreamPlayer {
+        return StreamPlayer(context, preferences)
     }
 
     @Provides

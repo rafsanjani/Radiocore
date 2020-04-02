@@ -26,8 +26,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.radiocore.app.R
 import com.radiocore.app.activity.MainActivity
-import com.radiocore.app.adapter.HomeSectionsPagerAdapter
-import com.radiocore.app.concurrency.SimpleObserver
+import com.radiocore.app.adapter.HomePagerAdapter
 import com.radiocore.app.databinding.BottomSheetBinding
 import com.radiocore.app.viewmodels.SharedViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
@@ -39,7 +38,6 @@ import com.radiocore.player.AudioStreamingService
 import com.radiocore.player.AudioStreamingService.AudioStreamingState
 import com.radiocore.player.StreamPlayer
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.joda.time.Seconds
@@ -48,7 +46,11 @@ import javax.inject.Inject
 
 
 class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
-    private val PERMISSION_RECORD_AUDIO = 6900
+
+    companion object{
+        private const val PERMISSION_RECORD_AUDIO = 6900
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
 
@@ -57,7 +59,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     }
 
     private var mSheetBehaviour: BottomSheetBehavior<*>? = null
-    private var mCompositeDisposable: CompositeDisposable? = null
+    private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private var shouldStartPlayback: Boolean = false
 
@@ -177,22 +179,18 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * Also checks if the stream timer is up which triggers a shutdown of the app
      */
     private fun startUpdateStreamProgress() {
-        mStreamPlayer.streamDurationStringsObservable
-                .subscribe(object : SimpleObserver<Array<out String?>>() {
-                    override fun onSubscribe(d: Disposable) {
-                        mCompositeDisposable?.add(d)
-                    }
+        val disposable = mStreamPlayer.streamDurationStringsObservable
+                .subscribe { durationStrings ->
+                    val streamTimer = Integer.parseInt(RadioPreferences(requireContext()).streamingTimer!!) * 3600
+                    val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
+                    seekBarProgress?.max = streamTimer
+                    seekBarProgress?.progress = currentPosition.seconds
 
-                    override fun onNext(strings: Array<out String?>) {
-                        val streamTimer = Integer.parseInt(RadioPreferences(requireContext()).streamingTimer!!) * 3600
-                        val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
-                        seekBarProgress?.max = streamTimer
-                        seekBarProgress?.progress = currentPosition.seconds
+                    textStreamProgress?.text = durationStrings[1]
+                    textStreamDuration?.text = durationStrings[0]
+                }
 
-                        textStreamProgress?.text = strings[1]
-                        textStreamDuration?.text = strings[0]
-                    }
-                })
+        mCompositeDisposable.add(disposable)
     }
 
     private fun startPlayback() {
@@ -230,7 +228,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         if (visualizer != null)
             visualizer.release()
 
-        mCompositeDisposable?.clear()
+        mCompositeDisposable.clear()
         super.onDestroy()
     }
 
@@ -297,7 +295,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         tvWebsite.text = getString(R.string.website_and_value, getString(R.string.org_website))
 
 
-        val binding: BottomSheetBinding? = BottomSheetBinding.inflate(layoutInflater)?.also {
+        BottomSheetBinding.inflate(layoutInflater)?.also {
             it.viewModel = viewModel
             it.lifecycleOwner = viewLifecycleOwner
         }
@@ -422,7 +420,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
 
     private fun setupViewPager(viewPager: ViewPager2) {
-        val viewPagerAdapter = HomeSectionsPagerAdapter(requireActivity()).apply {
+        val viewPagerAdapter = HomePagerAdapter(requireActivity()).apply {
             addFragment(HomeFragment(), "Live")
             addFragment(NewsListFragment(), "News")
             addFragment(AboutFragment(), "About")

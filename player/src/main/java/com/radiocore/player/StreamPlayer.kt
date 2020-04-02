@@ -24,12 +24,9 @@ import org.joda.time.Seconds
 import org.joda.time.format.PeriodFormatterBuilder
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class StreamPlayer(private var context: Context) : EventListener, LifecycleObserver {
+class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener, LifecycleObserver {
 
-    @Inject
-    lateinit var mPreferences: RadioPreferences
 
     private lateinit var mStreamMetadataListener: StreamMetadataListener
 
@@ -93,7 +90,7 @@ class StreamPlayer(private var context: Context) : EventListener, LifecycleObser
     private val streamDurationStrings: Array<String?>
         get() {
             val durations = arrayOfNulls<String>(2)
-            val streamTimer = Integer.parseInt(mPreferences.streamingTimer!!) * 3600
+            val streamTimer = Integer.parseInt(preferences.streamingTimer!!) * 3600
 
             val streamDurationHrs = Seconds.seconds(streamTimer)
             val currentPosition = Seconds.seconds(currentPosition.toInt() / 1000)
@@ -133,6 +130,9 @@ class StreamPlayer(private var context: Context) : EventListener, LifecycleObser
         get() = Observable
                 .interval(1, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
+                .doOnError { t: Throwable? ->
+                    Timber.i(t)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { streamDurationStrings }
 
