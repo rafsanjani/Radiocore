@@ -28,7 +28,6 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
     private var hoursBeforeExpire: Int
     private var lastFetchedTime: DateTime
     private val appContext: Context = application.applicationContext
-    private lateinit var news: LiveData<List<News>>
 
     init {
         mPreferences = RadioPreferences(appContext)
@@ -36,7 +35,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
         lastFetchedTime = mPreferences.cacheStorageTime!!
     }
 
-    //The viewmodel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
+    //The ViewModel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
     fun getAllNews(): LiveData<List<News>> {
         val elapsedHours = Hours.hoursBetween(lastFetchedTime, DateTime.now())
 
@@ -80,6 +79,4 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
                 ExistingWorkPolicy.REPLACE,
                 persistNewsRequest)
     }
-
-
 }

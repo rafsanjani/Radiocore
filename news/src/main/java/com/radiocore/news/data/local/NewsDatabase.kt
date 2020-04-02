@@ -1,16 +1,14 @@
 package com.radiocore.news.data.local
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.radiocore.news.model.News
-import com.radiocore.news.util.RoomTypeConverters
+import com.radiocore.news.util.NewsConverters
 
 
 @Database(entities = [News::class], version = 1)
-@TypeConverters(RoomTypeConverters::class)
+@TypeConverters(NewsConverters::class)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao
 
