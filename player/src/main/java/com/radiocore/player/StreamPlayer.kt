@@ -28,14 +28,18 @@ import java.util.concurrent.TimeUnit
 class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener, LifecycleObserver {
 
 
-    private lateinit var mStreamMetadataListener: StreamMetadataListener
-
+    //    private lateinit var mStreamMetadataListener: StreamMetadataListener
+    private val metadataListeners = mutableListOf<StreamMetadataListener>()
 
     private var mMetaDataOutput = MetadataOutput { metadata ->
         for (n in 0 until metadata.length()) {
             when (val md = metadata[n]) {
                 is com.google.android.exoplayer2.metadata.icy.IcyInfo -> {
-                    mStreamMetadataListener.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
+
+                    //just replay the event to all the attache dlisteners
+                    metadataListeners.forEach { listener ->
+                        listener.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
+                    }
                 }
                 else -> {
                     Timber.i("metaDataOutput: Other -  $md")
@@ -66,8 +70,9 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
 
     private var mPlaybackState = PlaybackState.IDLE
 
-    fun addMetadataListener(streamMetadataListener: StreamMetadataListener) {
-        mStreamMetadataListener = streamMetadataListener
+    fun addMetadataListener(listener: StreamMetadataListener) {
+//        mStreamMetadataListener = listener
+        metadataListeners.add(listener)
     }
 
     fun removeMetadataListener() {
@@ -125,7 +130,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
     /**
      * Get an observable from [streamDurationStrings]
      */
-
     val streamDurationStringsObservable: Observable<Array<out String?>>
         get() = Observable
                 .interval(1, TimeUnit.SECONDS)

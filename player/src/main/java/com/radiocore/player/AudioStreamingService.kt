@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.radiocore.core.di.DaggerAndroidService
 import com.radiocore.core.util.Constants
@@ -40,15 +41,22 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     @Inject
     lateinit var mRadioPreferences: RadioPreferences
 
+    private lateinit var mNotificationManager: NotificationManager
+
     var metaData = MutableLiveData<String>()
 
     private lateinit var mNotificationText: String
     private lateinit var mStreamNotification: Notification
+    private lateinit var mContentIntent: PendingIntent
     private lateinit var mAudioManager: AudioManager
     private lateinit var mFocusRequest: AudioFocusRequest
     private var mResumeOnFocusGain: Boolean = false
 
-    private val SERVICE_ID: Int = 5
+    companion object {
+        private const val NOTIFICATION_ID: Int = 5
+        const val NOTIFICATION_CHANNEL_ID = "com.radiocore.notification_channel"
+        const val NOTIFICATION_CHANNEL_NAME = "RadioCore Notification Channel"
+    }
 
     override fun onBind(intent: Intent): IBinder? {
         return binder
@@ -92,6 +100,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         mRadioPreferences = RadioPreferences(this)
         mBroadcastManager = LocalBroadcastManager.getInstance(this)
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (playbackAuthorized)
             Timber.i("Audio Focus gained on Android o+")
@@ -101,20 +110,20 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
             mMediaPlayer.setPlayerStateChangesListener(object : StreamPlayer.StreamStateChangesListener {
                 override fun onError(exception: Exception?) {
-                    Timber.i("setPlayerStatechangesListener: Error Loading Stream ${exception?.message}")
+                    Timber.i("setPlayerStateChangesListener: Error Loading Stream ${exception?.message}")
                     Toast.makeText(applicationContext, "Error loading stream!", Toast.LENGTH_SHORT).show()
                     sendResult(AudioStreamingState.STATUS_STOPPED)
                     stopForeground(true)
                 }
 
                 override fun onPlay() {
-                    Timber.i("setPlayerStatechangesListener: OnPlay")
+                    Timber.i("setPlayerStateChangesListener: OnPlay")
                     sendResult(AudioStreamingState.STATUS_PLAYING)
-                    startForeground(SERVICE_ID, mStreamNotification)
+                    startForeground(NOTIFICATION_ID, mStreamNotification)
                 }
 
                 override fun onBuffering() {
-                    Timber.i("setPlayerStatechangesListener: OnBuffering")
+                    Timber.i("setPlayerStateChangesListener: OnBuffering")
                     sendResult(AudioStreamingState.STATUS_LOADING)
                 }
 
@@ -123,12 +132,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                     sendResult(AudioStreamingState.STATUS_STOPPED)
                     stopForeground(true)
                 }
-
-//                override fun onPause() {
-//                    Timber.i("setPlayerStateChangesListener: OnPause")
-//                    sendResult(AudioStreamingState.STATUS_STOPPED)
-//                }
-
             })
 
         } catch (e: Exception) {
@@ -150,8 +153,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                    Constants.NOTIFICATION_CHANNEL_ID,
-                    Constants.NOTIFICATION_CHANNEL_NAME,
+                    NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_LOW
             )
 
@@ -168,7 +171,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
      * @return a Notification object which c
      * TODO: Dynamically add play and pause buttons to notification
      */
-    private fun createNotification(contentIntent: PendingIntent): Notification {
+    private fun createNotification(contentIntent: PendingIntent = mContentIntent,
+                                   notificationText: String = mNotificationText): Notification {
         createNotificationChannel()
         val playIntent = Intent(this, AudioStreamingService::class.java)
         val stopIntent = Intent(this, AudioStreamingService::class.java)
@@ -176,16 +180,15 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         stopIntent.action = Constants.ACTION_STOP
         playIntent.action = Constants.ACTION_PLAY
 
-//        val contentPendingIntent = PendingIntent.getActivity(this, 5, contentIntent, 0)
         val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
 
-        val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("Online Radio")
-                .addAction(R.drawable.ic_stop_notification, "Stop", stopPendingIntent)
+                .addAction(R.drawable.ic_stop_notification, getString(R.string.stop), stopPendingIntent)
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0))
-//                .setColor(ContextCompat.getColor(this, R.color.amber_400))
-                .setContentText(mNotificationText)
+                .setContentText(notificationText)
+                .setOnlyAlertOnce(true)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(contentIntent)
 
@@ -194,7 +197,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
     private fun createNotification(): Notification {
         createNotificationChannel()
-        val builder = NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("RadioCore")
                 .setContentText("Initialized")
                 .setColor(ContextCompat.getColor(this, R.color.amber_400))
@@ -208,16 +211,24 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
      */
     fun startPlayback() {
         mMediaPlayer.play()
-        startForeground(SERVICE_ID, mStreamNotification)
+        startForeground(NOTIFICATION_ID, mStreamNotification)
 
-        val data = ""
         mMediaPlayer.addMetadataListener(object : StreamMetadataListener {
+            var data = ""
             override fun onMetadataReceived(metadata: String) {
-                if (metadata.isNotEmpty() && metadata != data)
+                if (metadata.isNotEmpty() && metadata != data) {
                     metaData.value = metadata
+                    data = metadata
+                }
             }
         })
+
+        metaData.observeForever(metaDataObserver)
         sendResult(AudioStreamingState.STATUS_PLAYING)
+    }
+
+    private val metaDataObserver = Observer<String> {
+        mNotificationManager.notify(NOTIFICATION_ID, createNotification(notificationText = it))
     }
 
     /**
@@ -235,7 +246,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         super.onStartCommand(intent, flags, startId)
 
         if (mMediaPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING)
-            startForeground(SERVICE_ID, createNotification())
+            startForeground(NOTIFICATION_ID, createNotification())
         else
             stopPlayback()
 
@@ -254,6 +265,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         }
 
         Timber.i("onDestroy: Service Destroyed")
+        metaData.removeObserver(metaDataObserver)
 
         super.onDestroy()
     }
@@ -321,6 +333,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
     inner class AudioServiceBinder : Binder() {
         fun getAudioService(intent: PendingIntent): AudioStreamingService {
+            mContentIntent = intent
             mStreamNotification = createNotification(intent)
             return this@AudioStreamingService
         }
