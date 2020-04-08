@@ -295,12 +295,12 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         tvWebsite.text = getString(R.string.website_and_value, getString(R.string.org_website))
 
 
-        BottomSheetBinding.inflate(layoutInflater)?.also {
-            it.viewModel = viewModel
-            it.lifecycleOwner = viewLifecycleOwner
+        BottomSheetBinding.inflate(layoutInflater).apply {
+            viewModel = viewModel
+            lifecycleOwner = viewLifecycleOwner
         }
 
-        mSheetBehaviour!!.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        mSheetBehaviour.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     appBarLayout.setExpanded(false, true)
