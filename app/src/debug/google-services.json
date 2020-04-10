@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "",
         "android_client_info": {
-          "package_name": ""
+          "package_name": "com.foreverrafs.radiocore"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "1",
           "client_type": 1,
           "android_info": {
-            "package_name": "",
+            "package_name": "com.foreverrafs.radiocore",
             "certificate_hash": ""
           }
         },
