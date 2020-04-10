@@ -169,10 +169,11 @@
             <!-- This progress bar is constrained within the imageview so
             it's height and width are determined by the height and width of the imageView -->
             <ProgressBar
-                android:id="@+id/smallProgressBar"
+                android:id="@+id/progressBuffering"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:visibility="invisible"
                 app:hideIfLoading="@{viewModel.playbackState}"
                 app:layout_constraintBottom_toBottomOf="@id/smallLogo"
                 app:layout_constraintEnd_toEndOf="@+id/smallLogo"
