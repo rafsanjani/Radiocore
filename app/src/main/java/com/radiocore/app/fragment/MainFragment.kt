@@ -295,7 +295,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         tvWebsite.text = getString(R.string.website_and_value, getString(R.string.org_website))
 
 
-        BottomSheetBinding.inflate(layoutInflater)?.also {
+        BottomSheetBinding.inflate(layoutInflater).also {
             it.viewModel = viewModel
             it.lifecycleOwner = viewLifecycleOwner
         }
@@ -373,7 +373,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         when (state) {
             AudioStreamingState.STATUS_PLAYING -> {
                 Timber.d("onAudioStreamingStateReceived: Playing")
-                toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.INVISIBLE, progressBuffering)
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause_small)!!)
 
@@ -390,7 +390,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play_small)!!)
 
-                toggleViewsVisibility(View.INVISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.INVISIBLE, progressBuffering)
                 textSwitcherPlayerState.setText(getString(R.string.state_stopped))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_600))
             }
@@ -399,7 +399,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 Timber.i("onAudioStreamingStateReceived: BUFFERING")
                 textSwitcherPlayerState.setText(getString(R.string.state_buffering))
                 (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_200))
-                toggleViewsVisibility(View.VISIBLE, smallProgressBar)
+                toggleViewsVisibility(View.VISIBLE, progressBuffering)
             }
         }
     }
