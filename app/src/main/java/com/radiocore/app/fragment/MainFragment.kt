@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -70,10 +70,9 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     @Inject
     lateinit var mRadioPreferences: RadioPreferences
 
-    private lateinit var viewModel: SharedViewModel
+    private val viewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProvider(activity!!).get(SharedViewModel::class.java)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -87,7 +86,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     }
 
 
-    private fun intializeAudioVisualizer() {
+    private fun initAudioVisualizer() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission()
         }
@@ -239,6 +238,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * Note: All view Initializing must be performed in context!! module or it's submodules
      */
     private fun initializeViews() {
+
         val textAnimationIn = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left)
         val textAnimationOut = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_out_right)
 
@@ -288,18 +288,15 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * We are transitioning between collapsed and settled states, well that is what we are interested in, isn't it?
      */
     private fun initializeBottomSheet() {
-        mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet!!)
-
+        mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet)
         //initialize the contact texts on the bottom sheet
         tvEmail.text = getString(R.string.email_and_value, getString(R.string.org_email))
         tvPhone.text = getString(R.string.phone_and_value, getString(R.string.org_phone))
         tvWebsite.text = getString(R.string.website_and_value, getString(R.string.org_website))
 
-
         BottomSheetBinding.inflate(layoutInflater).apply {
-            viewModel = viewModel
             lifecycleOwner = viewLifecycleOwner
-        }
+        }.viewModel = this.viewModel
 
         mSheetBehaviour.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -378,7 +375,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause)!!)
                 animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause_small)!!)
 
-                intializeAudioVisualizer()
+                initAudioVisualizer()
 
                 //start updating seekbar when something is actually playing
                 startUpdateStreamProgress()
