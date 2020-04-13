@@ -8,7 +8,7 @@ import com.radiocore.player.AudioStreamingService.AudioStreamingState
 
 class SharedViewModel : ViewModel() {
     private var _metaData = MutableLiveData<String>()
-    private var _playbackState = MutableLiveData<AudioStreamingState>(AudioStreamingState.STATUS_STOPPED)
+    private var _playbackState = MutableLiveData(AudioStreamingState.STATUS_STOPPED)
     lateinit var audioServiceConnection: AudioServiceConnection
 
     val metaData: LiveData<String> = _metaData

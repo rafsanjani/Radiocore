@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.radiocore.app.R
 import com.radiocore.app.databinding.FragmentHomeBinding
 import com.radiocore.app.viewmodels.SharedViewModel
@@ -17,43 +17,22 @@ import javax.inject.Inject
 
 
 // Created by Emperor95 on 1/13/2019
-class HomeFragment : DaggerAndroidXFragment()/*, StreamMetadataListener */ {
+class HomeFragment : DaggerAndroidXFragment() {
+    private val viewModel: SharedViewModel by activityViewModels()
 
-    private lateinit var viewModel: SharedViewModel
     @Inject
     lateinit var mStreamPlayer: StreamPlayer
 
-
-//    private val data = ""
-//    override fun onMetadataReceived(metadata: String) {
-//        if (metadata.isNotEmpty() && metadata != data) {
-//            viewModel.updateStreamMetaData(metadata)
-//            Timber.i("onMetadataReceived: new metadata received")
-//        }
-//    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProvider(activity!!).get(SharedViewModel::class.java)
-
         val binding: FragmentHomeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         return binding.root
     }
 
-    override fun onStop() {
-        mStreamPlayer.removeMetadataListener()
-        super.onStop()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         startAnimations()
     }
-
-    //    override fun onResume() {
-//        super.onResume()
-//        mStreamPlayer.addMetadataListener(this)
-//    }
 
     private fun startAnimations() {
         val metadataAnimation = AnimatorInflater.loadAnimator(activity, R.animator.metadata_anim_set)
@@ -65,5 +44,4 @@ class HomeFragment : DaggerAndroidXFragment()/*, StreamMetadataListener */ {
         logoAnimation.start()
         metadataAnimation.start()
     }
-
 }
