@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -58,7 +59,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
         Intent(context, AudioStreamingService::class.java)
     }
 
-    private var mSheetBehaviour: BottomSheetBehavior<*>? = null
+    private lateinit var mSheetBehaviour: BottomSheetBehavior<*>
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private var shouldStartPlayback: Boolean = false
