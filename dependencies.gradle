@@ -9,7 +9,7 @@ ext {
             buildToolsVersion  : '29.0.3',
             androidGradlePlugin: '3.5.3',
             ktlint             : '0.35.0',
-            coil               : '0.9.2',
+            coil               : '0.9.5',
             lottie             : '3.3.1',
             glide              : '4.11.0',
             dexter             : '6.0.2',
