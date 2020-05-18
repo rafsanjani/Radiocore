@@ -113,7 +113,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.26'
     api 'com.google.dagger:dagger-android:2.26'
     api 'com.google.dagger:dagger-android-support:2.26' // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.26'
+    kapt 'com.google.dagger:dagger-android-processor:2.27'
 
     implementation deps.androidX.core.ktx
 }
