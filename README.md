@@ -1,5 +1,5 @@
 # Radio Core
-![alt text](https://travis-ci.com/rafsanjani/Radiocore.svg?token=65WwiWJdxPr2FAs6Lim2&branch=master)
+![Gradle Build](https://github.com/rafsanjani/Radiocore/workflows/Gradle%20Build/badge.svg)
 
 Online Radio Streaming App, Made by developers for developers
 
