@@ -10,7 +10,7 @@ ext {
             androidGradlePlugin: '3.5.3',
             ktlint             : '0.35.0',
             coil               : '0.11.0',
-            lottie             : '3.3.1',
+            lottie             : '3.4.0',
             glide              : '4.11.0',
             dexter             : '6.0.2',
             timber             : '4.7.1',
