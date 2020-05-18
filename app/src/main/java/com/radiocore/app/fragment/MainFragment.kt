@@ -338,8 +338,8 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * Explicitly collapse the bottom sheet
      */
     fun collapseBottomSheet() {
-        if (mSheetBehaviour?.state != BottomSheetBehavior.STATE_COLLAPSED)
-            mSheetBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (mSheetBehaviour.state != BottomSheetBehavior.STATE_COLLAPSED)
+            mSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     /**

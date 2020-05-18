@@ -84,7 +84,7 @@ class NewsListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, NewsI
     override fun onNewsItemClicked(position: Int, image: ImageView) {
         val intent = Intent(context, NewsDetailActivity::class.java)
         intent.putExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, position)
-        val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
+//        val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
 
         startActivity(intent/*, options.toBundle()*/)
     }

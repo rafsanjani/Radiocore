@@ -17,7 +17,7 @@ class PersistNewsWorker(context: Context, params: WorkerParameters) : CoroutineW
         newsDao.clear()
 
         //store news items in localstore using room
-        newsItemsList?.forEach { newsItem ->
+        newsItemsList.forEach { newsItem ->
             newsDao.insert(newsItem)
         }
 
