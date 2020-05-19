@@ -17,7 +17,7 @@ ext {
             cameraView         : '2.6.2',
             imageCropper       : '2.8.0',
             fabric             : '1.31.1',
-            jodaTime           : '2.10.5',
+            jodaTime           : '2.10.6',
             rx                 : [
                     rxJava     : '2.2.14',
                     rxAndroid  : '2.1.1',
