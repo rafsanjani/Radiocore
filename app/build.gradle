@@ -75,7 +75,7 @@ dependencies {
     implementation 'com.chibde:audiovisualizer:2.2.0'
 
     //firebase for crashlytics analysis
-    implementation 'com.google.firebase:firebase-core:17.4.1'
+    implementation 'com.google.firebase:firebase-core:17.4.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     //google exoplayer for audio rendering
