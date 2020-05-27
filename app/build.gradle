@@ -108,7 +108,7 @@ dependencies {
     implementation deps.androidX.lifecycle.livedata
 
     //dagger
-    api 'com.google.dagger:dagger:2.27'
+    api 'com.google.dagger:dagger:2.28'
     kapt 'com.google.dagger:dagger-compiler:2.27'
     kapt 'com.google.dagger:dagger-compiler:2.27'
     api 'com.google.dagger:dagger-android:2.27'
