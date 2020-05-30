@@ -79,7 +79,7 @@ dependencies {
     implementation deps.google.firebase.core
 
     //google exoplayer for audio rendering
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.11.4'
 
     //leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
