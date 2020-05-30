@@ -1,4 +1,4 @@
-package com.radiocore.app.di
+package com.radiocore.app.di.modules
 
 
 import com.radiocore.app.activity.MainActivity
@@ -9,7 +9,7 @@ import dagger.android.ContributesAndroidInjector
 
 
 @Module
-abstract class ActivityBuilderModule {
+abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMainActivity(): MainActivity
@@ -19,5 +19,4 @@ abstract class ActivityBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSplashActivity(): SplashActivity
-
 }

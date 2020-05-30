@@ -2,12 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-
+apply from: '../dependencies.gradle'
 
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
 
     defaultConfig {
         minSdkVersion 21
@@ -15,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner deps.androidX.test.runner
         consumerProguardFiles 'consumer-rules.pro'
     }
 
@@ -26,40 +25,31 @@ android {
         }
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding = true
     }
+
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    kapt "com.android.databinding:compiler:3.1.4"
-    implementation 'joda-time:joda-time:2.10.6'
+    implementation deps.kotlin.stdlib
+    testImplementation deps.androidX.test.jUnit.ktx
+    androidTestImplementation deps.androidX.test.jUnit.ktx
+    implementation deps.androidX.appCompat
+    implementation deps.jodaTime
 
 
     //dagger
-    api 'com.google.dagger:dagger:2.27'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.27'
-    kapt 'com.google.dagger:dagger-compiler:2.27'
-    api 'com.google.dagger:dagger-android:2.27'
-    api 'com.google.dagger:dagger-android-support:2.27' // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.27'
+    api deps.google.dagger.dagger
+    kapt deps.google.dagger.compiler
+    api deps.google.dagger.android
+    api deps.google.dagger.androidSupport // if you use the support libraries
+    kapt deps.google.dagger.androidProcessor
 
     //RxJava
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    implementation deps.reactive.rxAndroid
+    implementation deps.reactive.rxJava
 
     //timber for logging
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    //material
-    implementation 'com.google.android.material:material:1.2.0-alpha06'
+    implementation deps.timber
 }

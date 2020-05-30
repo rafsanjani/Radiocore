@@ -23,7 +23,6 @@ class NewsDetailActivity : AppCompatActivity() {
         viewPager.currentItem = mNewsPosition
 
         tvFooter.text = getString(R.string.footer_copyright, getString(R.string.app_name))
-
     }
 
     private fun getIncomingIntent() {

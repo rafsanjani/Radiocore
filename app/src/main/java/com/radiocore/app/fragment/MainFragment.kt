@@ -15,21 +15,20 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
+import com.foreverrafs.radiocore.R
+import com.foreverrafs.radiocore.databinding.BottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.radiocore.app.R
 import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomePagerAdapter
-import com.radiocore.app.databinding.BottomSheetBinding
-import com.radiocore.app.viewmodels.SharedViewModel
+import com.radiocore.app.viewmodels.AppViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.core.util.*
 import com.radiocore.core.util.Constants.STREAM_RESULT
@@ -70,7 +69,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     @Inject
     lateinit var mRadioPreferences: RadioPreferences
 
-    private val viewModel: SharedViewModel by activityViewModels()
+    private val viewModel: AppViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)

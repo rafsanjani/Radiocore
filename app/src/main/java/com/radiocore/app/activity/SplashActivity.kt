@@ -3,7 +3,7 @@ package com.radiocore.app.activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import com.radiocore.app.R
+import com.foreverrafs.radiocore.R
 import com.radiocore.core.di.DaggerAndroidXAppCompatActivity
 
 /**

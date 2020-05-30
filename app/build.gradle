@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
@@ -11,7 +10,7 @@ apply from: '../dependencies.gradle'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.foreverrafs.radiocore"
+        applicationId  applicationId
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode 12
@@ -19,6 +18,7 @@ android {
         testInstrumentationRunner deps.androidX.test.runner
         resConfigs "en"
     }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -26,6 +26,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.current()
         targetCompatibility JavaVersion.current()
@@ -37,8 +38,8 @@ android {
         jvmTarget = "1.8"
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding = true
     }
 }
 
@@ -46,7 +47,6 @@ dependencies {
     implementation project(":core")
     implementation project(":player")
     implementation project(":news")
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation deps.androidX.fragment.ktx
     implementation deps.androidX.appCompat
@@ -57,10 +57,11 @@ dependencies {
     implementation deps.androidX.recyclerView.values()
     implementation deps.androidX.swipeRefreshLayout
     implementation deps.androidX.core.ktx
+    implementation deps.square.retrofit.values()
 
-    implementation 'androidx.media:media:1.1.0'
+    implementation deps.androidX.media
     implementation deps.androidX.preference
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"
+    implementation deps.kotlin.stdlib
 }
 
 dependencies {
@@ -75,8 +76,7 @@ dependencies {
     implementation 'com.chibde:audiovisualizer:2.2.0'
 
     //firebase for crashlytics analysis
-    implementation 'com.google.firebase:firebase-core:17.4.1'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation deps.google.firebase.core
 
     //google exoplayer for audio rendering
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
@@ -92,13 +92,12 @@ dependencies {
     implementation deps.androidX.swipeRefreshLayout
 
     //Kotlin Android Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
+    implementation deps.kotlin.coroutines.core
 
     //testing
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    testImplementation 'org.robolectric:robolectric:4.3.1'
-    testImplementation 'junit:junit:4.13'
+    androidTestImplementation deps.androidX.test.espresso.core
+    androidTestImplementation deps.androidX.test.runner
+    testImplementation deps.androidX.test.jUnit.ktx
 
     //timber for logging
     implementation deps.timber
@@ -108,12 +107,11 @@ dependencies {
     implementation deps.androidX.lifecycle.livedata
 
     //dagger
-    api 'com.google.dagger:dagger:2.27'
-    kapt 'com.google.dagger:dagger-compiler:2.27'
-    kapt 'com.google.dagger:dagger-compiler:2.27'
-    api 'com.google.dagger:dagger-android:2.27'
-    api 'com.google.dagger:dagger-android-support:2.27' // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.27'
+    api deps.google.dagger.dagger
+    kapt deps.google.dagger.compiler
+    api deps.google.dagger.android
+    api deps.google.dagger.androidSupport // if you use the support libraries
+    kapt deps.google.dagger.androidProcessor
 
     implementation deps.androidX.core.ktx
 }

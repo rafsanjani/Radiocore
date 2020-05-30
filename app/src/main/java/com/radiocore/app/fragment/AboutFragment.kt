@@ -11,8 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.radiocore.app.BuildConfig
-import com.radiocore.app.R
+import com.foreverrafs.radiocore.BuildConfig
+import com.foreverrafs.radiocore.R
 import kotlinx.android.synthetic.main.fragment_about.*
 
 
@@ -86,7 +86,7 @@ class AboutFragment : Fragment(), View.OnClickListener {
         whatsappIntent.type = "text/plain"
         whatsappIntent.setPackage("com.whatsapp")
 
-        val packageUrl = "https://play.google.com/store/apps/details?id=" + context!!.packageName
+        val packageUrl = "https://play.google.com/store/apps/details?id=" + requireContext().packageName
         val message = "Install ${getString(R.string.app_name)}  App and listen to your favorite radio station online anywhere. Download it " +
                 "from *" + packageUrl + "*"
         whatsappIntent.putExtra(Intent.EXTRA_TEXT, message)

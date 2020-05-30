@@ -45,18 +45,18 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:187746440429:android:13b78a043bb4d31d",
+        "mobilesdk_app_id": "1:187746440429:android:79847b0fccd712cdd3e8e4",
         "android_client_info": {
           "package_name": "com.foreverrafs.radiocore"
         }
       },
       "oauth_client": [
         {
-          "client_id": "187746440429-mkapbb1hbvh3fe2r6v9rpbiofr4mppus.apps.googleusercontent.com",
+          "client_id": "187746440429-0pej2qn1dvscdibo4moe150osis4e9ii.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.foreverrafs.radiocore",
-            "certificate_hash": "0bc52c7da3ca8f3891ba00128fa979bc8d642167"
+            "certificate_hash": "61db7bcba9866251cf889eaceddce82ecbc64360"
           }
         },
         {

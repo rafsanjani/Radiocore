@@ -27,6 +27,7 @@ fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
     this[index2] = tmp
 }
 
+@Suppress("DEPRECATION")
 fun isServiceRunning(serviceClass: Class<*>, context: Context): Boolean {
     val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     for (service in manager.getRunningServices(Integer.MAX_VALUE)) {

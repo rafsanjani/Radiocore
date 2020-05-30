@@ -2,7 +2,6 @@ package com.radiocore.news.data.local
 
 import android.content.Context
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.radiocore.news.model.News
 import com.radiocore.news.util.NewsConverters
 

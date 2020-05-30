@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import com.radiocore.app.R
-import com.radiocore.app.databinding.FragmentHomeBinding
-import com.radiocore.app.viewmodels.SharedViewModel
+import com.foreverrafs.radiocore.R
+import com.foreverrafs.radiocore.databinding.FragmentHomeBinding
+import com.radiocore.app.viewmodels.AppViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.player.StreamPlayer
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 // Created by Emperor95 on 1/13/2019
 class HomeFragment : DaggerAndroidXFragment() {
-    private val viewModel: SharedViewModel by activityViewModels()
+    private val viewModel: AppViewModel by activityViewModels()
 
     @Inject
     lateinit var mStreamPlayer: StreamPlayer

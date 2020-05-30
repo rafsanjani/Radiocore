@@ -1,9 +1,8 @@
 package com.radiocore.news.ui
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
@@ -18,22 +17,17 @@ import com.radiocore.news.model.News
 import com.radiocore.news.workers.PersistNewsWorker
 import kotlinx.coroutines.Dispatchers
 import org.joda.time.DateTime
-
 import org.joda.time.Hours
 import timber.log.Timber
+import javax.inject.Inject
 
-class NewsViewModel(application: Application) : AndroidViewModel(application) {
+class NewsViewModel @Inject constructor(
+        mPreferences: RadioPreferences,
+        private val appContext: Context,
+        private val remoteDataSource: RemoteDataSource) : ViewModel() {
 
-    private val mPreferences: RadioPreferences
-    private var hoursBeforeExpire: Int
-    private var lastFetchedTime: DateTime
-    private val appContext: Context = application.applicationContext
-
-    init {
-        mPreferences = RadioPreferences(appContext)
-        hoursBeforeExpire = mPreferences.cacheExpiryHours!!.toInt()
-        lastFetchedTime = mPreferences.cacheStorageTime!!
-    }
+    private var hoursBeforeExpire: Int = mPreferences.cacheExpiryHours!!.toInt()
+    private var lastFetchedTime: DateTime = mPreferences.cacheStorageTime!!
 
     //The ViewModel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
     fun getAllNews(): LiveData<List<News>> {
@@ -46,7 +40,7 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
             LocalDataSource(appContext)
         } else {
             Timber.i("Cache Expired: Loading from Remote...")
-            RemoteDataSource(appContext)
+            remoteDataSource
         }
 
         return emitNewsItems(repository)
@@ -54,18 +48,18 @@ class NewsViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun emitNewsItems(repository: NewsDataSource): LiveData<List<News>> {
         return liveData(Dispatchers.IO) {
-            var data = repository.getNews()
+            val data = repository.getNews()
             //keep this inside our repository if it's not empty
-            if (!data.isNullOrEmpty()) {
+            if (data.isNotEmpty()) {
                 NewsRepository.newsItems = data
 
                 //save to localstorage if we fetched from online
                 if (repository is RemoteDataSource)
                     saveNewsToLocalStorage()
             } else {
-                data = RemoteDataSource(appContext).getNews()
-                saveNewsToLocalStorage()
+                emit(listOf<News>())
             }
+
             NewsRepository.newsItems = data
             emit(data)
         }

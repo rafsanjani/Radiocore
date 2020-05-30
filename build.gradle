@@ -20,7 +20,7 @@ buildscript {
         classpath deps.kotlin.gradlePlugin
         classpath deps.androidX.navigation.safeArgsGradlePlugin
         classpath deps.google.firebase.plugin
-        classpath deps.fabricPlugin
+        classpath deps.google.googleServicesPlugin
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

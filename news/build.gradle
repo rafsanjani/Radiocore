@@ -19,6 +19,12 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
     }
 
+    kapt {
+        arguments {
+            arg("room.incremental", "true")
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -26,8 +32,8 @@ android {
         }
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures{
+        dataBinding = true
     }
 
     kotlinOptions {
@@ -37,8 +43,7 @@ android {
 
 dependencies {
     implementation project(":core")
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation deps.kotlin.stdlib
 
     implementation deps.androidX.fragment.ktx
     implementation deps.androidX.appCompat

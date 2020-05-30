@@ -3,7 +3,6 @@ package com.radiocore.player
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -25,7 +24,7 @@ import org.joda.time.format.PeriodFormatterBuilder
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener, LifecycleObserver {
+class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener {
 
 
     //    private lateinit var mStreamMetadataListener: StreamMetadataListener
@@ -71,7 +70,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
     private var mPlaybackState = PlaybackState.IDLE
 
     fun addMetadataListener(listener: StreamMetadataListener) {
-//        mStreamMetadataListener = listener
         metadataListeners.add(listener)
     }
 
@@ -144,7 +142,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
     var streamSource: Uri? = null
         set(value) {
             val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "RadioCore"))
-
             mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(value)
         }
 
@@ -264,8 +261,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
         fun onBuffering()
 
         fun onStop()
-
-//        fun onPause()
 
         fun onError(exception: Exception?)
     }

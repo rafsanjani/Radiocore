@@ -29,10 +29,13 @@ import javax.inject.Inject
 /***
  * Handle Audio playback
  */
+//todo: use a lifecycle service
 class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusChangeListener {
     private val binder = AudioServiceBinder()
 
     private val mFocusLock = Any()
+
+    //todo: Use a livedata to observe events instead
     private var mBroadcastManager: LocalBroadcastManager? = null
 
     @Inject

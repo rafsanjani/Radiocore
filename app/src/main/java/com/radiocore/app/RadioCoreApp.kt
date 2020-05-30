@@ -2,10 +2,9 @@ package com.radiocore.app
 
 import DaggerAppComponent
 import android.os.StrictMode
-import com.crashlytics.android.Crashlytics
+import com.foreverrafs.radiocore.BuildConfig
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
-import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
 class RadioCoreApp : DaggerApplication() {
@@ -13,7 +12,6 @@ class RadioCoreApp : DaggerApplication() {
         super.onCreate()
 
         enableStrictMode()
-        setUpCrashlytics()
         setUpTimber()
     }
 
@@ -35,13 +33,6 @@ class RadioCoreApp : DaggerApplication() {
                     .build()
 
             StrictMode.setVmPolicy(policy)
-        }
-    }
-
-    private fun setUpCrashlytics() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, Crashlytics())
-            Timber.i("setUpCrashlytics: Enabled")
         }
     }
 }

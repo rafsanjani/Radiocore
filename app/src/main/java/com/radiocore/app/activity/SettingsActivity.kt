@@ -2,7 +2,7 @@ package com.radiocore.app.activity
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
-import com.radiocore.app.R
+import com.foreverrafs.radiocore.R
 import com.radiocore.core.di.DaggerAndroidXAppCompatActivity
 
 class SettingsActivity : DaggerAndroidXAppCompatActivity(R.layout.settings_activity) {
