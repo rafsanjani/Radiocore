@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,14 +18,12 @@ import com.radiocore.news.R
 import com.radiocore.news.adapter.NewsAdapter
 import com.radiocore.news.adapter.NewsAdapter.NewsItemClickListener
 import com.radiocore.news.model.News
+import com.radiocore.news.util.NewsState
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
+import timber.log.Timber
 import javax.inject.Inject
-
-class activity : AppCompatActivity() {
-
-}
 
 // Created by Emperor95 on 1/13/2019.
 class NewsListFragment : DaggerAndroidXFragment(), SwipeRefreshLayout.OnRefreshListener, NewsItemClickListener {
@@ -54,32 +50,64 @@ class NewsListFragment : DaggerAndroidXFragment(), SwipeRefreshLayout.OnRefreshL
             contentNoConnection.visibility = View.INVISIBLE
             loadingBar.visibility = View.VISIBLE
             getNewsData()
-
         }
+
+        initializeObservers()
+    }
+
+    private fun initializeObservers() {
+        viewModel.newsState.observe(viewLifecycleOwner, Observer { state ->
+            when (state) {
+                NewsState.LoadingState -> showLoadingScreen()
+                is NewsState.ErrorState -> showError(state.error)
+                is NewsState.LoadedState -> showNewsItems(state.news)
+            }
+        })
+    }
+
+    private fun showLoadingScreen() {
+        loadingBar.visibility = View.VISIBLE
+    }
+
+    private fun showNewsItems(newsList: List<News>) {
+        swipeRefreshLayout.visibility = View.VISIBLE
+        contentNoConnection.visibility = View.INVISIBLE
+
+        val adapter = NewsAdapter(newsList, this)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView?.adapter = adapter
+
+        if (swipeRefreshLayout.isRefreshing) {
+            swipeRefreshLayout.isRefreshing = false
+        }
+
+        loadingBar.visibility = View.INVISIBLE
+    }
+
+    private fun showError(error: Throwable) {
+        contentNoConnection.visibility = View.VISIBLE
+        if (swipeRefreshLayout.isRefreshing) {
+            swipeRefreshLayout.isRefreshing = false
+        }
+
+        loadingBar.visibility = View.INVISIBLE
+        Timber.e(error)
     }
 
     private fun getNewsData() {
         val observer: Observer<List<News>> = Observer { list ->
-            if (!list.isNullOrEmpty()) {
-                swipeRefreshLayout.visibility = View.VISIBLE
-                contentNoConnection.visibility = View.INVISIBLE
-
-                val adapter = NewsAdapter(list, this)
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                recyclerView?.adapter = adapter
-
-            } else {
-                contentNoConnection.visibility = View.VISIBLE
-            }
-
-            if (swipeRefreshLayout.isRefreshing) {
-                swipeRefreshLayout.isRefreshing = false
-            }
-
-            loadingBar.visibility = View.INVISIBLE
+            if (!list.isNullOrEmpty())
+                viewModel.setNewsState(NewsState.LoadedState(list))
+            else
+                viewModel.setNewsState(NewsState.ErrorState(IllegalArgumentException("News List is null or empty")))
         }
 
-        viewModel.getAllNews().observe(viewLifecycleOwner, observer)
+        try {
+            viewModel.getAllNews().observe(viewLifecycleOwner, observer)
+        } catch (e: Exception) {
+            println(e)
+        }
+        viewModel.setNewsState(NewsState.LoadingState)
     }
 
     override fun onDestroy() {

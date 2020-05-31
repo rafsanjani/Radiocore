@@ -2,6 +2,7 @@ package com.radiocore.news.ui
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.work.ExistingWorkPolicy
@@ -14,6 +15,8 @@ import com.radiocore.news.data.NewsRepository
 import com.radiocore.news.data.local.LocalDataSource
 import com.radiocore.news.data.remote.RemoteDataSource
 import com.radiocore.news.model.News
+import com.radiocore.news.util.NewsState
+import com.radiocore.news.util.NewsState.ErrorState
 import com.radiocore.news.workers.PersistNewsWorker
 import kotlinx.coroutines.Dispatchers
 import org.joda.time.DateTime
@@ -28,6 +31,15 @@ class NewsViewModel @Inject constructor(
 
     private var hoursBeforeExpire: Int = mPreferences.cacheExpiryHours!!.toInt()
     private var lastFetchedTime: DateTime = mPreferences.cacheStorageTime!!
+
+    private var _newsState = MutableLiveData<NewsState>()
+
+    val newsState: LiveData<NewsState>
+        get() = _newsState
+
+    fun setNewsState(state: NewsState) {
+        _newsState.postValue(state)
+    }
 
     //The ViewModel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
     fun getAllNews(): LiveData<List<News>> {
@@ -48,20 +60,24 @@ class NewsViewModel @Inject constructor(
 
     private fun emitNewsItems(repository: NewsDataSource): LiveData<List<News>> {
         return liveData(Dispatchers.IO) {
-            val data = repository.getNews()
-            //keep this inside our repository if it's not empty
-            if (data.isNotEmpty()) {
+            try {
+                val data = repository.getNews()
+                //keep this inside our repository if it's not empty
+                if (data.isNotEmpty()) {
+                    NewsRepository.newsItems = data
+
+                    //save to localstorage if we fetched from online
+                    if (repository is RemoteDataSource)
+                        saveNewsToLocalStorage()
+                } else {
+                    emit(listOf<News>())
+                }
+
                 NewsRepository.newsItems = data
-
-                //save to localstorage if we fetched from online
-                if (repository is RemoteDataSource)
-                    saveNewsToLocalStorage()
-            } else {
-                emit(listOf<News>())
+                emit(data)
+            } catch (e: Exception) {
+                setNewsState(ErrorState(e))
             }
-
-            NewsRepository.newsItems = data
-            emit(data)
         }
     }
 
