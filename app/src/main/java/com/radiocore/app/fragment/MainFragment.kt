@@ -31,7 +31,6 @@ import com.radiocore.app.adapter.HomePagerAdapter
 import com.radiocore.app.viewmodels.AppViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.core.util.*
-import com.radiocore.core.util.Constants.STREAM_RESULT
 import com.radiocore.news.ui.NewsListFragment
 import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService
@@ -47,7 +46,7 @@ import javax.inject.Inject
 
 class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
-    companion object{
+    companion object {
         private const val PERMISSION_RECORD_AUDIO = 6900
     }
 
@@ -168,7 +167,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             viewModel.updatePlaybackState(state)
 
             val intent = Intent(STREAM_RESULT)
-            intent.putExtra(Constants.STREAMING_STATUS, viewModel.playbackState.value.toString())
+            intent.putExtra(STREAMING_STATUS, viewModel.playbackState.value.toString())
             onAudioStreamingStateReceived(intent)
         }
     }
@@ -363,7 +362,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      * @param intent The intent received from the audio service (STATUS_PAUSED, STATUS_PLAYING ETC)
      */
     private fun onAudioStreamingStateReceived(intent: Intent) {
-        val receivedState = intent.getStringExtra(Constants.STREAMING_STATUS)
+        val receivedState = intent.getStringExtra(STREAMING_STATUS)
         val state = AudioStreamingState.valueOf(receivedState!!)
         viewModel.updatePlaybackState(state)
 

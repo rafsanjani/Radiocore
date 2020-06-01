@@ -3,7 +3,7 @@ package com.radiocore.news
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.radiocore.core.util.Constants
+import com.radiocore.core.util.KEY_SELECTED_NEWS_ITEM_POSITION
 import com.radiocore.news.adapter.NewsPagerAdapter
 import kotlinx.android.synthetic.main.news_detail_viewpager.*
 
@@ -26,7 +26,7 @@ class NewsDetailActivity : AppCompatActivity() {
     }
 
     private fun getIncomingIntent() {
-        mNewsPosition = intent?.getIntExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, 0)!!
+        mNewsPosition = intent?.getIntExtra(KEY_SELECTED_NEWS_ITEM_POSITION, 0)!!
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

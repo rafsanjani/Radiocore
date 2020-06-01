@@ -1,6 +1,7 @@
 package com.radiocore.news.ui
 
 import android.content.Context
+import android.provider.SyncStateContract
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +9,7 @@ import androidx.lifecycle.liveData
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.radiocore.core.util.Constants
+import com.radiocore.core.util.PERSIST_WORK_NAME
 import com.radiocore.core.util.RadioPreferences
 import com.radiocore.news.data.NewsDataSource
 import com.radiocore.news.data.NewsRepository
@@ -85,7 +86,7 @@ class NewsViewModel @Inject constructor(
         val workManager = WorkManager.getInstance(appContext)
         val persistNewsRequest = OneTimeWorkRequestBuilder<PersistNewsWorker>().build()
 
-        workManager.enqueueUniqueWork(Constants.PERSIST_WORK_NAME,
+        workManager.enqueueUniqueWork(PERSIST_WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
                 persistNewsRequest)
     }

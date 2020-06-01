@@ -20,8 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.radiocore.core.di.DaggerAndroidService
-import com.radiocore.core.util.Constants
-import com.radiocore.core.util.RadioPreferences
+import com.radiocore.core.util.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -109,7 +108,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
             Timber.i("Audio Focus gained on Android o+")
 
         try {
-            mMediaPlayer.streamSource = Uri.parse(Constants.STREAM_URL)
+            mMediaPlayer.streamSource = Uri.parse(STREAM_URL)
 
             mMediaPlayer.setPlayerStateChangesListener(object : StreamPlayer.StreamStateChangesListener {
                 override fun onError(exception: Exception?) {
@@ -180,8 +179,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         val playIntent = Intent(this, AudioStreamingService::class.java)
         val stopIntent = Intent(this, AudioStreamingService::class.java)
 
-        stopIntent.action = Constants.ACTION_STOP
-        playIntent.action = Constants.ACTION_PLAY
+        stopIntent.action = ACTION_STOP
+        playIntent.action = ACTION_PLAY
 
         val stopPendingIntent = PendingIntent.getService(this, 7, stopIntent, 0)
 
@@ -280,8 +279,8 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
      * @param message which is an [AudioStreamingState]
      */
     fun sendResult(message: AudioStreamingState?) {
-        val intent = Intent(Constants.STREAM_RESULT)
-        intent.putExtra(Constants.STREAMING_STATUS, message.toString())
+        val intent = Intent(STREAM_RESULT)
+        intent.putExtra(STREAMING_STATUS, message.toString())
 
         mBroadcastManager?.sendBroadcast(intent)
     }

@@ -2,9 +2,8 @@ package com.radiocore.news.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.provider.SyncStateContract
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -12,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.radiocore.core.di.DaggerAndroidXFragment
-import com.radiocore.core.util.Constants
+import com.radiocore.core.util.KEY_SELECTED_NEWS_ITEM_POSITION
 import com.radiocore.news.NewsDetailActivity
 import com.radiocore.news.R
 import com.radiocore.news.adapter.NewsAdapter
@@ -26,7 +25,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 // Created by Emperor95 on 1/13/2019.
-class NewsListFragment : DaggerAndroidXFragment(), SwipeRefreshLayout.OnRefreshListener, NewsItemClickListener {
+class NewsListFragment : DaggerAndroidXFragment(R.layout.fragment_news_list), SwipeRefreshLayout.OnRefreshListener, NewsItemClickListener {
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     @Inject
@@ -36,12 +35,7 @@ class NewsListFragment : DaggerAndroidXFragment(), SwipeRefreshLayout.OnRefreshL
         viewModelFactory
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_news_list, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        println("sample output")
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark)
         swipeRefreshLayout.setOnRefreshListener(this)
         getNewsData()
@@ -102,12 +96,13 @@ class NewsListFragment : DaggerAndroidXFragment(), SwipeRefreshLayout.OnRefreshL
                 viewModel.setNewsState(NewsState.ErrorState(IllegalArgumentException("News List is null or empty")))
         }
 
+        viewModel.setNewsState(NewsState.LoadingState)
+
         try {
             viewModel.getAllNews().observe(viewLifecycleOwner, observer)
         } catch (e: Exception) {
-            println(e)
+            viewModel.setNewsState(NewsState.ErrorState(e))
         }
-        viewModel.setNewsState(NewsState.LoadingState)
     }
 
     override fun onDestroy() {
@@ -121,7 +116,7 @@ class NewsListFragment : DaggerAndroidXFragment(), SwipeRefreshLayout.OnRefreshL
 
     override fun onNewsItemClicked(position: Int, image: ImageView) {
         val intent = Intent(context, NewsDetailActivity::class.java)
-        intent.putExtra(Constants.KEY_SELECTED_NEWS_ITEM_POSITION, position)
+        intent.putExtra(KEY_SELECTED_NEWS_ITEM_POSITION, position)
 //        val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
 
         startActivity(intent/*, options.toBundle()*/)

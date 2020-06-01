@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.radiocore.core.util.Constants
+import com.radiocore.core.util.KEY_NEWS_ITEM
 import com.radiocore.news.R
 import com.radiocore.news.data.NewsRepository
 import com.radiocore.news.model.News
@@ -24,7 +24,7 @@ class NewsItemFragment : Fragment() {
         val bundle = arguments
 
         if (bundle != null) {
-            mNewsItem = bundle.getParcelable(Constants.KEY_NEWS_ITEM)
+            mNewsItem = bundle.getParcelable(KEY_NEWS_ITEM)
         }
     }
 
@@ -53,7 +53,7 @@ class NewsItemFragment : Fragment() {
 
             val fragmentNewsItem = NewsItemFragment()
             val argument = Bundle()
-            argument.putParcelable(Constants.KEY_NEWS_ITEM, newsItemAtPosition)
+            argument.putParcelable(KEY_NEWS_ITEM, newsItemAtPosition)
             fragmentNewsItem.arguments = argument
             return fragmentNewsItem
         }
