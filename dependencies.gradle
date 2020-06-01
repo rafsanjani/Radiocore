@@ -163,7 +163,7 @@ ext {
                             ]
                     ],
                     cameraX           : [
-                            core            : "androidx.camera:camera-core:1.0.0-beta03",
+                            core            : "androidx.camera:camera-core:1.0.0-beta04",
                             camera2         : "androidx.camera:camera-camera2:1.0.0-alpha09",
                             cameraView      : "androidx.camera:camera-view:$versions.androidX.cameraX",
                             cameraExtensions: "androidx.camera:camera-extensions:$versions.androidX.cameraX",
