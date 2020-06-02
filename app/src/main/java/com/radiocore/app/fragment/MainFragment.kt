@@ -2,16 +2,13 @@ package com.radiocore.app.fragment
 
 import android.Manifest
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +16,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.databinding.BottomSheetBinding
@@ -30,28 +26,30 @@ import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomePagerAdapter
 import com.radiocore.app.viewmodels.AppViewModel
 import com.radiocore.core.di.DaggerAndroidXFragment
-import com.radiocore.core.util.*
+import com.radiocore.core.util.RadioPreferences
+import com.radiocore.core.util.animateButtonDrawable
+import com.radiocore.core.util.isServiceRunning
+import com.radiocore.core.util.toggleViewsVisibility
 import com.radiocore.news.ui.NewsListFragment
 import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService
-import com.radiocore.player.AudioStreamingService.AudioStreamingState
+import com.radiocore.player.AudioStreamingService.AudioStreamingState.*
 import com.radiocore.player.StreamPlayer
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import me.bogerchan.niervisualizer.NierVisualizerManager
+import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType2Renderer
 import org.joda.time.Seconds
 import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
+class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClickListener {
 
     companion object {
         private const val PERMISSION_RECORD_AUDIO = 6900
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    private lateinit var mAudioServiceBroadcastReceiver: BroadcastReceiver
 
     private val mAudioServiceIntent: Intent by lazy {
         Intent(context, AudioStreamingService::class.java)
@@ -68,15 +66,18 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     @Inject
     lateinit var mRadioPreferences: RadioPreferences
 
+    private var audioService: AudioStreamingService? = null
+
     private val viewModel: AppViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_main, container, false)
-    }
+    private var visualizerManager: NierVisualizerManager? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         btnSmallPlay.setOnClickListener(this)
         btnPlay.setOnClickListener(this)
+
+        visualizer.setZOrderOnTop(true)
 
         mCompositeDisposable = CompositeDisposable()
 
@@ -84,13 +85,32 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     }
 
 
-    private fun initAudioVisualizer() {
+    private fun prepareVisualizer() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             requestAudioRecordingPermission()
+            return
         }
 
-        setUpAudioVisualizer()
+        visualizerManager?.let {
+            it.resume()
+            return
+        }
+
+        visualizerManager = NierVisualizerManager()
+
+        val state = visualizerManager?.init(mStreamPlayer.audioSessionId)
+
+
+        visualizer.setZOrderOnTop(true);
+        visualizer.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+
+        if (state == NierVisualizerManager.SUCCESS) {
+            visualizerManager?.start(
+                    visualizer, arrayOf(ColumnarType2Renderer())
+            )
+        }
     }
+
 
     private fun initializeToolbar() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
@@ -132,7 +152,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-
+                Timber.i("onTabReselected: No-Op");
             }
         })
     }
@@ -148,27 +168,35 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                 Intent(requireContext(), MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
 
         viewModel.audioServiceConnection = AudioServiceConnection(mainActivityPendingIntent) {
+            audioService = viewModel.audioServiceConnection.audioService
 
-            viewModel.audioServiceConnection.audioService?.metaData?.observe(viewLifecycleOwner,
-                    Observer { string ->
-                        viewModel.updateStreamMetaData(string)
-                    })
+            audioService?.apply {
+                metaData.observe(viewLifecycleOwner, Observer { string ->
+                    viewModel.updateStreamMetaData(string)
+                })
 
-            if (shouldStartPlayback)
-                viewModel.audioServiceConnection.audioService?.startPlayback()
+                if (shouldStartPlayback)
+                    startPlayback()
+
+                playBackState.observe(viewLifecycleOwner, Observer { streamingState ->
+
+                    viewModel.updatePlaybackState(streamingState)
+                    when (streamingState) {
+                        STATUS_PLAYING -> streamPlaying()
+                        STATUS_STOPPED -> streamStopped()
+                        STATUS_LOADING -> streamLoading()
+                        else -> {
+                            Timber.e("setUpInitialPlayerState: Unknown Plaback state");
+                        }
+                    }
+                })
+            }
+
         }
 
         if (!isServiceRunning(AudioStreamingService::class.java, requireContext())) {
             if (mRadioPreferences.autoPlayOnStart)
                 startPlayback()
-        } else {
-            val state = if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING)
-                AudioStreamingState.STATUS_PLAYING else AudioStreamingState.STATUS_STOPPED
-            viewModel.updatePlaybackState(state)
-
-            val intent = Intent(STREAM_RESULT)
-            intent.putExtra(STREAMING_STATUS, viewModel.playbackState.value.toString())
-            onAudioStreamingStateReceived(intent)
         }
     }
 
@@ -193,11 +221,15 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
     private fun startPlayback() {
         if (viewModel.audioServiceConnection.isBound) {
-            viewModel.audioServiceConnection.audioService?.startPlayback()
+            audioService?.startPlayback()
 
             return
         }
 
+        startAudioService()
+    }
+
+    private fun startAudioService() {
         shouldStartPlayback = true
         ContextCompat.startForegroundService(requireContext(), mAudioServiceIntent)
         activity?.bindService(mAudioServiceIntent, viewModel.audioServiceConnection, Context.BIND_AUTO_CREATE)
@@ -210,12 +242,6 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
         setUpInitialPlayerState()
-        setUpAudioStreamingServiceReceiver()
-    }
-
-    override fun onStop() {
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mAudioServiceBroadcastReceiver)
-        super.onStop()
     }
 
     override fun onDestroy() {
@@ -223,48 +249,33 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             stopPlayback()
         }
 
-        if (visualizer != null)
-            visualizer.release()
+        visualizerManager?.release()
 
         mCompositeDisposable.clear()
+
         super.onDestroy()
     }
 
 
     /**
      * Initialize all views by findViewById or @Bind when using ButterKnife.
-     * Note: All view Initializing must be performed in context!! module or it's submodules
+     * Note: All view Initializing must be performed in context module or it's submodules
      */
     private fun initializeViews() {
-
         val textAnimationIn = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_in_left)
         val textAnimationOut = AnimationUtils.loadAnimation(requireContext(), android.R.anim.slide_out_right)
 
-        textSwitcherPlayerState.inAnimation = textAnimationIn
-        textSwitcherPlayerState.outAnimation = textAnimationOut
-        textSwitcherPlayerState.setCurrentText("Hello")
+        with(textSwitcherPlayerState) {
+            inAnimation = textAnimationIn
+            outAnimation = textAnimationOut
+            setCurrentText("Hello")
+        }
 
         initializeTabComponents()
         initializeToolbar()
         initializeBottomSheet()
 
         seekBarProgress.isEnabled = false
-    }
-
-    private fun setUpAudioVisualizer() {
-        val audioSessionId = mStreamPlayer.audioSessionId
-        try {
-            if (audioSessionId != -1) {
-                visualizer.apply {
-                    setPlayer(audioSessionId)
-                    setDensity(0.8F)
-                    setGap(2)
-                    setColor(ContextCompat.getColor(context, R.color.orange_900))
-                }
-            }
-        } catch (exception: Exception) {
-            Timber.e("setUpAudioVisualizer:${exception.message} ")
-        }
     }
 
     private fun requestAudioRecordingPermission() {
@@ -274,9 +285,9 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_RECORD_AUDIO) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                setUpAudioVisualizer()
-            else
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                prepareVisualizer()
+            } else
                 Timber.i("onRequestPermissionsResult: Denied. Unable to initialize visualizer")
         }
     }
@@ -287,6 +298,7 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
      */
     private fun initializeBottomSheet() {
         mSheetBehaviour = BottomSheetBehavior.from(layoutBottomSheet)
+
         //initialize the contact texts on the bottom sheet
         tvEmail.text = getString(R.string.email_and_value, getString(R.string.org_email))
         tvPhone.text = getString(R.string.phone_and_value, getString(R.string.org_phone))
@@ -302,12 +314,14 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
                     appBarLayout.setExpanded(false, true)
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     appBarLayout.setExpanded(true, true)
+                    visualizer.visibility = View.VISIBLE
                 }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 performAlphaTransition(slideOffset)
                 rotateSmallLogo(slideOffset)
+                visualizer.visibility = View.INVISIBLE
             }
         })
     }
@@ -340,75 +354,49 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
             mSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    /**
-     * Listen for broadcast events from the Audio Streaming Service and use the information to
-     * resolve the player state accordingly
-     */
-    private fun setUpAudioStreamingServiceReceiver() {
-        mAudioServiceBroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                Timber.i(intent.action)
-                if (intent.action == STREAM_RESULT) {
-                    onAudioStreamingStateReceived(intent)
-                }
-            }
-        }
+    private fun streamLoading() {
+        visualizerManager?.pause()
+        Timber.i("Stream State Changed: BUFFERING")
+        textSwitcherPlayerState.setText(getString(R.string.state_buffering))
+        (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_200))
+        toggleViewsVisibility(View.VISIBLE, progressBuffering)
     }
 
-    /**
-     * Called when a broadcast is received from the AudioStreamingService so that the
-     * UI can be resolved accordingly to correspond with the states
-     *
-     * @param intent The intent received from the audio service (STATUS_PAUSED, STATUS_PLAYING ETC)
-     */
-    private fun onAudioStreamingStateReceived(intent: Intent) {
-        val receivedState = intent.getStringExtra(STREAMING_STATUS)
-        val state = AudioStreamingState.valueOf(receivedState!!)
-        viewModel.updatePlaybackState(state)
+    private fun streamStopped() {
+        visualizerManager?.pause()
+        Timber.d("Stream State Changed: STOPPED")
+        animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play)!!)
+        animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play_small)!!)
 
-        when (state) {
-            AudioStreamingState.STATUS_PLAYING -> {
-                Timber.d("onAudioStreamingStateReceived: Playing")
-                toggleViewsVisibility(View.INVISIBLE, progressBuffering)
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause_small)!!)
+        toggleViewsVisibility(View.INVISIBLE, progressBuffering)
+        textSwitcherPlayerState.setText(getString(R.string.state_stopped))
+        (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_600))
+    }
 
-                initAudioVisualizer()
+    private fun streamPlaying() {
+        Timber.d("Stream State Changed: Playing")
 
-                //start updating seekbar when something is actually playing
-                startUpdateStreamProgress()
-                textSwitcherPlayerState?.setText(getString(R.string.state_live))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.green_200))
-            }
+        prepareVisualizer()
+        toggleViewsVisibility(View.INVISIBLE, progressBuffering)
+        animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause)!!)
+        animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_play_pause_small)!!)
 
-            AudioStreamingState.STATUS_STOPPED -> {
-                Timber.d("onAudioStreamingStateReceived: STOPPED")
-                animateButtonDrawable(btnPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play)!!)
-                animateButtonDrawable(btnSmallPlay, ContextCompat.getDrawable(requireContext(), R.drawable.avd_pause_play_small)!!)
 
-                toggleViewsVisibility(View.INVISIBLE, progressBuffering)
-                textSwitcherPlayerState.setText(getString(R.string.state_stopped))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_600))
-            }
-
-            AudioStreamingState.STATUS_LOADING -> {
-                Timber.i("onAudioStreamingStateReceived: BUFFERING")
-                textSwitcherPlayerState.setText(getString(R.string.state_buffering))
-                (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_200))
-                toggleViewsVisibility(View.VISIBLE, progressBuffering)
-            }
-        }
+        //start updating seekbar when something is actually playing
+        startUpdateStreamProgress()
+        textSwitcherPlayerState?.setText(getString(R.string.state_live))
+        (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.green_200))
     }
 
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
-                Timber.i("onPlay: ${viewModel.playbackState.value.toString()}")
+                Timber.i("onClick: ${viewModel.playbackState.value.toString()}")
 
                 when (viewModel.playbackState.value) {
-                    AudioStreamingState.STATUS_PLAYING -> stopPlayback()
-                    AudioStreamingState.STATUS_STOPPED -> startPlayback()
-                    AudioStreamingState.STATUS_LOADING -> Timber.d("Loading")
+                    STATUS_PLAYING -> stopPlayback()
+                    STATUS_STOPPED -> startPlayback()
+                    STATUS_LOADING -> Timber.d("Stream already loading; Ignore click event")
                 }
             }
         }
@@ -427,13 +415,13 @@ class MainFragment : DaggerAndroidXFragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(mAudioServiceBroadcastReceiver,
-                IntentFilter(STREAM_RESULT)
-        )
+
+        visualizerManager?.resume()
 
         if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING &&
                 !viewModel.audioServiceConnection.isBound) {
             activity?.bindService(mAudioServiceIntent, viewModel.audioServiceConnection, Context.BIND_AUTO_CREATE)
         }
     }
+
 }

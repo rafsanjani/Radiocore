@@ -16,9 +16,9 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.radiocore.core.di.DaggerAndroidService
 import com.radiocore.core.util.*
 import timber.log.Timber
@@ -34,9 +34,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
 
     private val mFocusLock = Any()
 
-    //todo: Use a livedata to observe events instead
-    private var mBroadcastManager: LocalBroadcastManager? = null
-
     @Inject
     lateinit var mMediaPlayer: StreamPlayer
 
@@ -46,6 +43,15 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     private lateinit var mNotificationManager: NotificationManager
 
     var metaData = MutableLiveData<String>()
+
+    private var _playbackState = MutableLiveData(AudioStreamingState.STATUS_STOPPED)
+
+    val playBackState: LiveData<AudioStreamingState>
+        get() = _playbackState
+
+    private fun setStreamState(state: AudioStreamingState) {
+        _playbackState.postValue(state)
+    }
 
     private lateinit var mNotificationText: String
     private lateinit var mStreamNotification: Notification
@@ -100,7 +106,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         super.onCreate()
         mNotificationText = this.getString(R.string.live_radio_freq, getString(R.string.org_freq))
         mRadioPreferences = RadioPreferences(this)
-        mBroadcastManager = LocalBroadcastManager.getInstance(this)
+//        mBroadcastManager = LocalBroadcastManager.getInstance(this)
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -226,7 +232,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         })
 
         metaData.observeForever(metaDataObserver)
-        sendResult(AudioStreamingState.STATUS_PLAYING)
     }
 
     private val metaDataObserver = Observer<String> {
@@ -240,8 +245,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         stopForeground(true)
         mMediaPlayer.pause()
         cleanShutDown()
-
-        sendResult(AudioStreamingState.STATUS_STOPPED)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -273,16 +276,13 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
     }
 
     /**
-     * Send a result back to the Broadcast receiver of the calling news_detail_viewpager, in this case (HomeActivity.java)
+     * Send a result back to the stream observers, in this case (HomeActivity.java)
      * The result is basically the state of the stream audio and is usually one of STATUS_LOADING, STATUS_STOPPED or STATUS_PLAYING
      *
-     * @param message which is an [AudioStreamingState]
+     * @param state which is an [AudioStreamingState]
      */
-    fun sendResult(message: AudioStreamingState?) {
-        val intent = Intent(STREAM_RESULT)
-        intent.putExtra(STREAMING_STATUS, message.toString())
-
-        mBroadcastManager?.sendBroadcast(intent)
+    fun sendResult(state: AudioStreamingState) {
+        setStreamState(state)
     }
 
     /***
@@ -330,7 +330,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         STATUS_PLAYING,
         STATUS_STOPPED,
         STATUS_LOADING,
-//        STATUS_PAUSED,
     }
 
     inner class AudioServiceBinder : Binder() {

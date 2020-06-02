@@ -220,13 +220,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription" />
 
-            <com.chibde.visualizer.SquareBarVisualizer
-                android:id="@+id/visualizer"
+            <FrameLayout
                 android:layout_width="@dimen/visualizer_width"
                 android:layout_height="@dimen/visualizer_height"
+                android:background="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+                <SurfaceView
+                    android:id="@+id/visualizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextSwitcher
