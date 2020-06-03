@@ -35,8 +35,8 @@ dependencies {
     implementation deps.timber
 
     implementation deps.google.exoplayerCore
-    implementation deps.reactive.rxAndroid
-    implementation deps.reactive.rxJava
-    implementation "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
+    implementation deps.kotlin.coroutines.core
+    implementation deps.kotlin.coroutines.android
     implementation deps.androidX.media
+    implementation deps.androidX.lifecycle.extensions
 }

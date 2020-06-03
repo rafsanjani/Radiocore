@@ -36,6 +36,7 @@ dependencies {
     testImplementation deps.androidX.test.jUnit.ktx
     androidTestImplementation deps.androidX.test.jUnit.ktx
     implementation deps.androidX.appCompat
+    implementation deps.androidX.lifecycle.extensions
     implementation deps.jodaTime
 
 
@@ -46,9 +47,6 @@ dependencies {
     api deps.google.dagger.androidSupport // if you use the support libraries
     kapt deps.google.dagger.androidProcessor
 
-    //RxJava
-    implementation deps.reactive.rxAndroid
-    implementation deps.reactive.rxJava
 
     //timber for logging
     implementation deps.timber
