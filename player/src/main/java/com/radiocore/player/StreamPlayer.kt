@@ -15,36 +15,48 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.radiocore.core.util.RadioPreferences
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.joda.time.Period
 import org.joda.time.Seconds
 import org.joda.time.format.PeriodFormatterBuilder
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener {
+//    private val metadataListeners = mutableListOf<StreamMetadataListener>()
 
+    @ExperimentalCoroutinesApi
+    val metadataChannel = ConflatedBroadcastChannel<String>()
 
-    //    private lateinit var mStreamMetadataListener: StreamMetadataListener
-    private val metadataListeners = mutableListOf<StreamMetadataListener>()
-
+    @ExperimentalCoroutinesApi
     private var mMetaDataOutput = MetadataOutput { metadata ->
         for (n in 0 until metadata.length()) {
             when (val md = metadata[n]) {
                 is com.google.android.exoplayer2.metadata.icy.IcyInfo -> {
 
-                    //just replay the event to all the attache dlisteners
-                    metadataListeners.forEach { listener ->
-                        listener.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
+                    CoroutineScope(Dispatchers.Default).launch {
+                        metadataChannel.send(md.title!!.replace("';StreamUrl='", "RadioCore"))
                     }
+
+//                    //just replay the event to all the attached listeners
+//                    metadataListeners.forEach { listener ->
+//                        listener.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
+//
+//                        CoroutineScope(Dispatchers.Default).launch {
+//                            metadataChannel.send(md.title!!.replace("';StreamUrl='", "RadioCore"))
+//                        }
+//
+//                    }
+
                 }
                 else -> {
                     Timber.i("metaDataOutput: Other -  $md")
                 }
             }
         }
+
     }
 
     private var mediaSource: MediaSource? = null
@@ -69,10 +81,11 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
 
     private var mPlaybackState = PlaybackState.IDLE
 
-    fun addMetadataListener(listener: StreamMetadataListener) {
-        metadataListeners.add(listener)
-    }
+//    fun addMetadataListener(listener: StreamMetadataListener) {
+//        metadataListeners.add(listener)
+//    }
 
+    @FlowPreview
     fun removeMetadataListener() {
         exoPlayer.removeMetadataOutput(mMetaDataOutput)
     }
@@ -90,53 +103,45 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
      * The first string contains the total stream duration, the second string contains the time elapsed
      * An example output will be: 00:00:01 for elapsed and 05:00:00 (5 hours) for stream timer duration
      */
-    private val streamDurationStrings: Array<String?>
-        get() {
-            val durations = arrayOfNulls<String>(2)
-            val streamTimer = Integer.parseInt(preferences.streamingTimer!!) * 3600
+    @FlowPreview
+    val streamDurationStringsFlow: Flow<Array<String?>>
+        get() = flow {
+            for (i in 0..Int.MAX_VALUE) {
+                val durations = arrayOfNulls<String>(2)
 
-            val streamDurationHrs = Seconds.seconds(streamTimer)
-            val currentPosition = Seconds.seconds(currentPosition.toInt() / 1000)
-            val streamDurationPeriod = Period(streamDurationHrs)
-            val currentPositionPeriod = Period(currentPosition)
-            val diffPeriod = streamDurationPeriod.minus(currentPositionPeriod)
+                val streamTimer = Integer.parseInt(preferences.streamingTimer!!) * 3600
+
+                val streamDurationHrs = Seconds.seconds(streamTimer)
+                val currentPosition = Seconds.seconds(currentPosition.toInt() / 1000)
+                val streamDurationPeriod = Period(streamDurationHrs)
+                val currentPositionPeriod = Period(currentPosition)
+                val diffPeriod = streamDurationPeriod.minus(currentPositionPeriod)
 
 
-            if (diffPeriod.seconds == 0) {
-                stop()
-            }
-
-            val formatter = PeriodFormatterBuilder()
-                    .printZeroAlways()
-                    .minimumPrintedDigits(2)
-                    .appendHours()
-                    .appendSuffix(":")
-                    .appendMinutes()
-                    .appendSuffix(":")
-                    .appendSeconds()
-                    .toFormatter()
-
-            val totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard())
-            val streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard())
-
-            durations[0] = totalStreamStr
-            durations[1] = streamProgressStr
-
-            return durations
-        }
-
-    /**
-     * Get an observable from [streamDurationStrings]
-     */
-    val streamDurationStringsObservable: Observable<Array<out String?>>
-        get() = Observable
-                .interval(1, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .doOnError { t: Throwable? ->
-                    Timber.i(t)
+                if (diffPeriod.seconds == 0) {
+                    stop()
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { streamDurationStrings }
+
+                val formatter = PeriodFormatterBuilder()
+                        .printZeroAlways()
+                        .minimumPrintedDigits(2)
+                        .appendHours()
+                        .appendSuffix(":")
+                        .appendMinutes()
+                        .appendSuffix(":")
+                        .appendSeconds()
+                        .toFormatter()
+
+                val totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard())
+                val streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard())
+
+                durations[0] = totalStreamStr
+                durations[1] = streamProgressStr
+
+                emit(durations)
+                delay(1000)
+            }
+        }
 
 
     var streamSource: Uri? = null
@@ -196,7 +201,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
             else -> {
             }
         }
-
     }
 
     override fun onLoadingChanged(isLoading: Boolean) {
@@ -230,13 +234,10 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
         }
 
         if (!playWhenReady && state == STATE_READY) {
-            //paused
-//            mStreamStateChangesListener.onPause()
             mPlaybackState = PlaybackState.STOPPED
             mStreamStateChangesListener.onStop()
             return
         }
-
     }
 
     override fun onPlayerError(error: ExoPlaybackException?) {

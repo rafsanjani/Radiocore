@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.databinding.BottomSheetBinding
@@ -35,9 +36,11 @@ import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService
 import com.radiocore.player.AudioStreamingService.AudioStreamingState.*
 import com.radiocore.player.StreamPlayer
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import me.bogerchan.niervisualizer.NierVisualizerManager
 import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType2Renderer
 import org.joda.time.Seconds
@@ -56,7 +59,6 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
     }
 
     private lateinit var mSheetBehaviour: BottomSheetBehavior<*>
-    private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     private var shouldStartPlayback: Boolean = false
 
@@ -72,14 +74,11 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
 
     private var visualizerManager: NierVisualizerManager? = null
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         btnSmallPlay.setOnClickListener(this)
         btnPlay.setOnClickListener(this)
 
         visualizer.setZOrderOnTop(true)
-
-        mCompositeDisposable = CompositeDisposable()
 
         initializeViews()
     }
@@ -101,8 +100,8 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
         val state = visualizerManager?.init(mStreamPlayer.audioSessionId)
 
 
-        visualizer.setZOrderOnTop(true);
-        visualizer.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        visualizer.setZOrderOnTop(true)
+        visualizer.holder.setFormat(PixelFormat.TRANSLUCENT)
 
         if (state == NierVisualizerManager.SUCCESS) {
             visualizerManager?.start(
@@ -152,7 +151,7 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-                Timber.i("onTabReselected: No-Op");
+                Timber.i("onTabReselected: No-Op")
             }
         })
     }
@@ -161,6 +160,7 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
      * Check if Audio Streaming Service is running and change the AudioStreamingState accordingly
      * Note: We Initially set it to STATUS_STOPPED, assuming that nothing is playing when we first run
      */
+    @FlowPreview
     private fun setUpInitialPlayerState() {
         shouldStartPlayback = mRadioPreferences.autoPlayOnStart
 
@@ -186,7 +186,7 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
                         STATUS_STOPPED -> streamStopped()
                         STATUS_LOADING -> streamLoading()
                         else -> {
-                            Timber.e("setUpInitialPlayerState: Unknown Plaback state");
+                            Timber.e("setUpInitialPlayerState: Unknown Playback state")
                         }
                     }
                 })
@@ -204,19 +204,19 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
      * Update the stream progress seekbar and timer accordingly.
      * Also checks if the stream timer is up which triggers a shutdown of the app
      */
+    @FlowPreview
     private fun startUpdateStreamProgress() {
-        val disposable = mStreamPlayer.streamDurationStringsObservable
-                .subscribe { durationStrings ->
-                    val streamTimer = Integer.parseInt(RadioPreferences(requireContext()).streamingTimer!!) * 3600
-                    val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
-                    seekBarProgress?.max = streamTimer
-                    seekBarProgress?.progress = currentPosition.seconds
+        lifecycleScope.launch {
+            mStreamPlayer.streamDurationStringsFlow.collect { durationStrings ->
+                val streamTimer = Integer.parseInt(RadioPreferences(requireContext()).streamingTimer!!) * 3600
+                val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
+                seekBarProgress?.max = streamTimer
+                seekBarProgress?.progress = currentPosition.seconds
 
-                    textStreamProgress?.text = durationStrings[1]
-                    textStreamDuration?.text = durationStrings[0]
-                }
-
-        mCompositeDisposable.add(disposable)
+                textStreamProgress?.text = durationStrings[1]
+                textStreamDuration?.text = durationStrings[0]
+            }
+        }
     }
 
     private fun startPlayback() {
@@ -239,6 +239,8 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
         viewModel.audioServiceConnection.audioService?.stopPlayback()
     }
 
+
+    @FlowPreview
     override fun onStart() {
         super.onStart()
         setUpInitialPlayerState()
@@ -250,8 +252,6 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
         }
 
         visualizerManager?.release()
-
-        mCompositeDisposable.clear()
 
         super.onDestroy()
     }
@@ -268,7 +268,7 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
         with(textSwitcherPlayerState) {
             inAnimation = textAnimationIn
             outAnimation = textAnimationOut
-            setCurrentText("Hello")
+            setCurrentText("RadioCore")
         }
 
         initializeTabComponents()
@@ -373,6 +373,8 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
         (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.pink_600))
     }
 
+
+    @FlowPreview
     private fun streamPlaying() {
         Timber.d("Stream State Changed: Playing")
 
@@ -388,8 +390,8 @@ class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClic
         (textSwitcherPlayerState.currentView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.green_200))
     }
 
-    override fun onClick(view: View?) {
-        when (view?.id) {
+    override fun onClick(view: View) {
+        when (view.id) {
             R.id.btnSmallPlay, R.id.btnPlay -> {
                 Timber.i("onClick: ${viewModel.playbackState.value.toString()}")
 

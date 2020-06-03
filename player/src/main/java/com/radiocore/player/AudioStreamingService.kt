@@ -20,7 +20,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.radiocore.core.di.DaggerAndroidService
-import com.radiocore.core.util.*
+import com.radiocore.core.util.ACTION_PLAY
+import com.radiocore.core.util.ACTION_STOP
+import com.radiocore.core.util.RadioPreferences
+import com.radiocore.core.util.STREAM_URL
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -102,11 +109,12 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
             return playbackNowAuthorized
         }
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
         mNotificationText = this.getString(R.string.live_radio_freq, getString(R.string.org_freq))
-        mRadioPreferences = RadioPreferences(this)
-//        mBroadcastManager = LocalBroadcastManager.getInstance(this)
+
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -141,6 +149,18 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
                     stopForeground(true)
                 }
             })
+
+
+            CoroutineScope(Dispatchers.Default).launch {
+                mMediaPlayer.metadataChannel
+                        .asFlow()
+                        .distinctUntilChanged()
+                        .collect {
+                            metaData.postValue(it)
+                            Timber.i("Metadata Received: $it")
+                        }
+            }
+
 
         } catch (e: Exception) {
             Timber.i(e.message!!)
@@ -221,16 +241,6 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         mMediaPlayer.play()
         startForeground(NOTIFICATION_ID, mStreamNotification)
 
-        mMediaPlayer.addMetadataListener(object : StreamMetadataListener {
-            var data = ""
-            override fun onMetadataReceived(metadata: String) {
-                if (metadata.isNotEmpty() && metadata != data) {
-                    metaData.value = metadata
-                    data = metadata
-                }
-            }
-        })
-
         metaData.observeForever(metaDataObserver)
     }
 
@@ -247,7 +257,7 @@ class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusC
         cleanShutDown()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
         if (mMediaPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING)
