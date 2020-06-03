@@ -8,7 +8,7 @@ ext {
             targetSdk          : 29,
             buildToolsVersion  : '29.0.3',
             androidGradlePlugin: '4.0.0',
-            ktlint             : '0.35.0',
+            ktlint             : '0.37.0',
             coil               : '0.11.0',
             lottie             : '3.4.0',
             glide              : '4.11.0',
