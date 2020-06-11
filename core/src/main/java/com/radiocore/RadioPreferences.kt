@@ -1,4 +1,4 @@
-package com.radiocore.core.util
+package com.radiocore
 
 // Created by Emperor95 on 11/19/2018.
 

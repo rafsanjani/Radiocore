@@ -1,8 +1,7 @@
 package com.radiocore.app.di.modules
 
 import android.app.Application
-import com.radiocore.core.util.NEWS_URL
-import com.radiocore.core.util.RadioPreferences
+import com.radiocore.RadioPreferences
 import com.radiocore.news.data.NewsDataSource
 import com.radiocore.news.data.remote.NewsApi
 import com.radiocore.news.data.remote.RemoteDataSource
@@ -12,10 +11,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+@ExperimentalCoroutinesApi
 @Module
 @InstallIn(ApplicationComponent::class)
 object AppModule {
@@ -25,12 +26,13 @@ object AppModule {
         return RadioPreferences(app)
     }
 
-
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit.Builder {
+        val url = "https://newscentral.herokuapp.com/news/"
+
         return Retrofit.Builder()
-                .baseUrl(NEWS_URL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create(GsonConverters.instance!!))
     }
 

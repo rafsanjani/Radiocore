@@ -27,10 +27,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomePagerAdapter
 import com.radiocore.app.viewmodels.AppViewModel
-import com.radiocore.core.util.RadioPreferences
-import com.radiocore.core.util.animateButtonDrawable
-import com.radiocore.core.util.isServiceRunning
-import com.radiocore.core.util.toggleViewsVisibility
+import com.radiocore.RadioPreferences
+import com.radiocore.app.util.animateButtonDrawable
+import com.radiocore.app.util.isServiceRunning
+import com.radiocore.app.util.toggleViewsVisibility
 import com.radiocore.news.ui.NewsListFragment
 import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService
@@ -39,6 +39,7 @@ import com.radiocore.player.StreamPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -49,6 +50,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main), View.OnClickListener {
 

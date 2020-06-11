@@ -1,9 +1,9 @@
 package com.radiocore.news
 
+import KEY_SELECTED_NEWS_ITEM_POSITION
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.radiocore.core.util.KEY_SELECTED_NEWS_ITEM_POSITION
 import com.radiocore.news.adapter.NewsPagerAdapter
 import kotlinx.android.synthetic.main.news_detail_viewpager.*
 

@@ -1,5 +1,6 @@
 package com.radiocore.news.ui
 
+import PERSIST_WORK_NAME
 import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -9,8 +10,7 @@ import androidx.lifecycle.liveData
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.radiocore.core.util.PERSIST_WORK_NAME
-import com.radiocore.core.util.RadioPreferences
+import com.radiocore.RadioPreferences
 import com.radiocore.news.data.NewsDataSource
 import com.radiocore.news.data.NewsRepository
 import com.radiocore.news.data.local.LocalDataSource

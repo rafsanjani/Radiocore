@@ -16,10 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.radiocore.core.util.ACTION_PLAY
-import com.radiocore.core.util.ACTION_STOP
-import com.radiocore.core.util.RadioPreferences
-import com.radiocore.core.util.STREAM_URL
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.asFlow
@@ -33,17 +29,17 @@ import javax.inject.Inject
  * Handle Audio playback
  */
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener {
+
+
     private val binder = AudioServiceBinder()
 
     private val mFocusLock = Any()
 
     @Inject
     lateinit var mMediaPlayer: StreamPlayer
-
-    @Inject
-    lateinit var mRadioPreferences: RadioPreferences
 
     private lateinit var mNotificationManager: NotificationManager
 
@@ -69,6 +65,9 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         private const val NOTIFICATION_ID: Int = 5
         const val NOTIFICATION_CHANNEL_ID = "com.radiocore.notification_channel"
         const val NOTIFICATION_CHANNEL_NAME = "RadioCore Notification Channel"
+        const val STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3"
+        const val ACTION_PLAY = "com.radiocore.PLAY"
+        const val ACTION_STOP = "com.radiocore.STOP"
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -252,7 +251,7 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
     fun stopPlayback() {
         stopForeground(true)
         mMediaPlayer.pause()
-        cleanShutDown()
+//        cleanShutDown()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -264,12 +263,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
             stopPlayback()
 
         return START_NOT_STICKY
-    }
-
-    private fun cleanShutDown() {
-        stopForeground(true)
-        Timber.i("Performing stream status cleanup")
-        mRadioPreferences.cleanShutdown = true
     }
 
     override fun onDestroy() {

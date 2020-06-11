@@ -1,6 +1,6 @@
 package com.radiocore.news.data.remote
 
-import com.radiocore.core.util.RadioPreferences
+import com.radiocore.RadioPreferences
 import com.radiocore.news.data.NewsDataSource
 import com.radiocore.news.model.News
 import org.joda.time.DateTime

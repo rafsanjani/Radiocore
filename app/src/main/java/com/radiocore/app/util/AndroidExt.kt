@@ -1,4 +1,4 @@
-package com.radiocore.core.util
+package com.radiocore.app.util
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -10,22 +10,6 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ProgressBar
 
-
-fun <T : Context> T.rateActivity() {
-    val uri = Uri.parse("market://details?id=" + this.packageName)
-    val goToMarket = Intent(Intent.ACTION_VIEW, uri)
-    try {
-        this.startActivity(goToMarket)
-    } catch (e: ActivityNotFoundException) {
-        this.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + this.packageName)))
-    }
-}
-
-fun <T> MutableList<T>.swap(index1: Int, index2: Int) {
-    val tmp = this[index1] // 'this' corresponds to the list
-    this[index1] = this[index2]
-    this[index2] = tmp
-}
 
 @Suppress("DEPRECATION")
 fun isServiceRunning(serviceClass: Class<*>, context: Context): Boolean {

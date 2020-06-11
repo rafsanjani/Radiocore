@@ -2,8 +2,6 @@ package com.radiocore.player
 
 import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -14,7 +12,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.radiocore.core.util.RadioPreferences
+import com.radiocore.RadioPreferences
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
@@ -24,13 +22,10 @@ import org.joda.time.Seconds
 import org.joda.time.format.PeriodFormatterBuilder
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener {
-//    private val metadataListeners = mutableListOf<StreamMetadataListener>()
-
-    @ExperimentalCoroutinesApi
     val metadataChannel = ConflatedBroadcastChannel<String>()
 
-    @ExperimentalCoroutinesApi
     private var mMetaDataOutput = MetadataOutput { metadata ->
         for (n in 0 until metadata.length()) {
             when (val md = metadata[n]) {
@@ -39,16 +34,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
                     CoroutineScope(Dispatchers.Default).launch {
                         metadataChannel.send(md.title!!.replace("';StreamUrl='", "RadioCore"))
                     }
-
-//                    //just replay the event to all the attached listeners
-//                    metadataListeners.forEach { listener ->
-//                        listener.onMetadataReceived(md.title!!.replace("';StreamUrl='", "RadioCore"))
-//
-//                        CoroutineScope(Dispatchers.Default).launch {
-//                            metadataChannel.send(md.title!!.replace("';StreamUrl='", "RadioCore"))
-//                        }
-//
-//                    }
 
                 }
                 else -> {
@@ -80,15 +65,6 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
     private lateinit var mStreamStateChangesListener: StreamStateChangesListener
 
     private var mPlaybackState = PlaybackState.IDLE
-
-//    fun addMetadataListener(listener: StreamMetadataListener) {
-//        metadataListeners.add(listener)
-//    }
-
-    @FlowPreview
-    fun removeMetadataListener() {
-        exoPlayer.removeMetadataOutput(mMetaDataOutput)
-    }
 
 
     val audioSessionId: Int
@@ -165,10 +141,7 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
         this.mStreamStateChangesListener = listener
     }
 
-    /**
-     * Release resources held by the media player back to the system
-     */
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+
     fun release() {
         removeMetadataOutput()
         exoPlayer.release()
@@ -182,7 +155,7 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
         exoPlayer.playWhenReady = false
     }
 
-    fun stop() {
+    private fun stop() {
         exoPlayer.stop()
     }
 

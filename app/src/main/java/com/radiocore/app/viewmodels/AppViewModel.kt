@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService.AudioStreamingState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class AppViewModel @Inject constructor() : ViewModel() {
     private var _metaData = MutableLiveData<String>()
     private var _playbackState = MutableLiveData(AudioStreamingState.STATUS_STOPPED)

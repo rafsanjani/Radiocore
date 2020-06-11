@@ -14,10 +14,12 @@ import com.radiocore.app.viewmodels.AppViewModel
 import com.radiocore.player.StreamPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 
 // Created by Emperor95 on 1/13/2019
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private val viewModel: AppViewModel by activityViewModels()

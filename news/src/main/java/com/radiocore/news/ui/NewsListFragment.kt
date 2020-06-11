@@ -1,5 +1,6 @@
 package com.radiocore.news.ui
 
+import KEY_SELECTED_NEWS_ITEM_POSITION
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,14 +10,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.radiocore.core.util.KEY_SELECTED_NEWS_ITEM_POSITION
 import com.radiocore.news.NewsDetailActivity
 import com.radiocore.news.R
 import com.radiocore.news.adapter.NewsAdapter
 import com.radiocore.news.adapter.NewsAdapter.NewsItemClickListener
 import com.radiocore.news.model.News
 import com.radiocore.news.util.NewsState
-import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
@@ -31,12 +30,12 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list), SwipeRefreshLayo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark)
         swipeRefreshLayout.setOnRefreshListener(this)
-        getNewsData()
+        getNews()
 
         btnRetry.setOnClickListener {
             contentNoConnection.visibility = View.INVISIBLE
             loadingBar.visibility = View.VISIBLE
-            getNewsData()
+            getNews()
         }
 
         initializeObservers()
@@ -81,7 +80,7 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list), SwipeRefreshLayo
         Timber.e(error)
     }
 
-    private fun getNewsData() {
+    private fun getNews() {
         val observer: Observer<List<News>> = Observer { list ->
             if (!list.isNullOrEmpty())
                 viewModel.setNewsState(NewsState.LoadedState(list))
@@ -104,13 +103,13 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list), SwipeRefreshLayo
     }
 
     override fun onRefresh() {
-        getNewsData()
+        getNews()
     }
 
     override fun onNewsItemClicked(position: Int, image: ImageView) {
         val intent = Intent(context, NewsDetailActivity::class.java)
+
         intent.putExtra(KEY_SELECTED_NEWS_ITEM_POSITION, position)
-//        val options = ActivityOptions.makeSceneTransitionAnimation(activity, image, image.transitionName)
 
         startActivity(intent/*, options.toBundle()*/)
     }

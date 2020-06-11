@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.radiocore.core.util.KEY_NEWS_ITEM
 import com.radiocore.news.R
 import com.radiocore.news.data.NewsRepository
 import com.radiocore.news.model.News
@@ -48,6 +47,8 @@ class NewsItemFragment : Fragment() {
     }
 
     companion object {
+        const val KEY_NEWS_ITEM = "com.radiocore.news_item"
+
         fun getInstance(position: Int): NewsItemFragment {
             val newsItemAtPosition = NewsRepository.newsItems[position]
 

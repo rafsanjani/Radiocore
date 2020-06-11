@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.foreverrafs.radiocore.R
 import com.radiocore.app.viewmodels.AppViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -25,9 +26,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
-
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
