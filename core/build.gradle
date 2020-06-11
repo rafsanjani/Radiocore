@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 apply from: '../dependencies.gradle'
 
 
@@ -24,30 +23,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    buildFeatures {
-        dataBinding = true
-    }
-
 }
 
 dependencies {
     implementation deps.kotlin.stdlib
-    testImplementation deps.androidX.test.jUnit.ktx
-    androidTestImplementation deps.androidX.test.jUnit.ktx
+//    testImplementation deps.androidX.test.jUnit.ktx
+//    androidTestImplementation deps.androidX.test.jUnit.ktx
     implementation deps.androidX.appCompat
-    implementation deps.androidX.lifecycle.extensions
+//    implementation deps.androidX.lifecycle.extensions
     implementation deps.jodaTime
-
-
-    //dagger
-    api deps.google.dagger.dagger
-    kapt deps.google.dagger.compiler
-    api deps.google.dagger.android
-    api deps.google.dagger.androidSupport // if you use the support libraries
-    kapt deps.google.dagger.androidProcessor
-
-
     //timber for logging
     implementation deps.timber
 }

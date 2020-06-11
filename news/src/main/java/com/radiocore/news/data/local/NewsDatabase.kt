@@ -6,7 +6,7 @@ import com.radiocore.news.model.News
 import com.radiocore.news.util.NewsConverters
 
 
-@Database(entities = [News::class], version = 1)
+@Database(entities = [News::class], version = 1, exportSchema = false)
 @TypeConverters(NewsConverters::class)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDao(): NewsDao

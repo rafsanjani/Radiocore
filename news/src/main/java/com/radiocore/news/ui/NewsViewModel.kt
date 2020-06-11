@@ -1,7 +1,7 @@
 package com.radiocore.news.ui
 
-import android.content.Context
-import android.provider.SyncStateContract
+import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,11 +23,10 @@ import kotlinx.coroutines.Dispatchers
 import org.joda.time.DateTime
 import org.joda.time.Hours
 import timber.log.Timber
-import javax.inject.Inject
 
-class NewsViewModel @Inject constructor(
+class NewsViewModel @ViewModelInject constructor(
         mPreferences: RadioPreferences,
-        private val appContext: Context,
+        private val app: Application,
         private val remoteDataSource: RemoteDataSource) : ViewModel() {
 
     private var hoursBeforeExpire: Int = mPreferences.cacheExpiryHours!!.toInt()
@@ -50,7 +49,7 @@ class NewsViewModel @Inject constructor(
 
         val repository = if (isCacheValid) {
             Timber.i("Cache Valid for ${hoursBeforeExpire - elapsedHours.hours} Hours: Loading from local...")
-            LocalDataSource(appContext)
+            LocalDataSource(app)
         } else {
             Timber.i("Cache Expired: Loading from Remote...")
             remoteDataSource
@@ -83,7 +82,7 @@ class NewsViewModel @Inject constructor(
     }
 
     private fun saveNewsToLocalStorage() {
-        val workManager = WorkManager.getInstance(appContext)
+        val workManager = WorkManager.getInstance(app)
         val persistNewsRequest = OneTimeWorkRequestBuilder<PersistNewsWorker>().build()
 
         workManager.enqueueUniqueWork(PERSIST_WORK_NAME,

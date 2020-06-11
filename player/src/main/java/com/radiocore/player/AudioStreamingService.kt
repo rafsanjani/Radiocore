@@ -1,9 +1,6 @@
 package com.radiocore.player
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
@@ -19,11 +16,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.radiocore.core.di.DaggerAndroidService
 import com.radiocore.core.util.ACTION_PLAY
 import com.radiocore.core.util.ACTION_STOP
 import com.radiocore.core.util.RadioPreferences
 import com.radiocore.core.util.STREAM_URL
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -35,8 +32,9 @@ import javax.inject.Inject
 /***
  * Handle Audio playback
  */
-//todo: use a lifecycle service
-class AudioStreamingService : DaggerAndroidService(), AudioManager.OnAudioFocusChangeListener {
+
+@AndroidEntryPoint
+class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener {
     private val binder = AudioServiceBinder()
 
     private val mFocusLock = Any()

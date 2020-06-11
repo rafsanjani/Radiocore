@@ -4,6 +4,6 @@ import com.radiocore.news.model.News
 import retrofit2.http.GET
 
 interface NewsApi {
-    @GET("/news/politics")
+    @GET("/news/")
     suspend fun getNewsAsyc(): List<News>
 }

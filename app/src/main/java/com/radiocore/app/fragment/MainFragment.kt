@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +27,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomePagerAdapter
 import com.radiocore.app.viewmodels.AppViewModel
-import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.core.util.RadioPreferences
 import com.radiocore.core.util.animateButtonDrawable
 import com.radiocore.core.util.isServiceRunning
@@ -36,6 +36,7 @@ import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService
 import com.radiocore.player.AudioStreamingService.AudioStreamingState.*
 import com.radiocore.player.StreamPlayer
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.FlowPreview
@@ -48,7 +49,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class MainFragment : DaggerAndroidXFragment(R.layout.fragment_main), View.OnClickListener {
+@AndroidEntryPoint
+class MainFragment : Fragment(R.layout.fragment_main), View.OnClickListener {
 
     companion object {
         private const val PERMISSION_RECORD_AUDIO = 6900

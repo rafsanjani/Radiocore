@@ -4,12 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.foreverrafs.radiocore.R
 import com.radiocore.app.viewmodels.AppViewModel
-import com.radiocore.core.di.DaggerAndroidXAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
+import kotlin.coroutines.suspendCoroutine
 
-class MainActivity : DaggerAndroidXAppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: AppViewModel
 
@@ -22,6 +25,9 @@ class MainActivity : DaggerAndroidXAppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
+
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

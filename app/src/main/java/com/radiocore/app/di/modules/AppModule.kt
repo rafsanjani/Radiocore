@@ -1,7 +1,6 @@
 package com.radiocore.app.di.modules
 
-import android.content.Context
-import com.radiocore.app.RadioCoreApp
+import android.app.Application
 import com.radiocore.core.util.NEWS_URL
 import com.radiocore.core.util.RadioPreferences
 import com.radiocore.news.data.NewsDataSource
@@ -11,37 +10,24 @@ import com.radiocore.news.util.GsonConverters
 import com.radiocore.player.StreamPlayer
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.components.ServiceComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object AppModule {
-
     @Provides
-    @JvmStatic
-    @Singleton
-    fun provideContext(application: RadioCoreApp): Context {
-        return application.applicationContext
+    fun provideRadioPreferences(app: Application): RadioPreferences {
+        return RadioPreferences(app)
     }
 
-    @Provides
-    @JvmStatic
-    @Singleton
-    fun provideRadioPreferences(context: Context): RadioPreferences {
-        return RadioPreferences(context)
-    }
 
     @Provides
     @JvmStatic
-    @Singleton
-    fun provideStreamPlayer(context: Context, preferences: RadioPreferences): StreamPlayer {
-        return StreamPlayer(context, preferences)
-    }
-
-    @Provides
-    @JvmStatic
-    @Singleton
     fun provideRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
                 .baseUrl(NEWS_URL)
@@ -50,7 +36,6 @@ object AppModule {
 
     @Provides
     @JvmStatic
-    @Singleton
     fun provideNewsApiService(retrofit: Retrofit.Builder): NewsApi {
         return retrofit
                 .build()
@@ -59,8 +44,13 @@ object AppModule {
 
     @Provides
     @JvmStatic
-    @Singleton
     fun provideRemoteDataSource(preferences: RadioPreferences, newsApi: NewsApi): NewsDataSource {
         return RemoteDataSource(preferences, newsApi)
+    }
+
+    @Provides
+    @JvmStatic
+    fun provideStreamPlayer(app: Application, preferences: RadioPreferences): StreamPlayer {
+        return StreamPlayer(app, preferences)
     }
 }

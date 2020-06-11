@@ -13,11 +13,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_about.*
 
 
 // Created by Emperor95 on 1/13/2019.
-
 class AboutFragment : Fragment(), View.OnClickListener {
     override fun onClick(clickedView: View?) {
         when (clickedView?.id) {

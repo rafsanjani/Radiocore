@@ -1,11 +1,13 @@
 package com.radiocore.app.activity
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import com.foreverrafs.radiocore.R
-import com.radiocore.core.di.DaggerAndroidXAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class SettingsActivity : DaggerAndroidXAppCompatActivity(R.layout.settings_activity) {
+@AndroidEntryPoint
+class SettingsActivity : AppCompatActivity(R.layout.settings_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

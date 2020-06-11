@@ -1,13 +1,14 @@
 package com.radiocore.app
 
-import DaggerAppComponent
+import android.app.Application
 import android.os.StrictMode
 import com.foreverrafs.radiocore.BuildConfig
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
-class RadioCoreApp : DaggerApplication() {
+@HiltAndroidApp
+class RadioCoreApp @Inject constructor() : Application () {
     override fun onCreate() {
         super.onCreate()
 
@@ -15,9 +16,6 @@ class RadioCoreApp : DaggerApplication() {
         setUpTimber()
     }
 
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.factory().create(this)
-    }
 
     private fun setUpTimber() {
         if (BuildConfig.DEBUG) {

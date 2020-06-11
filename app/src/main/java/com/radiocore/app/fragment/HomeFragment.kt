@@ -6,18 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.foreverrafs.radiocore.R
 import com.foreverrafs.radiocore.databinding.FragmentHomeBinding
 import com.radiocore.app.viewmodels.AppViewModel
-import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.player.StreamPlayer
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 
 // Created by Emperor95 on 1/13/2019
-class HomeFragment : DaggerAndroidXFragment() {
+@AndroidEntryPoint
+class HomeFragment : Fragment() {
     private val viewModel: AppViewModel by activityViewModels()
 
     @Inject

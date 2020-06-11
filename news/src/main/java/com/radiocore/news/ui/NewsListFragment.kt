@@ -2,15 +2,13 @@ package com.radiocore.news.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.SyncStateContract
 import android.view.View
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.radiocore.core.di.DaggerAndroidXFragment
 import com.radiocore.core.util.KEY_SELECTED_NEWS_ITEM_POSITION
 import com.radiocore.news.NewsDetailActivity
 import com.radiocore.news.R
@@ -18,22 +16,17 @@ import com.radiocore.news.adapter.NewsAdapter
 import com.radiocore.news.adapter.NewsAdapter.NewsItemClickListener
 import com.radiocore.news.model.News
 import com.radiocore.news.util.NewsState
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import timber.log.Timber
-import javax.inject.Inject
 
 // Created by Emperor95 on 1/13/2019.
-class NewsListFragment : DaggerAndroidXFragment(R.layout.fragment_news_list), SwipeRefreshLayout.OnRefreshListener, NewsItemClickListener {
+class NewsListFragment : Fragment(R.layout.fragment_news_list), SwipeRefreshLayout.OnRefreshListener, NewsItemClickListener {
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: NewsViewModel by activityViewModels {
-        viewModelFactory
-    }
+    private val viewModel: NewsViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark)
