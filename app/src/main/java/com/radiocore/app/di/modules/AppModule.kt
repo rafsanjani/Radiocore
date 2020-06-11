@@ -12,7 +12,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.components.ServiceComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -20,36 +19,37 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 object AppModule {
+    @Singleton
     @Provides
     fun provideRadioPreferences(app: Application): RadioPreferences {
         return RadioPreferences(app)
     }
 
 
+    @Singleton
     @Provides
-    @JvmStatic
     fun provideRetrofit(): Retrofit.Builder {
         return Retrofit.Builder()
                 .baseUrl(NEWS_URL)
                 .addConverterFactory(GsonConverterFactory.create(GsonConverters.instance!!))
     }
 
+    @Singleton
     @Provides
-    @JvmStatic
     fun provideNewsApiService(retrofit: Retrofit.Builder): NewsApi {
         return retrofit
                 .build()
                 .create(NewsApi::class.java)
     }
 
+    @Singleton
     @Provides
-    @JvmStatic
     fun provideRemoteDataSource(preferences: RadioPreferences, newsApi: NewsApi): NewsDataSource {
         return RemoteDataSource(preferences, newsApi)
     }
 
+    @Singleton
     @Provides
-    @JvmStatic
     fun provideStreamPlayer(app: Application, preferences: RadioPreferences): StreamPlayer {
         return StreamPlayer(app, preferences)
     }
