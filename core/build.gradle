@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: '../dependencies.gradle'
 
 
@@ -27,10 +26,7 @@ android {
 
 dependencies {
     implementation deps.kotlin.stdlib
-//    testImplementation deps.androidX.test.jUnit.ktx
-//    androidTestImplementation deps.androidX.test.jUnit.ktx
     implementation deps.androidX.appCompat
-//    implementation deps.androidX.lifecycle.extensions
     implementation deps.jodaTime
     //timber for logging
     implementation deps.timber
