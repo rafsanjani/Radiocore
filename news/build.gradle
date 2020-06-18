@@ -46,7 +46,6 @@ android {
 dependencies {
     implementation project(":core")
     implementation deps.kotlin.stdlib
-
     implementation deps.androidX.fragment.ktx
     implementation deps.androidX.appCompat
     implementation deps.androidX.constraintLayout
@@ -56,8 +55,6 @@ dependencies {
     implementation deps.androidX.swipeRefreshLayout
     implementation deps.androidX.core.ktx
     implementation deps.google.material
-    implementation deps.reactive.rxJava
-    implementation deps.reactive.rxAndroid
     implementation deps.square.retrofit.values()
 
     implementation deps.androidX.room.runtime
@@ -81,7 +78,6 @@ dependencies {
     implementation'com.google.dagger:hilt-android:2.28-alpha'
     kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
-    // When using Kotlin.
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
 
     implementation deps.androidX.work.runtimeKtx
