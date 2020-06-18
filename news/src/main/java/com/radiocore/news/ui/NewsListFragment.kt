@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.content_no_connection.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -89,7 +90,7 @@ class NewsListFragment : Fragment(R.layout.fragment_news_list), SwipeRefreshLayo
     private fun getAllNews() {
         lifecycleScope.launch {
             try {
-                viewModel.getAllNews().collect { items ->
+                viewModel.getAllNews().distinctUntilChanged().collect() { items ->
                     if (!items.isNullOrEmpty())
                         viewModel.setNewsState(NewsState.LoadedState(items))
                     else

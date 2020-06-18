@@ -26,3 +26,6 @@ data class NewsEntity(
     @ColumnInfo(name = "id")
     var id: Int = 0
 }
+
+
+//YYYY-MM-DDThh:mm:ssTZD

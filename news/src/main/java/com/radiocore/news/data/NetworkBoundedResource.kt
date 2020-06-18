@@ -15,9 +15,10 @@ internal fun <RESULT, REQUEST> networkBoundedFlow(
         }
 ): Flow<RESULT> = flow {
     try {
-        local.first()?.let {
-            emit(it)
-        }
+//        local.first()?.let {
+//            emit(it)
+//        }
+
         remote()?.let {
             save(it)
         }

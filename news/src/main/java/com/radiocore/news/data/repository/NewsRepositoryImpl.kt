@@ -1,9 +1,9 @@
 package com.radiocore.news.data.repository
 
+import com.radiocore.news.data.api.NewsApi
 import com.radiocore.news.data.database.NewsDao
 import com.radiocore.news.data.networkBoundedFlow
 import com.radiocore.news.data.newsMapper
-import com.radiocore.news.data.api.NewsApi
 import com.radiocore.news.model.News
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +25,9 @@ constructor(
                 newsDao.getAllNews().map { newsEntity ->
                     newsEntity.map { newsMapper(it) }
                 },
-                { newsDao.insert(it) },
+                {
+                    newsDao.insert(it)
+                },
                 {
                     val news = newsApi.getAllNews()
                     news
