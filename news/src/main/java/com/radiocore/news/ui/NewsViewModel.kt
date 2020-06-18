@@ -1,37 +1,18 @@
 package com.radiocore.news.ui
 
-import PERSIST_WORK_NAME
-import android.app.Application
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import com.radiocore.RadioPreferences
-import com.radiocore.news.data.NewsDataSource
-import com.radiocore.news.data.NewsRepository
-import com.radiocore.news.data.local.LocalDataSource
-import com.radiocore.news.data.remote.RemoteDataSource
-import com.radiocore.news.model.News
-import com.radiocore.news.util.NewsState
-import com.radiocore.news.util.NewsState.ErrorState
-import com.radiocore.news.workers.PersistNewsWorker
-import kotlinx.coroutines.Dispatchers
-import org.joda.time.DateTime
-import org.joda.time.Hours
-import timber.log.Timber
+import com.radiocore.news.data.repository.NewsRepository
+import com.radiocore.news.state.NewsState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class NewsViewModel @ViewModelInject constructor(
-        mPreferences: RadioPreferences,
-        private val app: Application,
-        private val remoteDataSource: RemoteDataSource) : ViewModel() {
-
-    private var hoursBeforeExpire: Int = mPreferences.cacheExpiryHours!!.toInt()
-    private var lastFetchedTime: DateTime = mPreferences.cacheStorageTime!!
-
+class NewsViewModel
+@ViewModelInject
+constructor(
+        private val repository: NewsRepository
+) : ViewModel() {
     private var _newsState = MutableLiveData<NewsState>()
 
     val newsState: LiveData<NewsState>
@@ -41,52 +22,6 @@ class NewsViewModel @ViewModelInject constructor(
         _newsState.postValue(state)
     }
 
-    //The ViewModel will decide whether we are fetching the news from online or local storage based on the cacheExpiryHours
-    fun getAllNews(): LiveData<List<News>> {
-        val elapsedHours = Hours.hoursBetween(lastFetchedTime, DateTime.now())
-
-        val isCacheValid = (hoursBeforeExpire - elapsedHours.hours) >= 0
-
-        val repository = if (isCacheValid) {
-            Timber.i("Cache Valid for ${hoursBeforeExpire - elapsedHours.hours} Hours: Loading from local...")
-            LocalDataSource(app)
-        } else {
-            Timber.i("Cache Expired: Loading from Remote...")
-            remoteDataSource
-        }
-
-        return emitNewsItems(repository)
-    }
-
-    private fun emitNewsItems(repository: NewsDataSource): LiveData<List<News>> {
-        return liveData(Dispatchers.IO) {
-            try {
-                val data = repository.getNews()
-                //keep this inside our repository if it's not empty
-                if (data.isNotEmpty()) {
-                    NewsRepository.newsItems = data
-
-                    //save to localstorage if we fetched from online
-                    if (repository is RemoteDataSource)
-                        saveNewsToLocalStorage()
-                } else {
-                    emit(listOf<News>())
-                }
-
-                NewsRepository.newsItems = data
-                emit(data)
-            } catch (e: Exception) {
-                setNewsState(ErrorState(e))
-            }
-        }
-    }
-
-    private fun saveNewsToLocalStorage() {
-        val workManager = WorkManager.getInstance(app)
-        val persistNewsRequest = OneTimeWorkRequestBuilder<PersistNewsWorker>().build()
-
-        workManager.enqueueUniqueWork(PERSIST_WORK_NAME,
-                ExistingWorkPolicy.REPLACE,
-                persistNewsRequest)
-    }
+    @ExperimentalCoroutinesApi
+    suspend fun getAllNews() = repository.loadAllNews()
 }

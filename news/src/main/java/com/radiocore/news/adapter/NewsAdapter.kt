@@ -60,13 +60,6 @@ class NewsAdapter(private val listItems: List<News>, val fragment: Fragment) : A
             binding.newsItem = newsItem
             binding.executePendingBindings()
 
-            Glide.with(binding.image)
-                    .load(newsItem.imageUrl)
-                    .error(R.drawable.newsimage)
-                    .placeholder(R.drawable.newsimage)
-                    .centerCrop()
-                    .into(binding.image)
-
             binding.image.transitionName = newsItem.imageUrl
 
             itemView.rootView.setOnClickListener {

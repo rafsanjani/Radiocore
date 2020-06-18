@@ -122,18 +122,17 @@ dependencies {
     implementation deps.androidX.lifecycle.viewmodel
     implementation deps.androidX.lifecycle.livedata
 
-    //dagger
-//    api deps.google.dagger.dagger
+    //room
+    implementation deps.androidX.room.runtime
+    kapt deps.androidX.room.compiler
+    implementation deps.androidX.room.ktx
+
+
+    //dagger-hilt
     implementation'com.google.dagger:hilt-android:2.28-alpha'
     kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
-    // When using Kotlin.
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
-
-//    kapt deps.google.dagger.compiler
-//    api deps.google.dagger.android
-//    api deps.google.dagger.androidSupport // if you use the support libraries
-//    kapt deps.google.dagger.androidProcessor
 
     implementation deps.androidX.core.ktx
 

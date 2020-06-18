@@ -1,10 +1,13 @@
 package com.radiocore.app.di.modules
 
 import android.app.Application
+import androidx.room.Room
 import com.radiocore.RadioPreferences
-import com.radiocore.news.data.NewsDataSource
-import com.radiocore.news.data.remote.NewsApi
-import com.radiocore.news.data.remote.RemoteDataSource
+import com.radiocore.news.data.repository.NewsRepositoryImpl
+import com.radiocore.news.data.repository.NewsRepository
+import com.radiocore.news.data.database.NewsDao
+import com.radiocore.news.data.database.NewsDatabase
+import com.radiocore.news.data.api.NewsApi
 import com.radiocore.news.util.GsonConverters
 import com.radiocore.player.StreamPlayer
 import dagger.Module
@@ -46,8 +49,21 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRemoteDataSource(preferences: RadioPreferences, newsApi: NewsApi): NewsDataSource {
-        return RemoteDataSource(preferences, newsApi)
+    fun provideNewsDatabase(app: Application) : NewsDatabase{
+       return Room.databaseBuilder(app, NewsDatabase::class.java, "RadioCoreDB")
+                .fallbackToDestructiveMigration().build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideNewsDao(newsDatabase: NewsDatabase) : NewsDao{
+        return newsDatabase.newsDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideNewsRepository(newsDao: NewsDao, newsApi: NewsApi) : NewsRepository {
+        return NewsRepositoryImpl(newsDao, newsApi)
     }
 
     @Singleton

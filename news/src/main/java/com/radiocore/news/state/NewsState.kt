@@ -1,4 +1,4 @@
-package com.radiocore.news.util
+package com.radiocore.news.state
 
 import com.radiocore.news.model.News
 
