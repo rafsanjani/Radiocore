@@ -3,22 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:viewBindingIgnore="true"
     android:layout_height="match_parent">
-
 
     <include
         android:id="@+id/contentNoConnection"
         layout="@layout/content_no_connection"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="120dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/swipeRefreshLayout"
-        app:layout_constraintStart_toStartOf="@+id/swipeRefreshLayout"
-        app:layout_constraintTop_toTopOf="@+id/swipeRefreshLayout"
-        tools:visibility="invisible" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/loadingBar"
@@ -58,17 +56,4 @@
             tools:itemCount="20"
             tools:listitem="@layout/item_news__" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <include
-        android:id="@+id/contentNoConnection"
-        layout="@layout/content_no_connection"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="120dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

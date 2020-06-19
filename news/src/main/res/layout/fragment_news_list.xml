@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:viewBindingIgnore="true"
     android:layout_height="match_parent">
 
 
@@ -13,14 +12,14 @@
         android:layout_height="150dp"
         android:layout_marginBottom="65dp"
         android:elevation="3dp"
-        app:lottie_autoPlay="true"
         android:visibility="visible"
-        app:lottie_fileName="loading_anim.json"
-        app:lottie_loop="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="loading_anim.json"
+        app:lottie_loop="true" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

@@ -67,8 +67,8 @@
             <TextView
                 android:id="@+id/tvDate"
                 style="@style/TextAppearance.MaterialComponents.Caption"
-                date="@{newsItem.date}"
                 android:layout_width="0dp"
+                date="@{newsItem.date}"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:textSize="12sp"
