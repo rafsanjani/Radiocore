@@ -8,7 +8,6 @@ import com.radiocore.news.data.repository.NewsRepository
 import com.radiocore.news.data.database.NewsDao
 import com.radiocore.news.data.database.NewsDatabase
 import com.radiocore.news.data.api.NewsApi
-import com.radiocore.news.util.GsonConverters
 import com.radiocore.player.StreamPlayer
 import dagger.Module
 import dagger.Provides
@@ -32,11 +31,11 @@ object AppModule {
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit.Builder {
-        val url = "https://newscentral.herokuapp.com/news/"
+        val url = "https://newscentral.herokuapp.com/"
 
         return Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create(GsonConverters.instance!!))
+                .addConverterFactory(GsonConverterFactory.create())
     }
 
     @Singleton
