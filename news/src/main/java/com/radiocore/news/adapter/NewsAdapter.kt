@@ -4,29 +4,30 @@ package com.radiocore.news.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.radiocore.news.R
 import com.radiocore.news.databinding.ItemNewsBinding
 import com.radiocore.news.model.News
-import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.TextStyle
+import java.util.*
 
 
-class NewsAdapter(private val listItems: List<News>, val fragment: Fragment) : AnimationAdapter(AnimationType.BOTTOM_UP, 150) {
+class NewsAdapter(val listener: (news: News, adapterPosition: Int) -> Unit) : AnimationAdapter(AnimationType.BOTTOM_UP, 150) {
 
-    private lateinit var listener: NewsItemClickListener
-
-
-    init {
-        if (fragment is NewsItemClickListener) {
-            listener = fragment
-        } else {
-            Timber.e("Fragment must implement NewsItemClickListener")
+    private val asyncDifferCallback = object : DiffUtil.ItemCallback<News>() {
+        override fun areItemsTheSame(oldItem: News, newItem: News): Boolean {
+            return oldItem == newItem
         }
-    }
 
+        override fun areContentsTheSame(oldItem: News, newItem: News): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+    }
+    private val listDiffer = AsyncListDiffer(this, asyncDifferCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,7 +36,7 @@ class NewsAdapter(private val listItems: List<News>, val fragment: Fragment) : A
     }
 
     override fun getItemCount(): Int {
-        return listItems.size
+        return listDiffer.currentList.size
     }
 
 
@@ -43,28 +44,23 @@ class NewsAdapter(private val listItems: List<News>, val fragment: Fragment) : A
      * {@inheritDoc}
      */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val newsItem = listItems[position]
+        val newsItem = listDiffer.currentList[position]
         (holder as NewsHolder).bind(newsItem)
     }
 
+    fun submitList(items: List<News>) = listDiffer.submitList(items)
 
-    /**
-     * Propagate click events to the RecyclervView to which this adapter is attached.
-     */
-    interface NewsItemClickListener {
-        fun onNewsItemClicked(position: Int, image: ImageView)
-    }
+    inner class NewsHolder(var binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(newsItem: News) = with(binding) {
+            this.newsItem = newsItem
+            executePendingBindings()
 
-    internal inner class NewsHolder(var binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(newsItem: News) {
-            binding.newsItem = newsItem
-            binding.executePendingBindings()
-
-            binding.image.transitionName = newsItem.imageUrl
+            image.transitionName = newsItem.imageUrl
 
             itemView.rootView.setOnClickListener {
-                listener.onNewsItemClicked(adapterPosition, binding.image)
+                listener(newsItem, adapterPosition)
             }
+
             setAnimation(itemView, adapterPosition)
         }
     }

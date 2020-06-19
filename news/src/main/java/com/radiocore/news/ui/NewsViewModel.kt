@@ -24,4 +24,5 @@ constructor(
 
     @ExperimentalCoroutinesApi
     suspend fun getAllNews() = repository.loadAllNews()
+
 }
