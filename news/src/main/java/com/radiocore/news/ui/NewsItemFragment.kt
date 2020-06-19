@@ -10,8 +10,9 @@ import com.bumptech.glide.Glide
 import com.radiocore.news.data.NewsObjects
 import com.radiocore.news.databinding.FragmentNewsItemDetailBinding
 import com.radiocore.news.model.News
-import kotlinx.android.synthetic.main.news_detail_content.*
-import org.joda.time.format.DateTimeFormat
+import java.time.ZonedDateTime
+import java.time.format.TextStyle
+import java.util.*
 
 class NewsItemFragment : Fragment() {
 
@@ -34,21 +35,26 @@ class NewsItemFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with(binding) {
-            image.transitionName = mNewsItem?.imageUrl
-            val formatter = DateTimeFormat.forPattern("MMMM d, yyyy")
+        with(binding.layoutNewsDetail) {
+            binding.image.transitionName = mNewsItem?.imageUrl
 
             mNewsItem?.let { news ->
-                val datePretty = news.date.toString(formatter)
+
+                val date = ZonedDateTime.parse(news.date).toLocalDate()
+                val month = date.month.getDisplayName(TextStyle.SHORT, Locale.ROOT)
+                val day = date.dayOfMonth.toString()
+                val year = date.year
+
+                val formattedDate = "$month $day, $year"
 
                 tvHeadline.text = HtmlCompat.fromHtml(news.headline, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvDate.text = datePretty
+                tvDate.text = formattedDate
                 tvContent.text = HtmlCompat.fromHtml(news.content, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 tvCategory.text = news.category
 
                 Glide.with(requireContext())
                         .load(news.imageUrl)
-                        .into(image)
+                        .into(binding.image)
             }
         }
     }
