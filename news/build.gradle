@@ -70,7 +70,6 @@ dependencies {
     implementation deps.glide.glide
     kapt deps.glide.compiler
 
-//    implementation deps.jodaTime
     implementation deps.timber
 
 

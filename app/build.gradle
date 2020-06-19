@@ -87,11 +87,7 @@ dependencies {
     implementation deps.androidX.navigation.uiKtx
     implementation deps.androidX.navigation.fragmentKtx
 
-    //JodaTime for date and time operations
-    implementation deps.jodaTime
-
     //Audio visualization library
-
     implementation 'com.github.bogerchan:Nier-Visualizer:v0.1.3'
 
     //firebase for crashlytics analysis
