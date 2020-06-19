@@ -101,7 +101,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
 
     //leakcanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 
 
     //swipe to refresh
