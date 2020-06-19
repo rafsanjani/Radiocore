@@ -11,13 +11,13 @@ internal fun <RESULT, REQUEST> networkBoundedFlow(
         save: suspend (response: REQUEST) -> Unit,
         remote: suspend () -> REQUEST,
         log: (e: Throwable) -> Unit = {
-            Timber.d(it)
+            Timber.e(it)
         }
 ): Flow<RESULT> = flow {
     try {
-//        local.first()?.let {
-//            emit(it)
-//        }
+        local.first()?.let {
+            emit(it)
+        }
 
         remote()?.let {
             save(it)
@@ -25,5 +25,13 @@ internal fun <RESULT, REQUEST> networkBoundedFlow(
     } catch (e: Throwable) {
         log(e)
     }
-    emitAll(local.filter { it != null }.map { it })
+    emitAll(local.filter { it != null }.map {
+        it
+    })
 }
+
+@ExperimentalCoroutinesApi
+fun <T> Flow<T>.handleErrors(): Flow<T> =
+        catch { e ->
+            Timber.e(e)
+        }

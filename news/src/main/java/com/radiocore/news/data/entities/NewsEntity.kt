@@ -6,26 +6,19 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.IgnoredOnParcel
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
-import org.joda.time.DateTime
 
 @Parcelize
 @Entity(tableName = "news")
 data class NewsEntity(
-        @ColumnInfo(name = "headline") var headline: String,
-        @ColumnInfo(name = "content") var content: String,
-        @ColumnInfo(name = "date") var date: DateTime,
-        @ColumnInfo(name = "category") var category: String,
-        @ColumnInfo(name = "imageUrl") var imageUrl: String
+        @SerializedName("_id")
+        @ColumnInfo(name = "id")
+        @PrimaryKey(autoGenerate = false) val id: String,
+        @ColumnInfo(name = "headline") val headline: String,
+        @ColumnInfo(name = "content") val content: String,
+        @ColumnInfo(name = "date") val date: String,
+        @ColumnInfo(name = "category") val category: String,
+        @ColumnInfo(name = "imageUrl") val imageUrl: String
 
-) : Parcelable {
-    //our primary key definition
-    @PrimaryKey(autoGenerate = true)
-    @IgnoredOnParcel
-    @ColumnInfo(name = "id")
-    var id: Int = 0
-}
-
-
-//YYYY-MM-DDThh:mm:ssTZD
+) : Parcelable

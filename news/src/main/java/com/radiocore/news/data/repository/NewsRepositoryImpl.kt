@@ -23,14 +23,16 @@ constructor(
     override suspend fun loadAllNews(): Flow<List<News>> {
         return networkBoundedFlow(
                 newsDao.getAllNews().map { newsEntity ->
-                    newsEntity.map { newsMapper(it) }
+                    newsEntity.map {
+                        newsMapper(it)
+                    }
                 },
                 {
+                    newsDao.clear()
                     newsDao.insert(it)
                 },
                 {
-                    val news = newsApi.getAllNews()
-                    news
+                    newsApi.getAllNews()
                 }
         ).flowOn(Dispatchers.IO)
     }
