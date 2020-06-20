@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.radiocore.news.adapter.NewsPagerAdapter
+import com.radiocore.news.util.ZoomOutPageTransformer
 import kotlinx.android.synthetic.main.news_detail_viewpager.*
 
 
@@ -18,9 +19,18 @@ class NewsDetailActivity : AppCompatActivity() {
         getIncomingIntent()
 
         val newsPagerAdapter = NewsPagerAdapter(this)
-        viewPager.offscreenPageLimit = 1
-        viewPager.adapter = newsPagerAdapter
-        viewPager.currentItem = mNewsPosition
+
+        viewPager.apply {
+            offscreenPageLimit = 1
+            adapter = newsPagerAdapter
+            currentItem = mNewsPosition
+            setPageTransformer(ZoomOutPageTransformer())
+        }
+//
+//        viewPager.offscreenPageLimit = 1
+//        viewPager.adapter = newsPagerAdapter
+//
+//        viewPager.currentItem = mNewsPosition
 
         tvFooter.text = getString(R.string.footer_copyright, getString(R.string.app_name))
     }
