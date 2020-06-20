@@ -27,7 +27,6 @@ android {
 dependencies {
     implementation deps.kotlin.stdlib
     implementation deps.androidX.appCompat
-    implementation deps.jodaTime
     //timber for logging
     implementation deps.timber
 }
