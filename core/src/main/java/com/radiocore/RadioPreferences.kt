@@ -4,11 +4,9 @@ package com.radiocore
 
 import android.content.Context
 import android.content.SharedPreferences
-import org.joda.time.DateTime
 
 class RadioPreferences(context: Context) {
     companion object {
-        const val CACHE_STORAGE_TIME = "com.foreverrafs.radiocore.cache_storage_time"
         private const val AUTOPLAY_ON_START = "com.foreverrafs.radiocore.autoplay_on_start"
         private const val IS_FIRST_TIME_LAUNCH = "com.foreverrafs.radiocore.is_first_time_launch"
         private const val CACHE_EXPIRY_HOURS = "com.foreverrafs.radiocore.cache_expiry_hours"
@@ -55,21 +53,21 @@ class RadioPreferences(context: Context) {
      * @return
      */
 
-
-    /**
-     * Gets and sets the time when the last news cache was saved.
-     */
-    var cacheStorageTime: DateTime?
-        get() {
-            //time will be null when there is no cache. we return a date in the past which will force us to fetch new content from online
-            val time: String? = settings.getString(CACHE_STORAGE_TIME, null)
-                    ?: return DateTime.parse("2019-01-01")
-
-            return DateTime.parse(time)
-        }
-        set(storageTime) {
-            writeValue(CACHE_STORAGE_TIME, storageTime.toString())
-        }
+//
+//    /**
+//     * Gets and sets the time when the last news cache was saved.
+//     */
+//    var cacheStorageTime: DateTime?
+//        get() {
+//            //time will be null when there is no cache. we return a date in the past which will force us to fetch new content from online
+//            val time: String? = settings.getString(CACHE_STORAGE_TIME, null)
+//                    ?: return DateTime.parse("2019-01-01")
+//
+//            return DateTime.parse(time)
+//        }
+//        set(storageTime) {
+//            writeValue(CACHE_STORAGE_TIME, storageTime.toString())
+//        }
 
     /**
      * Get the hours it takes for the news cache to expire.

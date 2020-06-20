@@ -24,13 +24,13 @@ import com.foreverrafs.radiocore.databinding.BottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.radiocore.RadioPreferences
 import com.radiocore.app.activity.MainActivity
 import com.radiocore.app.adapter.HomePagerAdapter
-import com.radiocore.app.viewmodels.AppViewModel
-import com.radiocore.RadioPreferences
 import com.radiocore.app.util.animateButtonDrawable
 import com.radiocore.app.util.isServiceRunning
 import com.radiocore.app.util.toggleViewsVisibility
+import com.radiocore.app.viewmodels.AppViewModel
 import com.radiocore.news.ui.NewsListFragment
 import com.radiocore.player.AudioServiceConnection
 import com.radiocore.player.AudioStreamingService
@@ -45,8 +45,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import me.bogerchan.niervisualizer.NierVisualizerManager
 import me.bogerchan.niervisualizer.renderer.columnar.ColumnarType2Renderer
-import org.joda.time.Seconds
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -211,16 +211,36 @@ class MainFragment : Fragment(R.layout.fragment_main), View.OnClickListener {
     @FlowPreview
     private fun startUpdateStreamProgress() {
         lifecycleScope.launch {
-            mStreamPlayer.streamDurationStringsFlow.collect { durationStrings ->
-                val streamTimer = Integer.parseInt(RadioPreferences(requireContext()).streamingTimer!!) * 3600
-                val currentPosition = Seconds.seconds((mStreamPlayer.currentPosition / 1000).toInt())
-                seekBarProgress?.max = streamTimer
-                seekBarProgress?.progress = currentPosition.seconds
+            mStreamPlayer.streamDurationStringsFlow.collect { streamTimers ->
 
-                textStreamProgress?.text = durationStrings[1]
-                textStreamDuration?.text = durationStrings[0]
+                seekBarProgress?.max = streamTimers[1]?.toInt()!!
+                seekBarProgress?.progress = streamTimers[0]?.toInt()!!
+
+                val remaining = printDurationPretty(streamTimers[1]!!)
+                val elapsed = printDurationPretty(streamTimers[0]!!)
+
+                textStreamProgress?.text = elapsed
+                textStreamDuration?.text = remaining
             }
         }
+    }
+
+    private fun printDurationPretty(input: Long): String {
+        var duration = input
+
+        fun Long.printWithPadding(): String {
+            return this.toString().padStart(2, '0')
+        }
+
+        val hours = TimeUnit.SECONDS.toHours(duration)
+        duration -= TimeUnit.HOURS.toSeconds(hours)
+
+        val minute = TimeUnit.SECONDS.toMinutes(duration)
+        duration -= TimeUnit.MINUTES.toSeconds(minute)
+
+        val seconds = duration
+
+        return "${hours.printWithPadding()}:${minute.printWithPadding()}:${seconds.printWithPadding()}"
     }
 
     private fun startPlayback() {

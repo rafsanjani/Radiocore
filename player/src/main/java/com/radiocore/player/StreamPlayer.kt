@@ -17,10 +17,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.joda.time.Period
-import org.joda.time.Seconds
-import org.joda.time.format.PeriodFormatterBuilder
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+
 
 @ExperimentalCoroutinesApi
 class StreamPlayer(private var context: Context, private var preferences: RadioPreferences) : EventListener {
@@ -80,39 +79,25 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
      * An example output will be: 00:00:01 for elapsed and 05:00:00 (5 hours) for stream timer duration
      */
     @FlowPreview
-    val streamDurationStringsFlow: Flow<Array<String?>>
+    val streamDurationStringsFlow: Flow<Array<Long?>>
         get() = flow {
             for (i in 0..Int.MAX_VALUE) {
-                val durations = arrayOfNulls<String>(2)
+                val durations = arrayOfNulls<Long>(2)
 
-                val streamTimer = Integer.parseInt(preferences.streamingTimer!!) * 3600
+                //total allocated stream time in seconds
+                val streamTimer = TimeUnit.HOURS.toSeconds(preferences.streamingTimer!!.toLong())
 
-                val streamDurationHrs = Seconds.seconds(streamTimer)
-                val currentPosition = Seconds.seconds(currentPosition.toInt() / 1000)
-                val streamDurationPeriod = Period(streamDurationHrs)
-                val currentPositionPeriod = Period(currentPosition)
-                val diffPeriod = streamDurationPeriod.minus(currentPositionPeriod)
+                //current position in seconds
+                val currentPosition = TimeUnit.MILLISECONDS.toSeconds(currentPosition)
 
+                val difference = streamTimer - currentPosition
 
-                if (diffPeriod.seconds == 0) {
+                if (difference <= 0) {
                     stop()
                 }
 
-                val formatter = PeriodFormatterBuilder()
-                        .printZeroAlways()
-                        .minimumPrintedDigits(2)
-                        .appendHours()
-                        .appendSuffix(":")
-                        .appendMinutes()
-                        .appendSuffix(":")
-                        .appendSeconds()
-                        .toFormatter()
-
-                val totalStreamStr = formatter.print(streamDurationPeriod.normalizedStandard())
-                val streamProgressStr = formatter.print(currentPositionPeriod.normalizedStandard())
-
-                durations[0] = totalStreamStr
-                durations[1] = streamProgressStr
+                durations[0] = currentPosition
+                durations[1] = streamTimer
 
                 emit(durations)
                 delay(1000)
