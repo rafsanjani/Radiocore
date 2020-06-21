@@ -1,9 +1,9 @@
-name: Build Debug APK 
+name: Build APK 
 
 on: 
   push:
     tags: 
-      - '*'
+      - 'v*.*.*-rc[0-9]'
 
 jobs:
   build:
