@@ -70,7 +70,7 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
         get() = exoPlayer.audioSessionId
 
 
-    val currentPosition: Long
+    private val currentPosition: Long
         get() = exoPlayer.currentPosition
 
     /**
@@ -79,11 +79,9 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
      * An example output will be: 00:00:01 for elapsed and 05:00:00 (5 hours) for stream timer duration
      */
     @FlowPreview
-    val streamDurationStringsFlow: Flow<Array<Long?>>
+    val streamDurationStringsFlow: Flow<PlaybackTime>
         get() = flow {
             for (i in 0..Int.MAX_VALUE) {
-                val durations = arrayOfNulls<Long>(2)
-
                 //total allocated stream time in seconds
                 val streamTimer = TimeUnit.HOURS.toSeconds(preferences.streamingTimer!!.toLong())
 
@@ -96,10 +94,9 @@ class StreamPlayer(private var context: Context, private var preferences: RadioP
                     stop()
                 }
 
-                durations[0] = currentPosition
-                durations[1] = streamTimer
+                val playbackTime = PlaybackTime(currentPosition, streamTimer)
 
-                emit(durations)
+                emit(playbackTime)
                 delay(1000)
             }
         }

@@ -211,16 +211,14 @@ class MainFragment : Fragment(R.layout.fragment_main), View.OnClickListener {
     @FlowPreview
     private fun startUpdateStreamProgress() {
         lifecycleScope.launch {
-            mStreamPlayer.streamDurationStringsFlow.collect { streamTimers ->
+            mStreamPlayer.streamDurationStringsFlow.collect { playbackTime ->
+                val (elapsed, total) = playbackTime
 
-                seekBarProgress?.max = streamTimers[1]?.toInt()!!
-                seekBarProgress?.progress = streamTimers[0]?.toInt()!!
+                seekBarProgress?.max = total.toInt()
+                seekBarProgress?.progress = elapsed.toInt()
 
-                val remaining = printDurationPretty(streamTimers[1]!!)
-                val elapsed = printDurationPretty(streamTimers[0]!!)
-
-                textStreamProgress?.text = elapsed
-                textStreamDuration?.text = remaining
+                textStreamProgress?.text = printDurationPretty(elapsed)
+                textStreamDuration?.text = printDurationPretty(total)
             }
         }
     }
