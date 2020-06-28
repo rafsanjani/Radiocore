@@ -16,13 +16,13 @@ buildscript {
     }
 
     dependencies {
-        classpath deps.androidGradlePlugin
+        classpath "com.android.tools.build:gradle:${versions.androidGradlePlugin}"
         classpath deps.kotlin.gradlePlugin
         classpath deps.androidX.navigation.safeArgsGradlePlugin
-        classpath deps.google.firebase.plugin
+        classpath deps.google.firebase.coreGradlePlugin
+        classpath deps.google.firebase.crashlyticsGradlePlugin
         classpath deps.google.googleServicesPlugin
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.28-alpha'
-
+        classpath deps.google.dagger.hiltGradlePlugin
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

@@ -80,9 +80,9 @@ dependencies {
     implementation deps.androidX.lifecycle.viewmodel
     kapt deps.androidX.lifecycle.compiler
 
-    implementation'com.google.dagger:hilt-android:2.28-alpha'
-    kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
-    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
+    implementation deps.google.dagger.hilt
+    kapt deps.google.dagger.hiltCompiler
+    implementation deps.google.dagger.hiltViewModel
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
 
     implementation deps.androidX.work.runtimeKtx
@@ -90,5 +90,5 @@ dependencies {
 
 
     androidTestImplementation deps.androidX.test.espresso.values()
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.6'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 }

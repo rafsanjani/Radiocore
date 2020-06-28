@@ -3,6 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'dagger.hilt.android.plugin'
 apply from: '../dependencies.gradle'
@@ -90,8 +91,14 @@ dependencies {
     //Audio visualization library
     implementation 'com.github.bogerchan:Nier-Visualizer:v0.1.3'
 
-    //firebase for crashlytics analysis
+    //firebase core for crashlytics analysis
     implementation deps.google.firebase.core
+
+    //firebase crashlytics
+    implementation deps.google.firebase.crashlytics
+
+    //firebase analytics
+    implementation deps.google.firebase.analytics
 
     //google exoplayer for audio rendering
     implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
@@ -125,9 +132,9 @@ dependencies {
 
 
     //dagger-hilt
-    implementation'com.google.dagger:hilt-android:2.28-alpha'
-    kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
-    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
+    implementation deps.google.dagger.hilt
+    kapt deps.google.dagger.hiltCompiler
+    implementation deps.google.dagger.hiltViewModel
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
 
     implementation deps.androidX.core.ktx

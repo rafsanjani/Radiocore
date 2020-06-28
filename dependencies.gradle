@@ -35,9 +35,9 @@ ext {
                     activity          : '1.1.0-rc02',
                     fragment          : '1.2.5',
                     appCompat         : '1.1.0',
-                    constraintLayout  : '2.0.0-beta6',
+                    constraintLayout  : '2.0.0-beta7',
                     recyclerView      : '1.1.0',
-                    swipeRefreshLayout: '1.1.0-rc01',
+                    swipeRefreshLayout: '1.1.0',
                     viewPager2        : '1.0.0',
                     emoji             : '1.0.0',
                     browser           : '1.2.0-beta01',
@@ -59,7 +59,11 @@ ext {
                     exoplayerCore       : '2.10.0',
                     googleServicesPlugin: '4.3.3',
                     material            : '1.1.0',
-                    dagger              : '2.28',
+                    dagger              : [
+                            "core"         : '2.28',
+                            "hilt"         : '2.28.1-alpha',
+                            "hiltViewModel": '1.0.0-alpha01',
+                    ],
                     gson                : '2.8.6',
                     ossLicenses         : [
                             ossLicenses : '17.0.0',
@@ -69,10 +73,12 @@ ext {
                             vision: '19.0.0'
                     ],
                     firebase            : [
-                            crashlytics: '17.0.0',
-                            core       : '17.4.3',
-                            messaging  : '20.1.0',
-                            plugin     : '4.3.3'
+                            crashlytics            : '17.1.0',
+                            crashlyticsGradlePlugin: '2.2.0',
+                            core                   : '17.4.3',
+                            messaging              : '20.1.0',
+                            coreGradlePlugin       : '4.3.3',
+                            analytics              : '17.4.3'
                     ],
             ],
             square             : [
@@ -178,11 +184,13 @@ ext {
                             material            : "com.google.android.material:material:$versions.google.material",
                             gson                : "com.google.code.gson:gson:$versions.google.gson",
                             dagger              : [
-                                    dagger          : "com.google.dagger:dagger:$versions.google.dagger",
-                                    compiler        : "com.google.dagger:dagger-compiler:$versions.google.dagger",
-                                    android         : "com.google.dagger:dagger-android:$versions.google.dagger",
-                                    androidSupport  : "com.google.dagger:dagger-android-support:$versions.google.dagger",
-                                    androidProcessor: "com.google.dagger:dagger-android-processor:$versions.google.dagger"
+                                    dagger          : "com.google.dagger:dagger:$versions.google.dagger.core",
+                                    compiler        : "com.google.dagger:dagger-compiler:$versions.google.dagger.core",
+
+                                    hilt            : "com.google.dagger:hilt-android:$versions.google.dagger.hilt",
+                                    hiltGradlePlugin: "com.google.dagger:hilt-android-gradle-plugin:$versions.google.dagger.hilt",
+                                    hiltCompiler    : "com.google.dagger:hilt-android-compiler:$versions.google.dagger.hilt",
+                                    hiltViewModel   : "androidx.hilt:hilt-lifecycle-viewmodel:$versions.google.dagger.hiltViewModel"
                             ],
                             ossLicenses         : [
                                     ossLicenses : "com.google.android.gms:play-services-oss-licenses:$versions.google.ossLicenses.ossLicenses",
@@ -192,11 +200,12 @@ ext {
                                     vision: "com.google.android.gms:play-services-vision:$versions.google.play.vision"
                             ],
                             firebase            : [
-                                    craslyticsPlugin: "com.google.firebase.crashlytics",
-                                    crashlytics     : "com.google.firebase:firebase-crashlytics:$versions.google.firebase.crashlytics",
-                                    core            : "com.google.firebase:firebase-core:$versions.google.firebase.core",
-                                    plugin          : "com.google.gms:google-services:$versions.google.firebase.plugin",
-                                    messaging       : "com.google.firebase:firebase-messaging:$versions.google.firebase.messaging"
+                                    crashlytics            : "com.google.firebase:firebase-crashlytics:$versions.google.firebase.crashlytics",
+                                    analytics              : "com.google.firebase:firebase-analytics:$versions.google.firebase.analytics",
+                                    crashlyticsGradlePlugin: "com.google.firebase:firebase-crashlytics-gradle:$versions.google.firebase.crashlyticsGradlePlugin",
+                                    core                   : "com.google.firebase:firebase-core:$versions.google.firebase.core",
+                                    coreGradlePlugin       : "com.google.gms:google-services:$versions.google.firebase.coreGradlePlugin",
+                                    messaging              : "com.google.firebase:firebase-messaging:$versions.google.firebase.messaging"
                             ],
                     ],
             square             :
