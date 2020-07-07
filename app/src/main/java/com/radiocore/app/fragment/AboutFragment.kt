@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
-import dagger.hilt.android.AndroidEntryPoint
+import com.radiocore.app.activity.MainActivity
 import kotlinx.android.synthetic.main.fragment_about.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 // Created by Emperor95 on 1/13/2019.
@@ -42,16 +44,17 @@ class AboutFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         tvFooterText.text = getString(R.string.about_build_info, BuildConfig.VERSION_NAME)
         tvEmail.text = getString(R.string.org_email)
         tvPhone.text = getString(R.string.org_phone)
         tvMobile.text = getString(R.string.org_mobile)
 
-        initClickListeneners()
+        initClickListeners()
     }
 
-    private fun initClickListeneners() {
+    private fun initClickListeners() {
         tvEmail.setOnClickListener(this)
         tvMobile.setOnClickListener(this)
         tvPhone.setOnClickListener(this)

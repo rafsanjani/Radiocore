@@ -21,7 +21,7 @@ import javax.inject.Inject
 // Created by Emperor95 on 1/13/2019
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class LiveFragment : Fragment() {
     private val viewModel: AppViewModel by activityViewModels()
 
     @Inject
