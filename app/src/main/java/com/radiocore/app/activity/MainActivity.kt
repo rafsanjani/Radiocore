@@ -426,6 +426,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
         })
 
+        //todo:replace with something better in the future
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var hidden: Boolean = false
 
