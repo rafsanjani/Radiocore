@@ -464,6 +464,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        visualizerManager?.resume()
+
+        if (mStreamPlayer.playBackState == StreamPlayer.PlaybackState.PLAYING &&
+                !viewModel.audioServiceConnection.isBound) {
+            bindService(mAudioServiceIntent, viewModel.audioServiceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
     override fun onDestroy() {
         if (mStreamPlayer.playBackState != StreamPlayer.PlaybackState.PLAYING) {
             stopPlayback()
