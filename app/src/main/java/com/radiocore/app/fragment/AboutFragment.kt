@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.foreverrafs.radiocore.BuildConfig
 import com.foreverrafs.radiocore.R
-import com.radiocore.app.activity.MainActivity
 import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -55,13 +53,13 @@ class AboutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initClickListeners() {
-        tvEmail.setOnClickListener(this)
-        tvMobile.setOnClickListener(this)
-        tvPhone.setOnClickListener(this)
-        imageWhatsapp.setOnClickListener(this)
-        imageFacebook.setOnClickListener(this)
-        imageInstagram.setOnClickListener(this)
-        imageTwitter.setOnClickListener(this)
+        tvEmail?.setOnClickListener(this)
+        tvMobile?.setOnClickListener(this)
+        tvPhone?.setOnClickListener(this)
+        imageWhatsapp?.setOnClickListener(this)
+        imageFacebook?.setOnClickListener(this)
+        imageInstagram?.setOnClickListener(this)
+        imageTwitter?.setOnClickListener(this)
     }
 
     private fun onContactInfoClicked(view: TextView) {
