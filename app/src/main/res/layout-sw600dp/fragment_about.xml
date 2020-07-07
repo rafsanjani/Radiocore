@@ -1,312 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainAboutContent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey_5">
+    android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/missionCard"
-        style="@style/CardStyle"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:orientation="vertical">
         <LinearLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/spacing_mlarge"
-            android:paddingRight="@dimen/spacing_mlarge"
-            android:paddingBottom="@dimen/spacing_small">
+            android:orientation="vertical">
 
-            <TextView
+            <!--You may add more cards for more sections-->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:justificationMode="inter_word"
-                android:text="@string/mission"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/brown_900"
-                app:fontFamily="sans-serif-medium" />
+                android:layout_height="wrap_content">
 
-            <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/spacing_small">
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:justificationMode="inter_word"
+                        android:text="@string/mission"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:fontFamily="sans-serif-medium"
+                        app:layout_constraintBottom_toTopOf="@+id/imageView5"
+                        app:layout_constraintEnd_toEndOf="@+id/textView8"
+                        app:layout_constraintStart_toStartOf="@+id/textView8"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="@string/desc_swipe_up_handle"
+                        android:src="@drawable/swipe_up_handle"
+                        android:tint="@color/blue_900"
+                        app:layout_constraintBottom_toTopOf="@+id/textView8"
+                        app:layout_constraintEnd_toEndOf="@+id/textView8"
+                        app:layout_constraintStart_toStartOf="@+id/textView8"
+                        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:lineSpacingExtra="@dimen/spacing_mxlarge"
+                        android:text="@string/mission_statement"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:layout_marginBottom="@dimen/spacing_mlarge"
-                android:lineSpacingExtra="@dimen/spacing_mxlarge"
-                android:text="@string/mission_statement"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                android:textColor="@color/grey_700" />
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/contact"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:fontFamily="sans-serif-medium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_conversion_absoluteHeight="24dp"
+                        tools:layout_conversion_absoluteWidth="343dp" />
+
+                    <TextView
+                        android:id="@+id/tvEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textView6"
+                        tools:layout_conversion_absoluteHeight="21dp"
+                        tools:layout_conversion_absoluteWidth="200dp"
+                        tools:text="@string/org_email" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/label_email"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView11"
+                        tools:layout_conversion_absoluteHeight="21dp"
+                        tools:layout_conversion_absoluteWidth="45dp" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/label_mobile"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintStart_toStartOf="@+id/textView6"
+                        app:layout_constraintTop_toBottomOf="@+id/textView6"
+                        tools:layout_conversion_absoluteHeight="21dp"
+                        tools:layout_conversion_absoluteWidth="54dp" />
+
+                    <TextView
+                        android:id="@+id/tvPhone"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintStart_toStartOf="@+id/tvEmail"
+                        app:layout_constraintTop_toTopOf="@+id/textView9"
+                        tools:layout_conversion_absoluteHeight="21dp"
+                        tools:layout_conversion_absoluteWidth="91dp"
+                        tools:text="@string/org_phone" />
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/label_phone"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/textView9"
+                        app:layout_constraintTop_toBottomOf="@+id/textView9"
+                        tools:layout_conversion_absoluteHeight="21dp"
+                        tools:layout_conversion_absoluteWidth="50dp" />
+
+                    <TextView
+                        android:id="@+id/tvMobile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                        app:layout_constraintEnd_toEndOf="@+id/tvPhone"
+                        app:layout_constraintTop_toTopOf="@+id/textView7"
+                        tools:layout_conversion_absoluteHeight="21dp"
+                        tools:layout_conversion_absoluteWidth="91dp"
+                        tools:text="@string/org_phone" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/imageTwitter"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/org_twitter"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:srcCompat="@drawable/twitter_icon" />
+
+                    <ImageView
+                        android:id="@+id/imageInstagram"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="11dp"
+                        android:contentDescription="@string/org_instagram"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
+                        app:layout_constraintEnd_toStartOf="@+id/imageTwitter"
+                        app:layout_constraintStart_toEndOf="@+id/imageFacebook"
+                        app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:srcCompat="@drawable/instagram_icon" />
+
+                    <ImageView
+                        android:id="@+id/imageFacebook"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="@string/org_facebook"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
+                        app:layout_constraintEnd_toStartOf="@+id/imageInstagram"
+                        app:layout_constraintStart_toEndOf="@+id/imageWhatsapp"
+                        app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
+                        app:srcCompat="@drawable/facebook_icon" />
+
+                    <TextView
+                        android:id="@+id/tvShare"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/share"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        app:fontFamily="sans-serif-medium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageWhatsapp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:contentDescription="@string/desc_whatsapp_icon"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/imageFacebook"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvShare"
+                        app:srcCompat="@drawable/whatsapp_icon" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardView"
-        style="@style/CardStyle"
-        android:layout_width="0dp"
-
-        android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintEnd_toEndOf="@+id/missionCard"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/missionCard"
-        app:layout_constraintTop_toBottomOf="@+id/guideline">
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvFooterText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/spacing_mlarge"
-            android:paddingTop="@dimen/spacing_large"
-            android:paddingRight="@dimen/spacing_mlarge"
-            android:paddingBottom="@dimen/spacing_small">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/contact"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/brown_900"
-                app:fontFamily="sans-serif-medium" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
-                    app:layout_constraintStart_toStartOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView"
-                    app:srcCompat="@drawable/ic_phone"
-                    tools:ignore="ContentDescription" />
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_email"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:id="@+id/tvMobile"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView9"
-                    app:layout_constraintStart_toStartOf="@+id/tvEmail"
-                    app:layout_constraintTop_toBottomOf="@+id/tvEmail"
-                    tools:text="+447438166635" />
-
-                <TextView
-                    android:id="@+id/tvPhone"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView7"
-                    app:layout_constraintStart_toStartOf="@+id/tvMobile"
-                    tools:text="+447438166635" />
-
-
-                <TextView
-                    android:id="@+id/tvEmail"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="info@radiocore.com" />
-
-                <TextView
-                    android:id="@+id/textView6"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/label_email"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                    app:layout_constraintStart_toEndOf="@+id/imageView" />
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    app:layout_constraintStart_toStartOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                    app:srcCompat="@drawable/ic_mobile"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:id="@+id/textView7"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/label_phone"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                    app:layout_constraintStart_toStartOf="@+id/textView9" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/label_mobile"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@color/grey_60"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                    app:layout_constraintStart_toStartOf="@+id/textView6" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        style="@style/CardStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintEnd_toEndOf="@+id/missionCard"
-        app:layout_constraintStart_toStartOf="@+id/missionCard"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/imageTwitter"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="16dp"
-                android:contentDescription="@string/org_twitter"
-                app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageInstagram"
-                app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
-                app:srcCompat="@drawable/twitter_icon" />
-
-            <ImageView
-                android:id="@+id/imageInstagram"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="@string/org_instagram"
-                app:layout_constraintBottom_toBottomOf="@+id/imageFacebook"
-                app:layout_constraintEnd_toStartOf="@+id/imageTwitter"
-                app:layout_constraintStart_toEndOf="@+id/imageFacebook"
-                app:layout_constraintTop_toTopOf="@+id/imageFacebook"
-                app:srcCompat="@drawable/instagram_icon" />
-
-            <ImageView
-                android:id="@+id/imageFacebook"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@string/org_facebook"
-                app:layout_constraintBottom_toBottomOf="@+id/imageWhatsapp"
-                app:layout_constraintEnd_toStartOf="@+id/imageInstagram"
-                app:layout_constraintStart_toEndOf="@+id/imageWhatsapp"
-                app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
-                app:srcCompat="@drawable/facebook_icon" />
-
-            <TextView
-                android:id="@+id/tvShare"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/share"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:fontFamily="sans-serif-medium"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageWhatsapp"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="40dp"
-                android:contentDescription="@string/desc_whatsapp_icon"
-                app:layout_constraintEnd_toStartOf="@+id/imageFacebook"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/whatsapp_icon" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.37" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.65" />
-
-    <TextView
-        android:id="@+id/tvFooterText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        tools:text="RadioCore build 20.3.4"
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_below="@id/content"
+            android:layout_marginTop="@dimen/spacing_mxlarge"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            tools:text="Radiocore Build 20.3.90" />
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
