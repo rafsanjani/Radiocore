@@ -1,5 +1,6 @@
 package com.radiocore.player
 
+import STREAM_URL
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -65,7 +66,6 @@ class AudioStreamingService : Service(), AudioManager.OnAudioFocusChangeListener
         private const val NOTIFICATION_ID: Int = 5
         const val NOTIFICATION_CHANNEL_ID = "com.radiocore.notification_channel"
         const val NOTIFICATION_CHANNEL_NAME = "RadioCore Notification Channel"
-        const val STREAM_URL = "http://media-ice.musicradio.com/CapitalGlasgowMP3"
         const val ACTION_PLAY = "com.radiocore.PLAY"
         const val ACTION_STOP = "com.radiocore.STOP"
     }
