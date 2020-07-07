@@ -2,10 +2,10 @@
 
     <!--Customizable String Entries. Change these values as appropriate-->
     <string name="app_name">RadioCore 999.9 FM</string>
-    <string name="org_email">radiocore@foreverrafs.com</string>
-    <string name="org_website">www.radiocore.com</string>
-    <string name="org_phone">+441234567</string>
-    <string name="org_mobile">+441234567</string>
+    <string name="org_email">info@foreverrafs.com</string>
+    <string name="org_website">www.foreverrafs.com</string>
+    <string name="org_phone">+4401254933629</string>
+    <string name="org_mobile">+4401254933629</string>
     <string name="org_freq">999.9FM</string>
     <string name="org_facebook">https://www.facebook.com/foreverrafs</string>
     <string name="org_instagram">https://www.instagram.com/foreverrafs/</string>
@@ -16,7 +16,7 @@
     <string name="email_and_value">Email: %1$s</string>
     <string name="phone_and_value">Phone: %1$s</string>
     <string name="mobile_and_value">Phone: %1$s</string>
-    <string name="about_build_info">RadioCore Build #%1$s</string>
+    <string name="about_build_info">RadioCore Build %1$s</string>
     <!--End of Customizable String Entries-->
 
     <!--Acivity Titles-->
@@ -48,6 +48,11 @@
 
     <string name="mission_statement">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta lor
+        em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
+        ac habitasse platea dictumst. Suspendisse volutpat blandit ultrices. Sed eget velit id sa
+        pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
+        dum malesuada. Curabitur quis dui eu nisi ultrices malesuada vel ut orci.
+         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta lor
         em sed porttitor maximus. Suspendisse tincidunt eleifend ipsum et vestibulum. In h
         ac habitasse platea dictumst. Suspendisse volutpat blandit ultrices. Sed eget velit id sa
         pien congue tempus. Suspendisse potenti. Fusce tempus mollis velit biben
