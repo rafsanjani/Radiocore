@@ -1,4 +1,4 @@
 include ':app'
 include ':news'
-include ':core'
+include ':common'
 include ':player'

@@ -50,7 +50,7 @@ android {
 }
 
 dependencies {
-    implementation project(":core")
+    implementation project(':common')
     implementation deps.kotlin.stdlib
     implementation deps.androidX.fragment.ktx
     implementation deps.androidX.appCompat
