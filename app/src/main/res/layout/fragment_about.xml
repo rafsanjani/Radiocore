@@ -238,7 +238,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/imageInstagram"
                         app:layout_constraintStart_toEndOf="@+id/imageWhatsapp"
                         app:layout_constraintTop_toTopOf="@+id/imageWhatsapp"
-                        app:srcCompat="@drawable/facebook_icon" />
+                        app:srcCompat="@drawable/instagram_icon" />
 
                     <TextView
                         android:id="@+id/tvShare"
