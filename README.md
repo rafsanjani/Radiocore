@@ -1,7 +1,8 @@
 # Radio Core
 ![Gradle Build](https://github.com/rafsanjani/Radiocore/workflows/Gradle%20Build/badge.svg)
 
-Online Radio Streaming App, Made by developers for developers
+Online Radio Streaming App, Made by developers for developers.
+###### Note that this project is my test project for trying out new things in Android. It might not always run or even compile on your device. <br>Thank you for your understanding 😂😂
 
 ## Screenshots
 <img height="500" width="250" src="https://github.com/rafsanjani/Radiocore/blob/master/screenshots/Screenshot_1568272874.png">  <img height="500" width="250" src="https://github.com/rafsanjani/Radiocore/blob/master/screenshots/Screenshot_1568277157.png">   <img height="500" width="250" src="https://github.com/rafsanjani/Radiocore/blob/master/screenshots/Screenshot_1568277499.png">
