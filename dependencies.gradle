@@ -14,7 +14,7 @@ ext {
             glide              : '4.11.0',
             dexter             : '6.2.0',
             timber             : '4.7.1',
-            cameraView         : '2.6.2',
+            cameraView         : '2.7.0',
             imageCropper       : '2.8.0',
             fabric             : '1.31.1',
             jodaTime           : '2.10.6',
