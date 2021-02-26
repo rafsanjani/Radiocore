@@ -90,5 +90,5 @@ dependencies {
 
 
     androidTestImplementation deps.androidX.test.espresso.values()
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }
