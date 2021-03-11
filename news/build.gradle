@@ -83,7 +83,7 @@ dependencies {
     implementation deps.google.dagger.hilt
     kapt deps.google.dagger.hiltCompiler
     implementation deps.google.dagger.hiltViewModel
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-beta01'
 
     implementation deps.androidX.work.runtimeKtx
     implementation deps.lottie
