@@ -36,7 +36,7 @@ dependencies {
     implementation deps.timber
 
     implementation 'com.google.dagger:hilt-android:2.28.1-alpha'
-    kapt 'com.google.dagger:hilt-android-compiler:2.28.1-alpha'
+    kapt 'com.google.dagger:hilt-android-compiler:2.35'
 
     implementation deps.google.exoplayerCore
     implementation deps.kotlin.coroutines.core
