@@ -1,0 +1,54 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.google.dagger:hilt-android-compiler
+    versions:
+    - 2.31.2-alpha
+    - 2.32-alpha
+    - 2.33-beta
+    - 2.34-beta
+    - 2.34.1-beta
+    - "2.35"
+  - dependency-name: com.google.dagger:hilt-android
+    versions:
+    - 2.31.2-alpha
+    - 2.32-alpha
+    - 2.33-beta
+    - 2.34-beta
+    - 2.34.1-beta
+    - "2.35"
+  - dependency-name: androidx.camera:camera-core
+    versions:
+    - 1.1.0-alpha01
+    - 1.1.0-alpha02
+    - 1.1.0-alpha03
+  - dependency-name: androidx.camera:camera-camera2
+    versions:
+    - 1.0.0-rc01
+    - 1.1.0-alpha01
+    - 1.1.0-alpha02
+    - 1.1.0-alpha03
+  - dependency-name: com.google.android.exoplayer:exoplayer-core
+    versions:
+    - 2.12.3
+    - 2.13.0
+    - 2.13.1
+    - 2.13.2
+  - dependency-name: androidx.hilt:hilt-compiler
+    versions:
+    - 1.0.0-alpha02
+    - 1.0.0-alpha03
+  - dependency-name: com.android.tools.build:gradle
+    versions:
+    - 4.1.2
+  - dependency-name: com.android.tools:desugar_jdk_libs
+    versions:
+    - 1.1.1
+  - dependency-name: com.otaliastudios:cameraview
+    versions:
+    - 2.6.4
