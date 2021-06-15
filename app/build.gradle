@@ -101,7 +101,7 @@ dependencies {
     implementation deps.google.firebase.analytics
 
     //google exoplayer for audio rendering
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.10.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.14.1'
 
     //leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
